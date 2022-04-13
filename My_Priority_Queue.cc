@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 #include <list>
 #include "My_Priority_Queue.h"
 
@@ -58,7 +59,7 @@ void MyPriorityQueue::sort()
 	my_list_.sort(cmpFn);
 }
 
-int MyPriorityQueue::size()
+int MyPriorityQueue::size_hex()
 {
 	return static_cast<int>(my_list_.size());
 }

@@ -1,8 +1,6 @@
 #ifndef NODE_H_
 #define NODE_H_
 
-#include <iostream>
-
 struct Node
 {
     //Node ids will be whole numbers
@@ -14,9 +12,9 @@ struct Node
     //an imaginary node id to end player's hex board graph to
     static const int graph_end_id = -3;
 
-    int id = kNullId;         //origin city has id = 0
+    int id = kNullId;
     
-    int nearest_node_id = kNullId;        //origin city has nearest_neighbor_id = kNullId
+    int nearest_node_id = kNullId;
     
     Node(int id);
     
@@ -24,4 +22,4 @@ struct Node
 
 };
 
-#endif // !NEIGHBOR_H_
+#endif // !NODE_H_

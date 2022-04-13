@@ -15,11 +15,9 @@ public:
 
     std::list<Edge> edge_list_;
 
-    char player_identifier;
-
     PlayerGraph() {};
 
-    PlayerGraph(std::string name, char identifier) :name_(name), player_identifier(identifier) {};
+    PlayerGraph(std::string name) :name_(name) {};
 
 };
 
