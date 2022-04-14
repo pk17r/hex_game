@@ -2,7 +2,10 @@
 //
 
 #include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string>
+#include <limits>
 #include <list>
 #include <tuple>
 #include <array>
@@ -14,8 +17,8 @@
 using namespace std;
 
 //Function declerations
-void InitializeHexBoard(int size_hex_board, string& player_A_name, string& player_B_name);
-void PrintHexBoard();
+void initialize(int size_hex_board, string& player_A_name, string& player_B_name);
+void print_hex_board();
 void RunGame();
 
 enum class Square : char
@@ -34,6 +37,10 @@ Square** hex_board;
 
 int main()
 {
+    //disable automatic cout flush to terminal
+    ios::sync_with_stdio(false);
+    setvbuf(stdout, nullptr, _IOFBF, BUFSIZ);
+    
     //cout << "input hex board size:";
     //cin >> size_hex_board;
     //cout << "player A name:";
@@ -42,8 +49,8 @@ int main()
     size_hex_board = 7;
     string player_A_name = "Prashant";
     string player_B_name = "Computer";
-    InitializeHexBoard(size_hex_board, player_A_name, player_B_name);
-    PrintHexBoard();
+    initialize(size_hex_board, player_A_name, player_B_name);
+    print_hex_board();
     RunGame();
 }
 
@@ -57,7 +64,7 @@ tuple<int, int> get_node_indices(int node_id)
     return make_tuple(node_id / size_hex_board, node_id % size_hex_board);
 }
 
-void InitializeHexBoard(int size_hex_board, string& player_A_name, string& player_B_name)
+void initialize(int size_hex_board, string& player_A_name, string& player_B_name)
 {
     player_A = PlayerGraph(player_A_name);
     player_B = PlayerGraph(player_B_name);
@@ -88,29 +95,32 @@ void InitializeHexBoard(int size_hex_board, string& player_A_name, string& playe
     }
 }
 
-void PrintHexBoard()
+void print_hex_board()
 {
-    cout << '\n';
+    cout << '\n' << '\n';
     cout << "\t\t\tHex Game" << '\n' << '\n';
     cout << "\t\t" << static_cast<char>(Square::PlayerA) << " : " << player_A.name_ << "  |  "
         << static_cast<char>(Square::PlayerB) << " : " << player_B.name_ << '\n';
-    cout << '\n';
+    cout << '\n' << '\n' << '\t' << "      ";
+    for (int i = 0; i < size_hex_board; i++)
+        cout << static_cast<char>(Square::PlayerA) << "   ";
+    cout << '\n' << '\n';
     for (int i = 0; i < size_hex_board; i++)
     {
         cout << '\t';
         for (int print_blank = 0; print_blank < i; print_blank++)
             cout << "  ";
+        cout << static_cast<char>(Square::PlayerB) << "       ";
         for (int j = 0; j < size_hex_board; j++)
         {
             cout << static_cast<char>(hex_board[i][j]);
-            if ((j + 1) % size_hex_board != 0)
+            if (j < size_hex_board - 1)
                 cout << " - ";
-            else
-                cout << '\n';
         }
+        cout << "       " << static_cast<char>(Square::PlayerB) << '\n';
         if ((i + 1) % size_hex_board != 0)
         {
-            cout << '\t';
+            cout << '\t' << '\t';
             for (int print_blank = 0; print_blank < i; print_blank++)
                 cout << "  ";
             for (int j = 0; j < 2 * size_hex_board - 1; j++)
@@ -123,10 +133,16 @@ void PrintHexBoard()
             cout << '\n';
         }
     }
+    cout << '\n' << '\n' << '\t' << '\t';
+    for (int print_blank = 0; print_blank < size_hex_board; print_blank++)
+        cout << "  ";
+    for (int i = 0; i < size_hex_board; i++)
+        cout << static_cast<char>(Square::PlayerA) << "   ";
+    cout << '\n' << '\n';
     cout << endl;
 }
 
-list<Node> GetConnectedNodes(int node_id)
+list<Node> get_connected_nodes(int node_id)
 {
     list<Node> connected_nodes_list;
     int i, j;
@@ -146,22 +162,50 @@ list<Node> GetConnectedNodes(int node_id)
     return connected_nodes_list;
 }
 
+void get_user_input(Square user)
+{
+    int i = -1, j = -1;
+    while (true)
+    {
+        if (user == Square::PlayerA)
+            cout << player_A.name_ << " enter next move:";
+        else
+            cout << player_B.name_ << " enter next move:";
+        if (cin >> i >> j)
+        {
+            if (i >= 0 && j >= 0 && i < size_hex_board && j < size_hex_board)
+            {
+                if (hex_board[i][j] == Square::Empty)
+                    break;
+                else
+                    cout << "Square already taken." << endl;
+            }
+            else
+                cout << "Out of bounds input." << endl;
+        }
+        else
+        {
+            cout << "Please enter numbers only." << endl;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+        i = -1, j = -1;
+    }
+    if (user == Square::PlayerA)
+        hex_board[i][j] = Square::PlayerA;
+    else
+        hex_board[i][j] = Square::PlayerB;
+}
+
 void RunGame()
 {
     bool game_won = false;
     int moves = 0;
     while (!game_won)
     {
-        cout << player_A.name_ << " enter next move:";
-        int i, j;
-        cin >> i;
-        cin >> j;
-        hex_board[i][j] = Square::PlayerA;
-        cout << player_B.name_ << " enter next move:";
-        cin >> i;
-        cin >> j;
-        hex_board[i][j] = Square::PlayerB;
-        PrintHexBoard();
+        get_user_input(Square::PlayerA);
+        get_user_input(Square::PlayerB);
+        print_hex_board();
         moves++;
         if (moves == 10)
             game_won = true;
