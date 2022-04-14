@@ -22,7 +22,7 @@ public:
 
 	void sort();
 
-	int size_hex();
+	int size();
 
 	void print();		//made for debugging usage
 

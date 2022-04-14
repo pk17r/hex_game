@@ -16,9 +16,11 @@ struct Node
     
     int nearest_node_id = kNullId;
     
+    int distance = 1;
+
     Node(int id);
     
-    Node(int id, int nearest_node_id);
+    //Node(int id, int nearest_node_id);
 
 };
 

@@ -59,7 +59,7 @@ void MyPriorityQueue::sort()
 	my_list_.sort(cmpFn);
 }
 
-int MyPriorityQueue::size_hex()
+int MyPriorityQueue::size()
 {
 	return static_cast<int>(my_list_.size());
 }
