@@ -1,4 +1,8 @@
 // Hex_Game.cpp : This file contains the 'main' function. Program execution begins and ends there.
+// 
+// Author: Prashant Kumar
+// 
+// Date April 14th 2022
 //
 
 #include <iostream>
@@ -23,8 +27,8 @@ void RunGame();
 
 enum class Square : char
 {
-    PlayerA = 'X',
-    PlayerB = 'O',
+    PlayerA = 'p',
+    PlayerB = 'c',
     Empty = '.',
 };
 
@@ -41,13 +45,13 @@ int main()
     ios::sync_with_stdio(false);
     setvbuf(stdout, nullptr, _IOFBF, BUFSIZ);
     
-    cout << "input hex board size:";
-    cin >> size_hex_board;
-    cout << "player A name:";
-    string player_A_name;
-    cin >> player_A_name;
-    //size_hex_board = 3;
-    //string player_A_name = "Prashant";
+    //cout << "input hex board size:";
+    //cin >> size_hex_board;
+    //cout << "player A name:";
+    //string player_A_name;
+    //cin >> player_A_name;
+    size_hex_board = 11;
+    string player_A_name = "Prashant";
     string player_B_name = "Computer";
     initialize(size_hex_board, player_A_name, player_B_name);
     print_hex_board();
@@ -98,46 +102,51 @@ void initialize(int size_hex_board, string& player_A_name, string& player_B_name
 void print_hex_board()
 {
     cout << '\n' << '\n';
-    cout << "\t\t\tHex Game" << '\n' << '\n';
-    cout << "\t\t" << static_cast<char>(Square::PlayerA) << " : " << player_A.name_ << "  |  "
-        << static_cast<char>(Square::PlayerB) << " : " << player_B.name_ << '\n';
-    cout << '\n' << '\n' << '\t' << "      ";
-    for (int i = 0; i < size_hex_board; i++)
-        cout << static_cast<char>(Square::PlayerA) << i << "  ";
-    cout << '\n' << '\n';
+    cout << "\t\t\t  Hex Game" << '\n' << '\n';
+    cout << "\t\t" << static_cast<char>(Square::PlayerA) << " : " << player_A.name_ << "  |  top-to-bottom" << '\n';
+    cout << "\t\t" << static_cast<char>(Square::PlayerB) << " : " << player_B.name_ << "  |  left-to-right" << '\n';
+    cout << '\n';
+    
+    //header row
+    cout << '\t' << "    ";
+    for (int i = 1; i <= size_hex_board; i++)
+        printf("%2d  ", i);
+    cout << '\n';
+
+    char letter = 'a';
+
+    //board body
     for (int i = 0; i < size_hex_board; i++)
     {
+        //row initial blank spaces
         cout << '\t';
         for (int print_blank = 0; print_blank < i; print_blank++)
-            cout << "  ";
-        cout << static_cast<char>(Square::PlayerB) << i << "      ";
+            cout << " ";
+        
+        //row label left
+        //cout << static_cast<char>(Square::PlayerB) << letter << "      ";
+        cout << letter << "  \\  ";
+
+        //board
         for (int j = 0; j < size_hex_board; j++)
         {
             cout << static_cast<char>(hex_board[i][j]);
             if (j < size_hex_board - 1)
-                cout << " - ";
+                cout << "   ";
         }
-        cout << "       " << static_cast<char>(Square::PlayerB) << i << '\n';
-        if ((i + 1) % size_hex_board != 0)
-        {
-            cout << '\t' << '\t';
-            for (int print_blank = 0; print_blank < i; print_blank++)
-                cout << "  ";
-            for (int j = 0; j < 2 * size_hex_board - 1; j++)
-            {
-                if(j % 2 == 0)
-                    cout << " \\";
-                else
-                    cout << " /";
-            }
-            cout << '\n';
-        }
+
+        //row label right
+        cout << "  \\  " << letter++ << '\n';
     }
-    cout << '\n' << '\n' << '\t' << '\t';
-    for (int print_blank = 0; print_blank < size_hex_board; print_blank++)
-        cout << "  ";
-    for (int i = 0; i < size_hex_board; i++)
-        cout << static_cast<char>(Square::PlayerA) << i << "  ";
+
+    cout << '\t' << '\t';
+    for (int print_blank = 0; print_blank < size_hex_board - 3; print_blank++)
+        cout << " ";
+    
+    //footer row
+    for (int i = 1; i <= size_hex_board; i++)
+        printf("%2d  ", i);
+
     cout << '\n' << '\n';
     cout << endl;
 }
@@ -287,6 +296,34 @@ bool game_won_check(Square player)
     return false;
 }
 
+void read_input(int& i, int& j)
+{
+    char letter = '?';
+    int number = -1;
+    while (number == -1)
+    {
+        string input;
+        getline(cin, input);
+
+        int value = tolower(input.at(0));
+        if (value >= 97 && value <= 122)
+        {
+            letter = value;
+            number = stoi(input.substr(1, input.size() - 1));
+        }
+        else if (value >= 48 && value <= 57)
+        {
+            letter = tolower(input.at(input.size() - 1));
+            number = stoi(input.substr(0, input.size() - 1));
+        }
+        else
+        {
+            cout << "Invalid input!" << endl;
+        }
+    }
+    i = letter - 97;
+    j = number - 1;
+}
 
 void get_user_input(Square user)
 {
@@ -297,25 +334,18 @@ void get_user_input(Square user)
             cout << player_A.name_ << " enter next move:";
         else
             cout << player_B.name_ << " enter next move:";
-        if (cin >> i >> j)
+
+        read_input(i, j);
+
+        if (i >= 0 && j >= 0 && i < size_hex_board && j < size_hex_board)
         {
-            if (i >= 0 && j >= 0 && i < size_hex_board && j < size_hex_board)
-            {
-                if (hex_board[i][j] == Square::Empty)
-                    break;
-                else
-                    cout << "Square already taken." << endl;
-            }
+            if (hex_board[i][j] == Square::Empty)
+                break;
             else
-                cout << "Out of bounds input." << endl;
+                cout << "Square already taken." << endl;
         }
         else
-        {
-            cout << "Please enter numbers only." << endl;
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        }
-        i = -1, j = -1;
+            cout << "Out of bounds input." << endl;
     }
     if (user == Square::PlayerA)
     {
