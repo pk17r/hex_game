@@ -343,8 +343,8 @@ void read_input(int& i, int& j)
         string input;
         getline(cin, input);
 
-        int value = tolower(input.at(0));
-        if (value >= 97 && value <= 122)
+        int letter_value = tolower(input.at(0));
+        if (letter_value >= 97 && letter_value <= 122)
         {
             letter = letter_value;
             number = stoi(input.substr(1, input.size() - 1));
