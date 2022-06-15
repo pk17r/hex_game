@@ -21,14 +21,14 @@
 using namespace std;
 
 //Function declerations
-void initialize(int size_hex_board, string& player_A_name, string& player_B_name);
+void initialize_players();
 void print_hex_board();
 void RunGame();
 
 enum class Square : char
 {
-    PlayerA = 'p',
-    PlayerB = 'c',
+    PlayerA = 'X',
+    PlayerB = 'O',
     Empty = '.',
 };
 
@@ -37,23 +37,17 @@ int size_hex_board = -1;
 PlayerGraph player_A;
 PlayerGraph player_B;
 Square** hex_board;
-
+char player_square = 'X', computer_square;
 
 int main()
 {
-    //disable automatic cout flush to terminal
+    //disable automatic cout flush to terminal, this helps in printing hex board quickly to terminal.
     ios::sync_with_stdio(false);
     setvbuf(stdout, nullptr, _IOFBF, BUFSIZ);
     
-    //cout << "input hex board size:";
-    //cin >> size_hex_board;
-    //cout << "player A name:";
-    //string player_A_name;
-    //cin >> player_A_name;
     size_hex_board = 11;
-    string player_A_name = "Prashant";
-    string player_B_name = "Computer";
-    initialize(size_hex_board, player_A_name, player_B_name);
+ 
+    initialize_players();
     print_hex_board();
     RunGame();
 }
@@ -68,10 +62,52 @@ tuple<int, int> get_node_indices(int node_id)
     return make_tuple(node_id / size_hex_board, node_id % size_hex_board);
 }
 
-void initialize(int size_hex_board, string& player_A_name, string& player_B_name)
+void initialize_players()
 {
-    player_A = PlayerGraph(player_A_name);
-    player_B = PlayerGraph(player_B_name);
+    cout << "X goes first and takes vertical direction, O goes second and takes horizontal direction.\n";
+    cout << "Player, pick X or O:";
+
+    while (1)
+    {
+        string user_choice;
+        getline(cin, user_choice);
+        if (user_choice == "X")
+        {
+            player_square = static_cast<char>(Square::PlayerA);
+            computer_square = static_cast<char>(Square::PlayerB);
+            break;
+        }
+        else if (user_choice == "O")
+        {
+            player_square = static_cast<char>(Square::PlayerB);
+            computer_square = static_cast<char>(Square::PlayerA);
+            break;
+        }
+        else
+        {
+            cout << "\nIncorrect input.\nPlayer, pick X or O:";
+        }
+    }
+
+
+    //cout << "input hex board size:";
+    //cin >> size_hex_board;
+    cout << "Player Name:";
+    string player_name;
+    getline(cin, player_name);
+    //string player_name = "Prashant";
+    string computer_name = "Computer";
+
+    if (player_square == 'X')
+    {
+        player_A = PlayerGraph(player_name, player_square);
+        player_B = PlayerGraph(computer_name, computer_square);
+    }
+    else
+    {
+        player_A = PlayerGraph(computer_name, computer_square);
+        player_B = PlayerGraph(player_name, player_square);
+    }
     //player A will make graph in vertical direction
     //player B will make graph in horizontal direction
     
@@ -226,7 +262,6 @@ list<Node> get_connected_nodes(int node_id, Square player)
     return connected_nodes_list;
 }
 
-
 bool game_won_check(Square player)
 {
     //DijkstrasAlgorithmImplementation
@@ -304,21 +339,27 @@ void read_input(int& i, int& j)
     {
         string input;
         getline(cin, input);
-
-        int value = tolower(input.at(0));
-        if (value >= 97 && value <= 122)
+        if (input.size() < 2 || input.size() > 3)
         {
-            letter = value;
+            cout << "Invalid input!\n";
+            continue;
+        }
+
+
+        int letter_value = tolower(input.at(0));
+        if (letter_value >= 97 && letter_value <= 122)
+        {
+            letter = letter_value;
             number = stoi(input.substr(1, input.size() - 1));
         }
-        else if (value >= 48 && value <= 57)
+        else if (letter_value >= 48 && letter_value <= 57)
         {
             letter = tolower(input.at(input.size() - 1));
             number = stoi(input.substr(0, input.size() - 1));
         }
         else
         {
-            cout << "Invalid input!" << endl;
+            cout << "Invalid input!\n";
         }
     }
     i = letter - 97;

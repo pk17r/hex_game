@@ -11,13 +11,15 @@ class PlayerGraph
 public:
     std::string name_;
 
+    char square_;
+
     std::list<Node> nodes_list_;
 
     std::list<Edge> edge_list_;
 
     PlayerGraph() {};
 
-    PlayerGraph(std::string name) :name_(name) {};
+    PlayerGraph(std::string name, char square) :name_(name), square_(square) {};
 
 };
 
