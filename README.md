@@ -1,274 +1,74 @@
-# hex_game
-
-input hex board size:7
-player A name:Prashant
-
-
-                        Hex Game
-
-                X : Prashant  |  O : Computer
-
-
-              X0  X1  X2  X3  X4  X5  X6
-
-        O0      . - . - . - . - . - . - .       O0
-                 \ / \ / \ / \ / \ / \ / \
-          O1      . - . - . - . - . - . - .       O1
-                   \ / \ / \ / \ / \ / \ / \
-            O2      . - . - . - . - . - . - .       O2
-                     \ / \ / \ / \ / \ / \ / \
-              O3      . - . - . - . - . - . - .       O3
-                       \ / \ / \ / \ / \ / \ / \
-                O4      . - . - . - . - . - . - .       O4
-                         \ / \ / \ / \ / \ / \ / \
-                  O5      . - . - . - . - . - . - .       O5
-                           \ / \ / \ / \ / \ / \ / \
-                    O6      . - . - . - . - . - . - .       O6
-
-
-                              X0  X1  X2  X3  X4  X5  X6
-
-
-Prashant enter next move:0 3
-Computer enter next move:4 0
-
-
-                        Hex Game
-
-                X : Prashant  |  O : Computer
-
-
-              X0  X1  X2  X3  X4  X5  X6
-
-        O0      . - . - . - X - . - . - .       O0
-                 \ / \ / \ / \ / \ / \ / \
-          O1      . - . - . - . - . - . - .       O1
-                   \ / \ / \ / \ / \ / \ / \
-            O2      . - . - . - . - . - . - .       O2
-                     \ / \ / \ / \ / \ / \ / \
-              O3      . - . - . - . - . - . - .       O3
-                       \ / \ / \ / \ / \ / \ / \
-                O4      O - . - . - . - . - . - .       O4
-                         \ / \ / \ / \ / \ / \ / \
-                  O5      . - . - . - . - . - . - .       O5
-                           \ / \ / \ / \ / \ / \ / \
-                    O6      . - . - . - . - . - . - .       O6
-
-
-                              X0  X1  X2  X3  X4  X5  X6
-
-
-Prashant enter next move:1 3
-Computer enter next move:3 0
-
-
-                        Hex Game
-
-                X : Prashant  |  O : Computer
-
-
-              X0  X1  X2  X3  X4  X5  X6
-
-        O0      . - . - . - X - . - . - .       O0
-                 \ / \ / \ / \ / \ / \ / \
-          O1      . - . - . - X - . - . - .       O1
-                   \ / \ / \ / \ / \ / \ / \
-            O2      . - . - . - . - . - . - .       O2
-                     \ / \ / \ / \ / \ / \ / \
-              O3      O - . - . - . - . - . - .       O3
-                       \ / \ / \ / \ / \ / \ / \
-                O4      O - . - . - . - . - . - .       O4
-                         \ / \ / \ / \ / \ / \ / \
-                  O5      . - . - . - . - . - . - .       O5
-                           \ / \ / \ / \ / \ / \ / \
-                    O6      . - . - . - . - . - . - .       O6
-
-
-                              X0  X1  X2  X3  X4  X5  X6
-
-
-Prashant enter next move:2 3
-Computer enter next move:31
-1
-Out of bounds input.
-Computer enter next move:3 1
-
-
-                        Hex Game
-
-                X : Prashant  |  O : Computer
-
-
-              X0  X1  X2  X3  X4  X5  X6
-
-        O0      . - . - . - X - . - . - .       O0
-                 \ / \ / \ / \ / \ / \ / \
-          O1      . - . - . - X - . - . - .       O1
-                   \ / \ / \ / \ / \ / \ / \
-            O2      . - . - . - X - . - . - .       O2
-                     \ / \ / \ / \ / \ / \ / \
-              O3      O - O - . - . - . - . - .       O3
-                       \ / \ / \ / \ / \ / \ / \
-                O4      O - . - . - . - . - . - .       O4
-                         \ / \ / \ / \ / \ / \ / \
-                  O5      . - . - . - . - . - . - .       O5
-                           \ / \ / \ / \ / \ / \ / \
-                    O6      . - . - . - . - . - . - .       O6
-
-
-                              X0  X1  X2  X3  X4  X5  X6
-
-
-Prashant enter next move:3 2
-Computer enter next move:4 1
-
-
-                        Hex Game
-
-                X : Prashant  |  O : Computer
-
-
-              X0  X1  X2  X3  X4  X5  X6
-
-        O0      . - . - . - X - . - . - .       O0
-                 \ / \ / \ / \ / \ / \ / \
-          O1      . - . - . - X - . - . - .       O1
-                   \ / \ / \ / \ / \ / \ / \
-            O2      . - . - . - X - . - . - .       O2
-                     \ / \ / \ / \ / \ / \ / \
-              O3      O - O - X - . - . - . - .       O3
-                       \ / \ / \ / \ / \ / \ / \
-                O4      O - O - . - . - . - . - .       O4
-                         \ / \ / \ / \ / \ / \ / \
-                  O5      . - . - . - . - . - . - .       O5
-                           \ / \ / \ / \ / \ / \ / \
-                    O6      . - . - . - . - . - . - .       O6
-
-
-                              X0  X1  X2  X3  X4  X5  X6
-
-
-Prashant enter next move:4 2
-Computer enter next move:4 2
-Square already taken.
-Computer enter next move:4 3
-
-
-                        Hex Game
-
-                X : Prashant  |  O : Computer
-
-
-              X0  X1  X2  X3  X4  X5  X6
-
-        O0      . - . - . - X - . - . - .       O0
-                 \ / \ / \ / \ / \ / \ / \
-          O1      . - . - . - X - . - . - .       O1
-                   \ / \ / \ / \ / \ / \ / \
-            O2      . - . - . - X - . - . - .       O2
-                     \ / \ / \ / \ / \ / \ / \
-              O3      O - O - X - . - . - . - .       O3
-                       \ / \ / \ / \ / \ / \ / \
-                O4      O - O - X - O - . - . - .       O4
-                         \ / \ / \ / \ / \ / \ / \
-                  O5      . - . - . - . - . - . - .       O5
-                           \ / \ / \ / \ / \ / \ / \
-                    O6      . - . - . - . - . - . - .       O6
-
-
-                              X0  X1  X2  X3  X4  X5  X6
-
-
-Prashant enter next move:5 1
-Computer enter next move:6 0
-
-
-                        Hex Game
-
-                X : Prashant  |  O : Computer
-
-
-              X0  X1  X2  X3  X4  X5  X6
-
-        O0      . - . - . - X - . - . - .       O0
-                 \ / \ / \ / \ / \ / \ / \
-          O1      . - . - . - X - . - . - .       O1
-                   \ / \ / \ / \ / \ / \ / \
-            O2      . - . - . - X - . - . - .       O2
-                     \ / \ / \ / \ / \ / \ / \
-              O3      O - O - X - . - . - . - .       O3
-                       \ / \ / \ / \ / \ / \ / \
-                O4      O - O - X - O - . - . - .       O4
-                         \ / \ / \ / \ / \ / \ / \
-                  O5      . - X - . - . - . - . - .       O5
-                           \ / \ / \ / \ / \ / \ / \
-                    O6      O - . - . - . - . - . - .       O6
-
-
-                              X0  X1  X2  X3  X4  X5  X6
-
-
-Prashant enter next move:6 2
-Computer enter next move:6 1
-
-
-                        Hex Game
-
-                X : Prashant  |  O : Computer
-
-
-              X0  X1  X2  X3  X4  X5  X6
-
-        O0      . - . - . - X - . - . - .       O0
-                 \ / \ / \ / \ / \ / \ / \
-          O1      . - . - . - X - . - . - .       O1
-                   \ / \ / \ / \ / \ / \ / \
-            O2      . - . - . - X - . - . - .       O2
-                     \ / \ / \ / \ / \ / \ / \
-              O3      O - O - X - . - . - . - .       O3
-                       \ / \ / \ / \ / \ / \ / \
-                O4      O - O - X - O - . - . - .       O4
-                         \ / \ / \ / \ / \ / \ / \
-                  O5      . - X - . - . - . - . - .       O5
-                           \ / \ / \ / \ / \ / \ / \
-                    O6      O - O - X - . - . - . - .       O6
-
-
-                              X0  X1  X2  X3  X4  X5  X6
-
-
-Prashant enter next move:5 2
-
-
-                        Hex Game
-
-                X : Prashant  |  O : Computer
-
-
-              X0  X1  X2  X3  X4  X5  X6
-
-        O0      . - . - . - X - . - . - .       O0
-                 \ / \ / \ / \ / \ / \ / \
-          O1      . - . - . - X - . - . - .       O1
-                   \ / \ / \ / \ / \ / \ / \
-            O2      . - . - . - X - . - . - .       O2
-                     \ / \ / \ / \ / \ / \ / \
-              O3      O - O - X - . - . - . - .       O3
-                       \ / \ / \ / \ / \ / \ / \
-                O4      O - O - X - O - . - . - .       O4
-                         \ / \ / \ / \ / \ / \ / \
-                  O5      . - X - X - . - . - . - .       O5
-                           \ / \ / \ / \ / \ / \ / \
-                    O6      O - O - X - . - . - . - .       O6
-
-
-                              X0  X1  X2  X3  X4  X5  X6
-
-
-
-Prashant won!!!
-
-Game won in 8 moves!
-
-C:\Programming\3.C++forCProgrammers\Hex_Game\x64\Debug\Hex_Game.exe (process 29148) exited with code 0.
-Press any key to close this window . . .
+#Hex Game
+
+Author: Prashant Kumar
+Date: June 16th 2022
+
+##Representation:
+A size 5 hex board has 5x5 squares. Squares have 3 types – PlayerA, PlayerB or Empty. Every Square acts as a node for path algorithms. Nodes have sequential ids from 0 to n x n - 1. For path algorithm purpose, an imaginary start and end node is created. Start and end nodes have the same id for PlayerA and PlayerB. Start node is given id -2 and end node -3. Nodes from one side are connected to start node and other side to end node as shown in representation below.
+
+![Screenshot](Representation.png)
+
+##Program Structure
+###Game Constants
+o	Player A is X (top to bottom), Player B is O (left to right)
+o	Player Types – Human/Computer
+o	Board Size
+###Functions
+o	Check game won by a player (using Dijkstra’s for now, A star later)
+o	Randomly Fill up Whole Board
+o	Take User Input Move
+o	Print Hex Board
+###Game Play
+o	Hex Board with Current Positions
+o	Best_next_move() Trial function to try out all legal moves 1000 times and classify each move with win loss ratio – return move with best win loss ratio
+	Vector of empty squares
+	For every square 1000 trials of randomly filling up board, noting who won and adding it to PlayerA or PlayerB
+	Returning best next move for PlayerA or PlayerB
+
+##Class Structure
+###Square: char
+a.	playerA = 'X',
+b.	playerB = 'O',
+c.	empty = '.',
+###Node
+a.	int id = kNullId;
+b.	int nearest_node_id = kNullId;
+c.	int distance = 1;    //distance to every node is 1 for hex game
+d.	static const int kNullId = -1;    //Node ids will be whole numbers
+e.	static const int graph_start_id = -2;    //an imaginary node id to start player's hex board graph from
+f.	static const int graph_end_id = -3;    //an imaginary node id to end player's hex board graph to
+###Game_Class
+a.	playerA_type 0 – human /1 - computer
+b.	playerB_type 0 – human /1 – computer
+c.	playerA_name
+d.	playerB_name
+e.	board_size – 5 for testing, 11 for production
+f.	hex_board – pointer to pointer of Square
+g.	empty_squares_vector – all squares have an id, we maintain an empty ids list to pick from
+h.	Functions:
+i.	game_won (using Dijkstra’s for now, A star later), return -1 for none, 0 for PlayerA, 1 for PlayerB
+ii.	fill_board_randomly(bool turn_of_player), return randomly filled up board
+iii.	take_user_input(), return node_id
+iv.	best_next_move(bool player), return node_id
+v.	print_hex_board()
+###enum class PlayerType
+a.	Human = 0,
+b.	Computer = 1,
+###enum class Square : char
+a.	PlayerA = 'X',
+b.	PlayerB = 'O',
+c.	Empty = '.',
+
+##Pseudo Code
+1.	Load Game Constants
+2.	RunGame
+a.	If player == human
+i.	Take user input
+b.	Else player == computer
+i.	For each entry of list of empty squares run a simulation 1000 times
+1.	Fill all squares randomly
+2.	Check who won the game
+3.	Note win or loss for this simulation
+4.	Assign the entry with win/loss ratio
+ii.	Return the entry with best win/loss ratio
+c.	Check if game is won, if yes then break else run the above for the other player
