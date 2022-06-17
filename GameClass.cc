@@ -179,41 +179,57 @@ int GameClass::take_user_input(Square player)
         else
             cout << playerB_name << " (" << static_cast<char>(Square::PlayerB) << ") enter next move (e.g. x1): ";
     
-        char letter = '?';
-        int number = -1;
-        while (number == -1)
-        {
-            string input;
-            getline(cin, input);
+        string input;
+        getline(cin, input);
 
-            int letter_value = tolower(input.at(0));
-            if (letter_value >= 97 && letter_value <= 122)
+        bool invalid_input = false;
+        char letter_input = '?';
+        int number_input = -1;
+
+        //input has to be as 'a1' or 'a10'
+        if (input.size() < 2 || input.size() > 3)
+            invalid_input = true;
+
+        if (!invalid_input)
+        {
+            //a is 97, z is 122
+            //0 is 48, 9 is 57
+            //tolower returns 97 for a and A
+            if (tolower(input.at(0)) < 97 || tolower(input.at(0)) > 122)
+                invalid_input = true;
+            if (tolower(input.at(1)) < 48 || tolower(input.at(1)) > 57)
+                invalid_input = true;
+            if (input.size() == 3)
+                if (tolower(input.at(2)) < 48 || tolower(input.at(2)) > 57)
+                    invalid_input = true;
+
+            if (!invalid_input)
             {
-                letter = letter_value;
-                number = stoi(input.substr(1, input.size() - 1));
-            }
-            else if (letter_value >= 48 && letter_value <= 57)
-            {
-                letter = tolower(input.at(input.size() - 1));
-                number = stoi(input.substr(0, input.size() - 1));
-            }
-            else
-            {
-                cout << "Invalid input!\n";
+                int letter_value = tolower(input.at(0));
+                letter_input = letter_value;
+                number_input = stoi(input.substr(1, input.size() - 1));
             }
         }
-        row_index = letter - 97;
-        col_index = number - 1;
 
-        if (row_index >= 0 && col_index >= 0 && row_index < board_size && col_index < board_size)
+        if(!invalid_input)
         {
-            if (hex_board[row_index][col_index] == Square::Empty)
-                break;
+            row_index = letter_input - 97;
+            col_index = number_input - 1;
+
+            if (row_index >= 0 && col_index >= 0 && row_index < board_size && col_index < board_size)
+            {
+                if (hex_board[row_index][col_index] == Square::Empty)
+                    break;
+                else
+                    cout << "Square already taken." << endl;
+            }
             else
-                cout << "Square already taken." << endl;
+                cout << "Out of bounds input." << endl;
         }
         else
-            cout << "Out of bounds input." << endl;
+        {
+            cout << "Invalid input." << endl;
+        }
     }
 
     return row_index * board_size + col_index;
