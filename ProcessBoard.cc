@@ -172,7 +172,7 @@ bool ProcessBoard::game_won_check(Square player)
     //find a path between start and end city
     if (closed_set.contains_id(Node::graph_end_id))
     {
-        Node* graph_end_node_ptr = closed_set.member_with_id(Node::graph_end_id);
+        //Node* graph_end_node_ptr = closed_set.member_with_id(Node::graph_end_id);
         return true;
     }
     return false;

@@ -1,9 +1,7 @@
-#include <chrono>
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
-#include <thread>
 #include "GameClass.h"
 #include "ProcessBoard.h"
 
@@ -210,7 +208,7 @@ int GameClass::best_next_move(Square player)
     double best_win_loss_ratio = 0;
     int best_win_loss_ratio_node_id = -1;
 
-    cout << "Running " << num_of_simulations << " simulated trials" << flush;
+    cout << "Running " << num_of_simulations << " x " << empty_squares_list.size() << " simulated trials" << flush;
 
     for (auto empty_squares_list_iterator = empty_squares_list.cbegin(); empty_squares_list_iterator != empty_squares_list.cend(); empty_squares_list_iterator++)
     {
@@ -245,7 +243,6 @@ int GameClass::best_next_move(Square player)
     char row_char = 'a' + best_win_loss_ratio_node_id / board_size;
     int col_num = best_win_loss_ratio_node_id % board_size + 1;
     cout << '\n' << '\n' << (player == Square::PlayerA ? "Player A," : "Player B,") << "Computer picks " << row_char << col_num << flush;
-    this_thread::sleep_for(chrono::seconds(1));
     cout << '\n';
 
     return best_win_loss_ratio_node_id;
@@ -313,6 +310,5 @@ void GameClass::print_hex_board()
     for (int i = 1; i <= board_size; i++)
         printf("%3d  ", i);
 
-    cout << '\n' << '\n';
-    cout << endl;
+    cout << '\n' << '\n' << endl;
 }

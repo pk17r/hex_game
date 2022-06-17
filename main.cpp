@@ -8,16 +8,10 @@
 //
 
 #include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
 #include "GameClass.h"
 
 int main()
 {
-    //disable automatic cout flush to terminal, this helps in printing hex board quickly to terminal.
-    std::ios::sync_with_stdio(false);
-    setvbuf(stdout, nullptr, _IOFBF, BUFSIZ);
-    
     int board_size = 11;
     bool test_printout_run = false;
 
