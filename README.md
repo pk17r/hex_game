@@ -10,7 +10,11 @@ Program to Play Human vs Human or vs Computer
 
 ## Representation:
 
-A size 5 hex board has 5x5 squares. Squares have 3 types – PlayerA, PlayerB or Empty. Every Square acts as a node for path algorithms. Nodes have sequential ids from 0 to n x n - 1. For path algorithm purpose, an imaginary start and end node is created. Start and end nodes have the same id for PlayerA and PlayerB. Start node is given id -2 and end node -3. Nodes from one side are connected to start node and other side to end node as shown in representation below.
+A size 5 hex board has 5x5 squares.
+
+Squares have 3 types – PlayerA, PlayerB or Empty.
+
+Every Square acts as a node for path algorithms. Nodes have sequential ids from 0 to n x n - 1. For path algorithm purpose, an imaginary start and end node is created. Start and end nodes have the same id for PlayerA and PlayerB. Start node is given id -2 and end node -3. Nodes from one side are connected to start node and other side to end node as shown in representation below.
 
 
 ![Screenshot](Representation.png)
