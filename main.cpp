@@ -18,7 +18,7 @@ int main()
     std::ios::sync_with_stdio(false);
     setvbuf(stdout, nullptr, _IOFBF, BUFSIZ);
     
-    int board_size = 9;
+    int board_size = 11;
     bool test_printout_run = false;
 
     //initialize hex game

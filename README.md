@@ -162,3 +162,340 @@ Every Square acts as a node for path algorithms. Nodes have sequential ids from 
    - Check if game is won, if yes then break else run the above for the other player
 
 -------
+
+## Game Runtime Output
+
+
+
+                          Hex Game
+
+Player v/s Computer
+
+X goes first and takes vertical direction, O goes second and takes horizontal direction.
+
+Enter PlayerA Type, 0 for human or 1 computer:0
+
+PlayerA Name:Prashant
+PlayerA is Prashant
+
+Enter PlayerB Type, 0 for human or 1 computer:1
+PlayerB is Computer
+
+
+                          Hex Game
+
+                X  |  top-to-bottom  | Prashant
+                O  |  left-to-right  | Computer
+
+
+              1    2    3    4    5
+              --   --   --   --   --
+        a  \   .    .    .    .    .   \  a
+
+           b  \   .    .    .    .    .   \  b
+
+              c  \   .    .    .    .    .   \  c
+
+                 d  \   .    .    .    .    .   \  d
+
+                    e  \   .    .    .    .    .   \  e
+
+                             --   --   --   --   --
+                               1    2    3    4    5
+
+
+Prashant, win by making a connected path from Top-to-Bottom
+Prashant enter next move:a5
+
+Hex Board after 1 moves:
+
+
+                          Hex Game
+
+                X  |  top-to-bottom  | Prashant
+                O  |  left-to-right  | Computer
+
+
+              1    2    3    4    5
+              --   --   --   --   --
+        a  \   .    .    .    .    X   \  a
+
+           b  \   .    .    .    .    .   \  b
+
+              c  \   .    .    .    .    .   \  c
+
+                 d  \   .    .    .    .    .   \  d
+
+                    e  \   .    .    .    .    .   \  e
+
+                             --   --   --   --   --
+                               1    2    3    4    5
+
+
+Running 1000 simulated trials........................
+
+Player B,Computer picks c4
+
+Hex Board after 2 moves:
+
+
+                          Hex Game
+
+                X  |  top-to-bottom  | Prashant
+                O  |  left-to-right  | Computer
+
+
+              1    2    3    4    5
+              --   --   --   --   --
+        a  \   .    .    .    .    X   \  a
+
+           b  \   .    .    .    .    .   \  b
+
+              c  \   .    .    .    O    .   \  c
+
+                 d  \   .    .    .    .    .   \  d
+
+                    e  \   .    .    .    .    .   \  e
+
+                             --   --   --   --   --
+                               1    2    3    4    5
+
+
+Prashant, win by making a connected path from Top-to-Bottom
+Prashant enter next move:b4
+
+Hex Board after 3 moves:
+
+
+                          Hex Game
+
+                X  |  top-to-bottom  | Prashant
+                O  |  left-to-right  | Computer
+
+
+              1    2    3    4    5
+              --   --   --   --   --
+        a  \   .    .    .    .    X   \  a
+
+           b  \   .    .    .    X    .   \  b
+
+              c  \   .    .    .    O    .   \  c
+
+                 d  \   .    .    .    .    .   \  d
+
+                    e  \   .    .    .    .    .   \  e
+
+                             --   --   --   --   --
+                               1    2    3    4    5
+
+
+Running 1000 simulated trials......................
+
+Player B,Computer picks c3
+
+Hex Board after 4 moves:
+
+
+                          Hex Game
+
+                X  |  top-to-bottom  | Prashant
+                O  |  left-to-right  | Computer
+
+
+              1    2    3    4    5
+              --   --   --   --   --
+        a  \   .    .    .    .    X   \  a
+
+           b  \   .    .    .    X    .   \  b
+
+              c  \   .    .    O    O    .   \  c
+
+                 d  \   .    .    .    .    .   \  d
+
+                    e  \   .    .    .    .    .   \  e
+
+                             --   --   --   --   --
+                               1    2    3    4    5
+
+
+Prashant, win by making a connected path from Top-to-Bottom
+Prashant enter next move:c3
+Square already taken.
+Prashant, win by making a connected path from Top-to-Bottom
+Prashant enter next move:c2
+
+Hex Board after 5 moves:
+
+
+                          Hex Game
+
+                X  |  top-to-bottom  | Prashant
+                O  |  left-to-right  | Computer
+
+
+              1    2    3    4    5
+              --   --   --   --   --
+        a  \   .    .    .    .    X   \  a
+
+           b  \   .    .    .    X    .   \  b
+
+              c  \   .    X    O    O    .   \  c
+
+                 d  \   .    .    .    .    .   \  d
+
+                    e  \   .    .    .    .    .   \  e
+
+                             --   --   --   --   --
+                               1    2    3    4    5
+
+
+Running 1000 simulated trials....................
+
+Player B,Computer picks d2
+
+Hex Board after 6 moves:
+
+
+                          Hex Game
+
+                X  |  top-to-bottom  | Prashant
+                O  |  left-to-right  | Computer
+
+
+              1    2    3    4    5
+              --   --   --   --   --
+        a  \   .    .    .    .    X   \  a
+
+           b  \   .    .    .    X    .   \  b
+
+              c  \   .    X    O    O    .   \  c
+
+                 d  \   .    O    .    .    .   \  d
+
+                    e  \   .    .    .    .    .   \  e
+
+                             --   --   --   --   --
+                               1    2    3    4    5
+
+
+Prashant, win by making a connected path from Top-to-Bottom
+Prashant enter next move:b5
+
+Hex Board after 7 moves:
+
+
+                          Hex Game
+
+                X  |  top-to-bottom  | Prashant
+                O  |  left-to-right  | Computer
+
+
+              1    2    3    4    5
+              --   --   --   --   --
+        a  \   .    .    .    .    X   \  a
+
+           b  \   .    .    .    X    X   \  b
+
+              c  \   .    X    O    O    .   \  c
+
+                 d  \   .    O    .    .    .   \  d
+
+                    e  \   .    .    .    .    .   \  e
+
+                             --   --   --   --   --
+                               1    2    3    4    5
+
+
+Running 1000 simulated trials..................
+
+Player B,Computer picks c5
+
+Hex Board after 8 moves:
+
+
+                          Hex Game
+
+                X  |  top-to-bottom  | Prashant
+                O  |  left-to-right  | Computer
+
+
+              1    2    3    4    5
+              --   --   --   --   --
+        a  \   .    .    .    .    X   \  a
+
+           b  \   .    .    .    X    X   \  b
+
+              c  \   .    X    O    O    O   \  c
+
+                 d  \   .    O    .    .    .   \  d
+
+                    e  \   .    .    .    .    .   \  e
+
+                             --   --   --   --   --
+                               1    2    3    4    5
+
+
+Prashant, win by making a connected path from Top-to-Bottom
+Prashant enter next move:e5
+
+Hex Board after 9 moves:
+
+
+                          Hex Game
+
+                X  |  top-to-bottom  | Prashant
+                O  |  left-to-right  | Computer
+
+
+              1    2    3    4    5
+              --   --   --   --   --
+        a  \   .    .    .    .    X   \  a
+
+           b  \   .    .    .    X    X   \  b
+
+              c  \   .    X    O    O    O   \  c
+
+                 d  \   .    O    .    .    .   \  d
+
+                    e  \   .    .    .    .    X   \  e
+
+                             --   --   --   --   --
+                               1    2    3    4    5
+
+
+Running 1000 simulated trials................
+
+Player B,Computer picks d1
+
+Hex Board after 10 moves:
+
+
+                          Hex Game
+
+                X  |  top-to-bottom  | Prashant
+                O  |  left-to-right  | Computer
+
+
+              1    2    3    4    5
+              --   --   --   --   --
+        a  \   .    .    .    .    X   \  a
+
+           b  \   .    .    .    X    X   \  b
+
+              c  \   .    X    O    O    O   \  c
+
+                 d  \   O    O    .    .    .   \  d
+
+                    e  \   .    .    .    .    X   \  e
+
+                             --   --   --   --   --
+                               1    2    3    4    5
+
+
+
+Player B, Computer Won!!!
+
+Game won in 10 moves!
+
+C:\Programming\3.C++forCProgrammers\Hex_Game\x64\Debug\Hex_Game.exe (process 19188) exited with code 0.
+Press any key to close this window . . .
