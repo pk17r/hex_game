@@ -11,7 +11,7 @@ GameClass::GameClass(int board_size, bool test_printout_run)
 {
     cout << '\n' << '\n';
     cout << "\t\t\t  Hex Game\n\n";
-    cout << "Player v/s Computer\n\n";
+    cout << "Program to Play Human vs Human or vs Computer or Computer vs Computer\n\n";
     cout << "X goes first and takes vertical direction, O goes second and takes horizontal direction." << '\n' << endl;
     cout << "To play computer vs computer, make both players computer" << endl;
     cout << "To play human vs computer or computer vs human, select accordingly on cmd" << endl;

@@ -4,7 +4,7 @@ Author: Prashant Kumar
 
 Date: June 16th 2022
 
-Program to Play Human vs Human or vs Computer
+Program to Play Human vs Human or vs Computer or Computer vs Computer
 
 -------
 
@@ -169,7 +169,7 @@ Every Square acts as a node for path algorithms. Nodes have sequential ids from 
 
                           Hex Game
 
-Player v/s Computer
+Program to Play Human vs Human or vs Computer or Computer vs Computer
 
 X goes first and takes vertical direction, O goes second and takes horizontal direction.
 
