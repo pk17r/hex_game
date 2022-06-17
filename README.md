@@ -10,7 +10,6 @@ A size 5 hex board has 5x5 squares. Squares have 3 types – PlayerA, PlayerB or
 
 ![Screenshot](Representation.png)
 
-
 <h2>Program Structure</h2>
 1. Game Constants
    - Player A is X (top to bottom), Player B is O (left to right)
@@ -77,3 +76,4 @@ A size 5 hex board has 5x5 squares. Squares have 3 types – PlayerA, PlayerB or
        - Assign the entry with win/loss ratio
      - Return the entry with best win/loss ratio
    - Check if game is won, if yes then break else run the above for the other player
+
