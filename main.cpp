@@ -2,6 +2,11 @@
 // 
 // Read READ_ME file for details about this game.
 // 
+// To change board size to 5, update board_size = 5
+// To play computer vs computer, make both players computer
+// To play human vs computer or computer vs human, select accordingly on cmd
+// Play to win!
+// 
 // Author: Prashant Kumar
 // 
 // Date June 16th 2022

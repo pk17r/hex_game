@@ -12,40 +12,49 @@ GameClass::GameClass(int board_size, bool test_printout_run)
     cout << '\n' << '\n';
     cout << "\t\t\t  Hex Game\n\n";
     cout << "Player v/s Computer\n\n";
-    cout << "X goes first and takes vertical direction, O goes second and takes horizontal direction.\n\n";
-    
+    cout << "X goes first and takes vertical direction, O goes second and takes horizontal direction." << '\n' << endl;
+    cout << "To play computer vs computer, make both players computer" << endl;
+    cout << "To play human vs computer or computer vs human, select accordingly on cmd" << endl;
+    cout << "\nPlay to win!" << '\n' << endl;
+
     if (!test_printout_run)
     {
         string user_choice;
-        cout << "Enter PlayerA Type, 0 for human or 1 computer:";
+        cout << "Enter board size (default 11): ";
         getline(cin, user_choice);
-        if (user_choice == "0")
+        if (user_choice != "")
+        {
+            board_size = stoi(user_choice);
+        }
+        cout << "board size = " << board_size << '\n' << endl;
+
+        cout << "Enter Player A (" << static_cast<char>(Square::PlayerA) << ") name if human or press enter to make it computer: ";
+        getline(cin, user_choice);
+        if (user_choice != "")
         {
             playerA_type = PlayerType::Human;
-            cout << "\nPlayerA Name:";
-            getline(cin, playerA_name);
+            playerA_name = user_choice;
         }
         else
         {
             playerA_type = PlayerType::Computer;
             playerA_name = "Computer";
         }
-        cout << "PlayerA is " << playerA_name << '\n';
+        cout << "Player A (" << static_cast<char>(Square::PlayerA) << ") is " << playerA_name << '\n';
 
-        cout << "\nEnter PlayerB Type, 0 for human or 1 computer:";
+        cout << "\nEnter Player B (" << static_cast<char>(Square::PlayerB) << ") name if human or press enter to make it computer: ";
         getline(cin, user_choice);
-        if (user_choice == "0")
+        if (user_choice != "")
         {
             playerB_type = PlayerType::Human;
-            cout << "\nPlayerB Name:";
-            getline(cin, playerB_name);
+            playerB_name = user_choice;
         }
         else
         {
             playerB_type = PlayerType::Computer;
             playerB_name = "Computer";
         }
-        cout << "PlayerB is " << playerB_name << '\n';
+        cout << "Player B (" << static_cast<char>(Square::PlayerB) << ") is " << playerB_name << '\n';
     }
     else
     {
@@ -97,12 +106,23 @@ void GameClass::RunGame()
     //first turn is of PlayerA
     Square current_player = Square::PlayerA;
     PlayerType current_player_type = playerA_type;
+    int chosen_node_id = -1;
 
     while (!player_won)
     {
         moves++;
+        
+        if (chosen_node_id != -1)
+        {
+            char row_char = 'a' + chosen_node_id / board_size;
+            int col_num = chosen_node_id % board_size + 1;
+            if(current_player == Square::PlayerA)
+                cout << playerB_name << " (" << static_cast<char>(Square::PlayerB) << ") entered last move as : " << row_char << col_num << endl;
+            else
+                cout << playerA_name << " (" << static_cast<char>(Square::PlayerA) << ") entered last move as: " << row_char << col_num << endl;
+        }
+
         //take player input
-        int chosen_node_id;
         if (current_player_type == PlayerType::Human)
             chosen_node_id = take_user_input(current_player);
         else
@@ -135,7 +155,11 @@ void GameClass::RunGame()
         print_hex_board();
     }
     
-    cout << '\n' << (current_player == Square::PlayerA ? "Player A, " : "Player B, ") << (current_player == Square::PlayerA ? playerA_name : playerB_name) << " Won!!!" << '\n' << endl;
+    cout << '\n';
+    if (current_player == Square::PlayerA)
+        cout << playerA_name << " (" << static_cast<char>(Square::PlayerA) << ") Won!!!" << '\n' << endl;
+    else
+        cout << playerB_name << " (" << static_cast<char>(Square::PlayerB) << ") Won!!!" << '\n' << endl;
     cout << "Game won in " << moves << " moves!" << endl;
 }
 
@@ -143,11 +167,18 @@ void GameClass::RunGame()
 int GameClass::take_user_input(Square player)
 {
     int row_index = -1, col_index = -1;
+    if (player == Square::PlayerA)
+        cout << playerA_name << " (" << static_cast<char>(Square::PlayerA) << ") win by making a connected path from Top-to-Bottom" << '\n';
+    else
+        cout << playerB_name << " (" << static_cast<char>(Square::PlayerB) << ") win by making a connected path from Left-to-Right" << '\n';
+    
     while (true)
     {
-        cout << (player == Square::PlayerA ? playerA_name : playerB_name) << ", win by making a connected path from " << (player == Square::PlayerA ? "Top-to-Bottom" : "Left-to-Right") << '\n';
-        cout << (player == Square::PlayerA ? playerA_name : playerB_name) << " enter next move:";
-
+        if (player == Square::PlayerA)
+            cout << playerA_name << " (" << static_cast<char>(Square::PlayerA) << ") enter next move (e.g. x1): ";
+        else
+            cout << playerB_name << " (" << static_cast<char>(Square::PlayerB) << ") enter next move (e.g. x1): ";
+    
         char letter = '?';
         int number = -1;
         while (number == -1)
@@ -208,14 +239,19 @@ int GameClass::best_next_move(Square player)
     double best_win_loss_ratio = 0;
     int best_win_loss_ratio_node_id = -1;
 
-    cout << "Running " << num_of_simulations << " x " << empty_squares_list.size() << " simulated trials" << flush;
+    cout << "Running " << num_of_simulations << " x " << empty_squares_list.size() << " simulated trials" << endl;
 
+    int counter = 1;
     for (auto empty_squares_list_iterator = empty_squares_list.cbegin(); empty_squares_list_iterator != empty_squares_list.cend(); empty_squares_list_iterator++)
     {
         int node_id_as_next_move = *empty_squares_list_iterator;
         int wins = 0, losses = 0;
 
         ProcessBoard processBoard(hex_board, board_size);
+
+        //cout << "." << flush;
+        printf("\rSimulation trial %3d of %3d", counter,static_cast<int>(empty_squares_list.size()));
+        fflush(stdout);
 
         for (int simulation_number = 0; simulation_number < num_of_simulations; simulation_number++)
         {
@@ -231,7 +267,7 @@ int GameClass::best_next_move(Square player)
         //char row_char = 'a' + node_id_as_next_move / board_size;
         //int col_num = node_id_as_next_move % board_size + 1;
         //cout << "win_loss_ratio for square " << row_char << col_num << " is " << win_loss_ratio << endl;
-        cout << "." << flush;
+        counter++;
 
         if (win_loss_ratio > best_win_loss_ratio)
         {
@@ -242,8 +278,11 @@ int GameClass::best_next_move(Square player)
 
     char row_char = 'a' + best_win_loss_ratio_node_id / board_size;
     int col_num = best_win_loss_ratio_node_id % board_size + 1;
-    cout << '\n' << '\n' << (player == Square::PlayerA ? "Player A," : "Player B,") << "Computer picks " << row_char << col_num << flush;
-    cout << '\n';
+    cout << '\n' << '\n';
+    if (player == Square::PlayerA)
+        cout << playerA_name << " (" << static_cast<char>(Square::PlayerA) << ") picks " << row_char << col_num << endl;
+    else
+        cout << playerB_name << " (" << static_cast<char>(Square::PlayerB) << ") picks " << row_char << col_num << endl;
 
     return best_win_loss_ratio_node_id;
 }
