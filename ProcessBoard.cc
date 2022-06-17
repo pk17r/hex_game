@@ -1,3 +1,5 @@
+#include <cstdlib>
+#include <ctime>
 #include "ProcessBoard.h"
 #include "My_Priority_Queue.h"
 
@@ -20,6 +22,9 @@ ProcessBoard::ProcessBoard(Square** hex_board_data, int board_size_data)
             hex_board[i][j] = hex_board_data[i][j];
         }
     }
+
+    //setting seed for random number generator
+    srand((unsigned)time(0));
 }
 
 list<Node> ProcessBoard::get_connected_nodes(int node_id, Square player)
@@ -31,32 +36,37 @@ list<Node> ProcessBoard::get_connected_nodes(int node_id, Square player)
     if (node_id >= 0)
     {
         //connected nodes
-        if (row_index > 0 && hex_board[row_index - 1][col_index] == hex_board[row_index][col_index])
+        if (row_index > 0 && hex_board[row_index - 1][col_index] == player)
             connected_nodes_list.push_back(Node(row_index - 1, col_index, board_size));
-        if (col_index > 0 && hex_board[row_index][col_index - 1] == hex_board[row_index][col_index])
+
+        if (col_index > 0 && hex_board[row_index][col_index - 1] == player)
             connected_nodes_list.push_back(Node(row_index, col_index - 1, board_size));
-        if (row_index < board_size - 1 && hex_board[row_index + 1][col_index] == hex_board[row_index][col_index])
-            connected_nodes_list.push_back(Node(row_index + 1, col_index, board_size));
-        if (col_index < board_size - 1 && hex_board[row_index][col_index + 1] == hex_board[row_index][col_index])
-            connected_nodes_list.push_back(Node(row_index, col_index + 1, board_size));
-        if (row_index > 0 && col_index < board_size - 1 && hex_board[row_index - 1][col_index + 1] == hex_board[row_index][col_index])
-            connected_nodes_list.push_back(Node(row_index - 1, col_index + 1, board_size));
-        if (row_index < board_size - 1 && col_index > 0 && hex_board[row_index + 1][col_index - 1] == hex_board[row_index][col_index])
+
+        if (row_index < board_size - 1 && col_index > 0 && hex_board[row_index + 1][col_index - 1] == player)
             connected_nodes_list.push_back(Node(row_index + 1, col_index - 1, board_size));
+
+        if (row_index < board_size - 1 && hex_board[row_index + 1][col_index] == player)
+            connected_nodes_list.push_back(Node(row_index + 1, col_index, board_size));
+
+        if (col_index < board_size - 1 && hex_board[row_index][col_index + 1] == player)
+            connected_nodes_list.push_back(Node(row_index, col_index + 1, board_size));
+
+        if (row_index > 0 && col_index < board_size - 1 && hex_board[row_index - 1][col_index + 1] == player)
+            connected_nodes_list.push_back(Node(row_index - 1, col_index + 1, board_size));
 
         //get connection to imaginary start and end nodes
         if (player == Square::PlayerA)
         {
             if (row_index == 0)
                 connected_nodes_list.push_back(Node(Node::graph_start_id));
-            if (row_index == board_size - 1)
+            else if (row_index == board_size - 1)
                 connected_nodes_list.push_back(Node(Node::graph_end_id));
         }
         else if (player == Square::PlayerB)
         {
             if (col_index == 0)
                 connected_nodes_list.push_back(Node(Node::graph_start_id));
-            if (col_index == board_size - 1)
+            else if (col_index == board_size - 1)
                 connected_nodes_list.push_back(Node(Node::graph_end_id));
         }
     }
@@ -166,4 +176,17 @@ bool ProcessBoard::game_won_check(Square player)
         return true;
     }
     return false;
+}
+
+// return randomly filled up board
+void ProcessBoard::fill_board_randomly(Square player, int node_id_as_next_move, std::list<int> empty_squares_list)
+{
+    hex_board[node_id_as_next_move / board_size][node_id_as_next_move % board_size] = player;
+    for (auto empty_node_id_iterator = empty_squares_list.cbegin(); empty_node_id_iterator != empty_squares_list.cend(); empty_node_id_iterator++)
+    {
+        if (*empty_node_id_iterator == node_id_as_next_move)
+            continue;
+
+        hex_board[*empty_node_id_iterator / board_size][*empty_node_id_iterator % board_size] = (rand() % 2 == 0 ? Square::PlayerA : Square::PlayerB);
+    }
 }

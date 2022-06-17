@@ -1,6 +1,7 @@
 #ifndef GAME_CLASS_H_
 #define GAME_CLASS_H_
 
+#include <list>
 #include <string>
 #include <vector>
 #include "Square.h"
@@ -21,13 +22,13 @@ public:
 
     Square** hex_board = nullptr;    // pointer to pointer of Square
 
-    std::vector<int> empty_squares_vector;    // all squares have an id, we maintain an empty ids list to pick from
+    std::list<int> empty_squares_list;    // all squares have an id, we maintain an empty ids list to pick from
 
-    GameClass(int board_size);    // constructor to initialize game and take inputs
+    const int num_of_simulations = 1000;
+
+    GameClass(int board_size, bool test_printout_run);    // constructor to initialize game and take inputs
 
     void RunGame();    // run game here
-
-    Square** fill_board_randomly(Square turn_of_player);    // return randomly filled up board
 
     int take_user_input(Square player);    // return node_id
 

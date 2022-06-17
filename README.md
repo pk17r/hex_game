@@ -80,7 +80,21 @@ Every Square acts as a node for path algorithms. Nodes have sequential ids from 
 
    - static const int graph_end_id = -3;    //an imaginary node id to end player's hex board graph to
 
-3. Game_Class
+3. enum class PlayerType
+
+   - Human = 0,
+
+   - Computer = 1,
+
+4. enum class Square : char
+
+   - PlayerA = 'X',
+
+   - PlayerB = 'O',
+
+   - Empty = '.',
+
+5. GameClass
 
    - playerA_type 0 – human /1 - computer
 
@@ -94,33 +108,29 @@ Every Square acts as a node for path algorithms. Nodes have sequential ids from 
 
    - hex_board – pointer to pointer of Square
 
-   - empty_squares_vector – all squares have an id, we maintain an empty ids list to pick from
+   - empty_squares_list – all squares have an id, we maintain an empty ids list to pick from
 
    - Functions:
+   
+     - GameClass(), constructor to initialize class object
 
-     - game_won (using Dijkstra’s for now, A star later), return -1 for none, 0 for PlayerA, 1 for PlayerB
+     - take_user_input(Square player), return node_id
+	 
+	 - RunGame()
 
-     - fill_board_randomly(bool turn_of_player), return randomly filled up board
+     - best_next_move(Square player), return node_id
 
-     - take_user_input(), return node_id
+     - print_hex_board()
 
-   - best_next_move(bool player), return node_id
+6. ProcessBoard Class
 
-   - print_hex_board()
+   - Functions:
+   
+     - ProcessBoard(Square** hex_board_data, int board_size_data), constructor to create a copy of hex board and run simulation trials on it
 
-4. enum class PlayerType
+     - bool game_won_check(Square player), (using Dijkstra’s for now, A star later), return 0 for game not won, 1 for game won
 
-   - Human = 0,
-
-   - Computer = 1,
-
-5. enum class Square : char
-
-   - PlayerA = 'X',
-
-   - PlayerB = 'O',
-
-   - Empty = '.',
+     - void fill_board_randomly(Square player, int node_id_as_next_move, std::list<int> empty_squares_list)
 
 
 -------
