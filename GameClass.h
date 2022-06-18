@@ -22,11 +22,13 @@ public:
 
     Square** hex_board = nullptr;    // pointer to pointer of Square
 
-    std::list<int> empty_squares_list;    // all squares have an id, we maintain an empty ids list to pick from
+    std::vector<int> empty_squares_vector;    // all squares have an id, we maintain an empty ids vector to pick from
 
     const int num_of_simulations = 1000;
 
     GameClass(int board_size, bool test_printout_run);    // constructor to initialize game and take inputs
+
+    ~GameClass();
 
     void RunGame();    // run game here
 

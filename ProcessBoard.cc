@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <ctime>
+#include "Node.h"
 #include "ProcessBoard.h"
-#include "My_Priority_Queue.h"
 
 using namespace std;
 
@@ -23,51 +23,58 @@ ProcessBoard::ProcessBoard(Square** hex_board_data, int board_size_data)
         }
     }
 
+    node_in_closed_set = new bool[board_size * board_size];
+
+    open_set.capacity(board_size * board_size);
+    closed_set.capacity(board_size * board_size);
+    current_neighbor_nodes.capacity(max(board_size, 6));
+
     //setting seed for random number generator
-    srand((unsigned)time(0));
+    srand(static_cast<unsigned int>(time(0)));
 }
 
-list<Node> ProcessBoard::get_connected_nodes(int node_id, Square player)
+void ProcessBoard::get_connected_nodes(int node_id, Square player)
 {
     int row_index = node_id / board_size;
     int col_index = node_id % board_size;
 
-    list<Node> connected_nodes_list;
+    //list<Node> connected_nodes_list;
+    current_neighbor_nodes.clear();
     if (node_id >= 0)
     {
         //connected nodes
         if (row_index > 0 && hex_board[row_index - 1][col_index] == player)
-            connected_nodes_list.push_back(Node(row_index - 1, col_index, board_size));
+            current_neighbor_nodes.push(Node(row_index - 1, col_index, board_size));
 
         if (col_index > 0 && hex_board[row_index][col_index - 1] == player)
-            connected_nodes_list.push_back(Node(row_index, col_index - 1, board_size));
+            current_neighbor_nodes.push(Node(row_index, col_index - 1, board_size));
 
         if (row_index < board_size - 1 && col_index > 0 && hex_board[row_index + 1][col_index - 1] == player)
-            connected_nodes_list.push_back(Node(row_index + 1, col_index - 1, board_size));
+            current_neighbor_nodes.push(Node(row_index + 1, col_index - 1, board_size));
 
         if (row_index < board_size - 1 && hex_board[row_index + 1][col_index] == player)
-            connected_nodes_list.push_back(Node(row_index + 1, col_index, board_size));
+            current_neighbor_nodes.push(Node(row_index + 1, col_index, board_size));
 
         if (col_index < board_size - 1 && hex_board[row_index][col_index + 1] == player)
-            connected_nodes_list.push_back(Node(row_index, col_index + 1, board_size));
+            current_neighbor_nodes.push(Node(row_index, col_index + 1, board_size));
 
         if (row_index > 0 && col_index < board_size - 1 && hex_board[row_index - 1][col_index + 1] == player)
-            connected_nodes_list.push_back(Node(row_index - 1, col_index + 1, board_size));
+            current_neighbor_nodes.push(Node(row_index - 1, col_index + 1, board_size));
 
         //get connection to imaginary start and end nodes
         if (player == Square::PlayerA)
         {
             if (row_index == 0)
-                connected_nodes_list.push_back(Node(Node::graph_start_id));
+                current_neighbor_nodes.push(Node(Node::graph_start_id));
             else if (row_index == board_size - 1)
-                connected_nodes_list.push_back(Node(Node::graph_end_id));
+                current_neighbor_nodes.push(Node(Node::graph_end_id));
         }
         else if (player == Square::PlayerB)
         {
             if (col_index == 0)
-                connected_nodes_list.push_back(Node(Node::graph_start_id));
+                current_neighbor_nodes.push(Node(Node::graph_start_id));
             else if (col_index == board_size - 1)
-                connected_nodes_list.push_back(Node(Node::graph_end_id));
+                current_neighbor_nodes.push(Node(Node::graph_end_id));
         }
     }
     else
@@ -79,14 +86,14 @@ list<Node> ProcessBoard::get_connected_nodes(int node_id, Square player)
                     if (hex_board[0][j] == Square::PlayerA)
                     {
                         Node connected_node = Node(0, j, board_size);
-                        connected_nodes_list.push_back(connected_node);
+                        current_neighbor_nodes.push(connected_node);
                     }
             if (node_id == Node::graph_end_id)
                 for (int j = 0; j < board_size; j++)
                     if (hex_board[board_size - 1][j] == Square::PlayerA)
                     {
                         Node connected_node = Node(board_size - 1, j, board_size);
-                        connected_nodes_list.push_back(connected_node);
+                        current_neighbor_nodes.push(connected_node);
                     }
         }
         else if (player == Square::PlayerB)
@@ -96,39 +103,49 @@ list<Node> ProcessBoard::get_connected_nodes(int node_id, Square player)
                     if (hex_board[i][0] == Square::PlayerB)
                     {
                         Node connected_node = Node(i, 0, board_size);
-                        connected_nodes_list.push_back(connected_node);
+                        current_neighbor_nodes.push(connected_node);
                     }
             if (node_id == Node::graph_end_id)
                 for (int i = 0; i < board_size; i++)
                     if (hex_board[i][board_size - 1] == Square::PlayerB)
                     {
                         Node connected_node = Node(i, board_size - 1, board_size);
-                        connected_nodes_list.push_back(connected_node);
+                        current_neighbor_nodes.push(connected_node);
                     }
         }
     }
-    return connected_nodes_list;
+    //return current_neighbor_nodes;
 }
 
 bool ProcessBoard::game_won_check(Square player)
 {
     //DijkstrasAlgorithmImplementation
 
+    //openset and closed set defined in ProcessBoard.h class
     //define open set. Defining my own priority queue list to learn how to use it
-    MyPriorityQueue open_set;
+    //MyPriorityQueue open_set;
 
     //define closed set
-    MyPriorityQueue closed_set;
+    //MyPriorityQueue closed_set;
+    for (int i = 0; i < board_size * board_size; i++)
+    {
+        node_in_closed_set[i] = false;
+    }
+    open_set.clear();
+    closed_set.clear();
 
     //Step 1: add imaginary start node to closed set
     closed_set.push(Node(Node::graph_start_id));
 
     //Step 2: add neighbors of start node to open set
-    list<Node> current_neighbors = get_connected_nodes(Node::graph_start_id, player);
-    for (Node& node : current_neighbors)
+    //list<Node> current_neighbors = get_connected_nodes(Node::graph_start_id, player);
+    get_connected_nodes(Node::graph_start_id, player);
+
+
+    for (int i = 0; i < current_neighbor_nodes.size(); i++)
     {
-        node.nearest_node_id = Node::graph_start_id;
-        open_set.push(node);
+        current_neighbor_nodes.my_vec_[i].nearest_node_id = Node::graph_start_id;
+        open_set.push(current_neighbor_nodes.my_vec_[i]);
     }
 
     //loop over open set until it is empty
@@ -138,13 +155,23 @@ bool ProcessBoard::game_won_check(Square player)
         Node current_node = open_set.get_and_pop_top();
 
         closed_set.push(current_node);
+        if (current_node.id >= 0)
+        {
+            node_in_closed_set[current_node.id] = true;
+        }
 
         //Step 4: for each neighbor city of current city which is not in closed set
-        current_neighbors = get_connected_nodes(current_node.id, player);
+        //current_neighbors = get_connected_nodes(current_node.id, player);
+        get_connected_nodes(current_node.id, player);
 
-        for (Node neighbor_node : current_neighbors)
+        for (int i = 0; i < current_neighbor_nodes.size(); i++)
         {
-            if (!closed_set.contains_id(neighbor_node.id))
+            Node neighbor_node = current_neighbor_nodes.my_vec_[i];
+
+            if (neighbor_node.id == Node::graph_end_id) //found connection to end node
+                return true;
+
+            if (!node_in_closed_set[neighbor_node.id])
             {
                 //Step 4a: if neighbor node is in open set and its distance to start node through current node is lower than its current distance to start node, then update its distance to start node and nearest neighbor id in open set
                 if (open_set.contains_id(neighbor_node.id))
@@ -154,7 +181,7 @@ bool ProcessBoard::game_won_check(Square player)
                     {
                         open_set_node_ptr->distance = current_node.distance + 1;
                         open_set_node_ptr->nearest_node_id = current_node.id;
-                        open_set.sort();
+                        //open_set.sort();
                     }
                 }
                 else   //Step 4b: if did not find neighbor node in open set then add it to open set with nearest neighbor id as current node id
@@ -166,27 +193,36 @@ bool ProcessBoard::game_won_check(Square player)
                 //open_set.print();
             }
         }
+        open_set.sort();
     }
-    //dijkstras algoritm completed
-
-    //find a path between start and end city
-    if (closed_set.contains_id(Node::graph_end_id))
-    {
-        //Node* graph_end_node_ptr = closed_set.member_with_id(Node::graph_end_id);
-        return true;
-    }
+    //dijkstras algoritm completed without finding a path to end node
+    open_set.clear();
+    closed_set.clear();
     return false;
 }
 
 // return randomly filled up board
-void ProcessBoard::fill_board_randomly(Square player, int node_id_as_next_move, std::list<int> empty_squares_list)
+void ProcessBoard::fill_board_randomly(Square player, int node_id_as_next_move, std::vector<int> &empty_squares_vector)
 {
-    hex_board[node_id_as_next_move / board_size][node_id_as_next_move % board_size] = player;
-    for (auto empty_node_id_iterator = empty_squares_list.cbegin(); empty_node_id_iterator != empty_squares_list.cend(); empty_node_id_iterator++)
+    int row, col;
+    for (int i = 0; i < empty_squares_vector.size(); i++)
     {
-        if (*empty_node_id_iterator == node_id_as_next_move)
-            continue;
-
-        hex_board[*empty_node_id_iterator / board_size][*empty_node_id_iterator % board_size] = (rand() % 2 == 0 ? Square::PlayerA : Square::PlayerB);
+        row = empty_squares_vector[i] / board_size;
+        col = empty_squares_vector[i] % board_size;
+        if (empty_squares_vector[i] != node_id_as_next_move)
+            hex_board[row][col] = (rand() % 2 == 0 ? Square::PlayerA : Square::PlayerB);
+        else
+            hex_board[row][col] = player;
     }
+}
+
+ProcessBoard::~ProcessBoard()
+{
+    for (int i = 0; i < board_size; i++)
+    {
+        delete[] hex_board[i];
+    }
+    delete[] hex_board;
+
+    delete node_in_closed_set;
 }

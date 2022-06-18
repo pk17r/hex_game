@@ -1,3 +1,4 @@
+#include <chrono>
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
@@ -89,9 +90,10 @@ GameClass::GameClass(int board_size, bool test_printout_run)
     }
 
     //update empty_squares_list with all nodes
+    empty_squares_vector = vector<int>(board_size * board_size, 0);
     for (int i = 0; i < board_size * board_size; i++)
     {
-        empty_squares_list.push_back(i);
+        empty_squares_vector[i] = i;
     }
 }
 
@@ -130,7 +132,15 @@ void GameClass::RunGame()
         int row_index = chosen_node_id / board_size;
         int col_index = chosen_node_id % board_size;
         hex_board[row_index][col_index] = current_player;
-        empty_squares_list.remove(chosen_node_id);
+        //empty_squares_vector.remove(empty_squares_vector.begin(), empty_squares_vector.end(), chosen_node_id);
+        for (auto iterator = empty_squares_vector.begin(); iterator != empty_squares_vector.end(); iterator++)
+        {
+            if (*iterator == chosen_node_id)
+            {
+                empty_squares_vector.erase(iterator);
+                break;
+            }
+        }
 
         //check game won by current player
         ProcessBoard processBoard(hex_board, board_size);
@@ -255,30 +265,46 @@ int GameClass::best_next_move(Square player)
     double best_win_loss_ratio = 0;
     int best_win_loss_ratio_node_id = -1;
 
-    cout << "Running " << num_of_simulations << " x " << empty_squares_list.size() << " simulated trials" << endl;
+    cout << "Running " << num_of_simulations << " x " << empty_squares_vector.size() << " simulated trials" << endl;
+    auto start = chrono::high_resolution_clock::now();
+    std::chrono::steady_clock::time_point t0, t1, t2;
+    std::chrono::microseconds duration_fillUpBoardRandomly =  static_cast<std::chrono::microseconds>(0), duration_dijkstra = static_cast<std::chrono::microseconds>(0);
 
     int counter = 1;
-    for (auto empty_squares_list_iterator = empty_squares_list.cbegin(); empty_squares_list_iterator != empty_squares_list.cend(); empty_squares_list_iterator++)
+
+    //initialize process board class object with copied hex board
+    ProcessBoard processBoard(hex_board, board_size);
+
+    for (int i = 0; i < empty_squares_vector.size(); i++)
     {
-        int node_id_as_next_move = *empty_squares_list_iterator;
+        int node_id_as_next_move = empty_squares_vector[i];
         int wins = 0, losses = 0;
 
-        ProcessBoard processBoard(hex_board, board_size);
-
         //cout << "." << flush;
-        printf("\rSimulation trial %3d of %3d", counter,static_cast<int>(empty_squares_list.size()));
+        printf("\rSimulation trial %3d of %3d", counter,static_cast<int>(empty_squares_vector.size()));
         fflush(stdout);
 
         for (int simulation_number = 0; simulation_number < num_of_simulations; simulation_number++)
         {
-            processBoard.fill_board_randomly(player, node_id_as_next_move, empty_squares_list);
+            t0 = chrono::high_resolution_clock::now();
+
+            processBoard.fill_board_randomly(player, node_id_as_next_move, empty_squares_vector);
+
+            t1 = chrono::high_resolution_clock::now();
+
             bool playerWon = processBoard.game_won_check(player);
+
+            t2 = chrono::high_resolution_clock::now();
+
             if (playerWon)
                 wins++;
             else
                 losses++;
+
+            duration_fillUpBoardRandomly += chrono::duration_cast<chrono::microseconds>(t1 - t0);
+            duration_dijkstra += chrono::duration_cast<chrono::microseconds>(t2 - t1);
         }
-        
+
         double win_loss_ratio = 1.0 * wins / losses;
         //char row_char = 'a' + node_id_as_next_move / board_size;
         //int col_num = node_id_as_next_move % board_size + 1;
@@ -299,6 +325,13 @@ int GameClass::best_next_move(Square player)
         cout << playerA_name << " (" << static_cast<char>(Square::PlayerA) << ") picks " << row_char << col_num << endl;
     else
         cout << playerB_name << " (" << static_cast<char>(Square::PlayerB) << ") picks " << row_char << col_num << endl;
+
+    auto stop = chrono::high_resolution_clock::now();
+    auto duration_total = chrono::duration_cast<chrono::milliseconds>(stop - start);
+    cout << "Time taken: " << duration_total.count() << " ms" << endl;
+    cout << "Time taken duration_fillUpBoardRandomly : " << 1.0 * duration_fillUpBoardRandomly.count() / (duration_total.count() * 1000) * 100 << "% " << duration_fillUpBoardRandomly.count() << " us" << endl;
+    cout << "Time taken duration_dijkstra            : " << 1.0 * duration_dijkstra.count() / (duration_total.count() * 1000) * 100 << "% " << duration_dijkstra.count() << " us" << endl;
+    cout << "Time taken total - algorithm            : " << 1.0 * (duration_total.count() * 1000 - duration_fillUpBoardRandomly.count() - duration_dijkstra.count()) / (duration_total.count() * 1000) * 100 << "% " << duration_total.count()*1000 - duration_fillUpBoardRandomly.count() - duration_dijkstra.count() << " us" << endl;
 
     return best_win_loss_ratio_node_id;
 }
@@ -366,4 +399,13 @@ void GameClass::print_hex_board()
         printf("%3d  ", i);
 
     cout << '\n' << '\n' << endl;
+}
+
+GameClass::~GameClass()
+{
+    for (int i = 0; i < board_size; i++)
+    {
+        delete hex_board[i];
+    }
+    delete hex_board;
 }

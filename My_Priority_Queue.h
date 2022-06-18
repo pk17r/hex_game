@@ -1,18 +1,19 @@
 #ifndef MY_PRIORITY_QUEUE_H_
 #define	MY_PRIORITY_QUEUE_H_
 
-#include <list>
+#include <vector>
 #include "Node.h"
 
 class MyPriorityQueue
 {
 public:
 	MyPriorityQueue();
+
 	~MyPriorityQueue();
 
-	void push(Node node);
+	void capacity(int capacity);
 
-	Node* top();
+	void push(Node node);
 
 	Node get_and_pop_top();
 
@@ -22,12 +23,13 @@ public:
 
 	void sort();
 
+	void clear();
+
 	int size();
 
 	void print();		//made for debugging usage
 
-private:
-	std::list<Node> my_list_;
+	std::vector<Node> my_vec_;
 };
 
 #endif // !MY_PRIORITY_QUEUE_H_

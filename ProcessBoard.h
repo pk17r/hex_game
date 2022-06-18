@@ -1,10 +1,9 @@
 #ifndef PROCESS_BOARD_H_
 #define PROCESS_BOARD_H_
 
-#include <list>
 #include <vector>
-#include "Node.h"
 #include "GameClass.h"
+#include "My_Priority_Queue.h"
 
 class ProcessBoard
 {
@@ -15,11 +14,23 @@ public:
 
     ProcessBoard(Square** hex_board_data, int board_size_data);
 
-    std::list<Node> get_connected_nodes(int node_id, Square player);
+    ~ProcessBoard();
+
+    void get_connected_nodes(int node_id, Square player);
+
+    //define open set. Defining my own priority queue list to learn how to use it
+    MyPriorityQueue open_set;
+
+    //define closed set
+    MyPriorityQueue closed_set;
+
+    MyPriorityQueue current_neighbor_nodes;
 
     bool game_won_check(Square player);    // (using Dijkstra’s for now, A star later), return -1 for none, 0 for PlayerA, 1 for PlayerB
 
-    void fill_board_randomly(Square player, int node_id_as_next_move, std::list<int> empty_squares_list);    // return randomly filled up board
+    bool* node_in_closed_set = nullptr;
+
+    void fill_board_randomly(Square player, int node_id_as_next_move, std::vector<int> &empty_squares_vector);    // return randomly filled up board
 
 };
 
