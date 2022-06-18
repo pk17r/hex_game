@@ -267,15 +267,15 @@ int GameClass::best_next_move(Square player)
 
     cout << "Running " << num_of_simulations << " x " << empty_squares_vector.size() << " simulated trials" << endl;
     auto start = chrono::high_resolution_clock::now();
-    std::chrono::steady_clock::time_point t0, t1, t2;
-    std::chrono::microseconds duration_fillUpBoardRandomly =  static_cast<std::chrono::microseconds>(0), duration_dijkstra = static_cast<std::chrono::microseconds>(0);
+    static std::chrono::time_point<std::chrono::high_resolution_clock> t0, t1, t2;
+    std::chrono::microseconds duration_fillUpBoardRandomly =  static_cast<std::chrono::microseconds>(0), duration_pathAlgo = static_cast<std::chrono::microseconds>(0);
 
     int counter = 1;
 
     //initialize process board class object with copied hex board
     ProcessBoard processBoard(hex_board, board_size);
 
-    for (int i = 0; i < empty_squares_vector.size(); i++)
+    for (unsigned int i = 0; i < empty_squares_vector.size(); i++)
     {
         int node_id_as_next_move = empty_squares_vector[i];
         int wins = 0, losses = 0;
@@ -302,7 +302,7 @@ int GameClass::best_next_move(Square player)
                 losses++;
 
             duration_fillUpBoardRandomly += chrono::duration_cast<chrono::microseconds>(t1 - t0);
-            duration_dijkstra += chrono::duration_cast<chrono::microseconds>(t2 - t1);
+            duration_pathAlgo += chrono::duration_cast<chrono::microseconds>(t2 - t1);
         }
 
         double win_loss_ratio = 1.0 * wins / losses;
@@ -328,10 +328,13 @@ int GameClass::best_next_move(Square player)
 
     auto stop = chrono::high_resolution_clock::now();
     auto duration_total = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    cout << "Time taken: " << duration_total.count() << " ms" << endl;
-    cout << "Time taken duration_fillUpBoardRandomly : " << 1.0 * duration_fillUpBoardRandomly.count() / (duration_total.count() * 1000) * 100 << "% " << duration_fillUpBoardRandomly.count() << " us" << endl;
-    cout << "Time taken duration_dijkstra            : " << 1.0 * duration_dijkstra.count() / (duration_total.count() * 1000) * 100 << "% " << duration_dijkstra.count() << " us" << endl;
-    cout << "Time taken total - algorithm            : " << 1.0 * (duration_total.count() * 1000 - duration_fillUpBoardRandomly.count() - duration_dijkstra.count()) / (duration_total.count() * 1000) * 100 << "% " << duration_total.count()*1000 - duration_fillUpBoardRandomly.count() - duration_dijkstra.count() << " us" << endl;
+    unsigned int time_total = static_cast<unsigned int>(duration_total.count());
+    unsigned int time_fillUpBoardRandomly = static_cast<unsigned int>(duration_fillUpBoardRandomly.count() / 1000);
+    unsigned int time_pathAlgo = static_cast<unsigned int>(duration_pathAlgo.count() / 1000);
+    printf("Time taken                         : %7lu ms\n", time_total);
+    printf("Time taken time_fillUpBoardRandomly: %7lu ms  %3.2f%%\n", time_fillUpBoardRandomly, 1.0 * time_fillUpBoardRandomly / time_total * 100);
+    printf("Time taken time_pathAlgo           : %7lu ms  %3.2f%%\n", time_pathAlgo, 1.0 * time_pathAlgo / time_total * 100);
+    printf("Time taken time_tot - rand - path  : %7lu ms  %3.2f%%\n", time_total - time_fillUpBoardRandomly - time_pathAlgo, 1.0 * (time_total - time_fillUpBoardRandomly - time_pathAlgo) / time_total * 100);
 
     return best_win_loss_ratio_node_id;
 }

@@ -119,9 +119,10 @@ void ProcessBoard::get_connected_nodes(int node_id, Square player)
 
 bool ProcessBoard::game_won_check(Square player)
 {
-    //DijkstrasAlgorithmImplementation
+    //AStarAlgorithmImplementation
 
     //openset and closed set defined in ProcessBoard.h class
+
     //define open set. Defining my own priority queue list to learn how to use it
     //MyPriorityQueue open_set;
 
@@ -145,6 +146,12 @@ bool ProcessBoard::game_won_check(Square player)
     for (int i = 0; i < current_neighbor_nodes.size(); i++)
     {
         current_neighbor_nodes.my_vec_[i].nearest_node_id = Node::graph_start_id;
+        int heuristic_distance;
+        if (player == Square::PlayerA)
+            heuristic_distance = board_size - current_neighbor_nodes.my_vec_[i].id / board_size;
+        else
+            heuristic_distance = board_size - current_neighbor_nodes.my_vec_[i].id % board_size;
+        current_neighbor_nodes.my_vec_[i].distance += heuristic_distance;
         open_set.push(current_neighbor_nodes.my_vec_[i]);
     }
 
@@ -173,13 +180,19 @@ bool ProcessBoard::game_won_check(Square player)
 
             if (!node_in_closed_set[neighbor_node.id])
             {
+                int heuristic_distance;
+                if (player == Square::PlayerA)
+                    heuristic_distance = board_size - neighbor_node.id / board_size;
+                else
+                    heuristic_distance = board_size - neighbor_node.id % board_size;
+                
                 //Step 4a: if neighbor node is in open set and its distance to start node through current node is lower than its current distance to start node, then update its distance to start node and nearest neighbor id in open set
                 if (open_set.contains_id(neighbor_node.id))
                 {
                     Node* open_set_node_ptr = open_set.member_with_id(neighbor_node.id);
-                    if (current_node.distance + 1 < open_set_node_ptr->distance)
+                    if (current_node.distance + 1 + heuristic_distance < open_set_node_ptr->distance)
                     {
-                        open_set_node_ptr->distance = current_node.distance + 1;
+                        open_set_node_ptr->distance = current_node.distance + 1 + heuristic_distance;
                         open_set_node_ptr->nearest_node_id = current_node.id;
                         //open_set.sort();
                     }
@@ -187,7 +200,7 @@ bool ProcessBoard::game_won_check(Square player)
                 else   //Step 4b: if did not find neighbor node in open set then add it to open set with nearest neighbor id as current node id
                 {
                     neighbor_node.nearest_node_id = current_node.id;
-                    neighbor_node.distance += current_node.distance;
+                    neighbor_node.distance += current_node.distance + heuristic_distance;
                     open_set.push(neighbor_node);
                 }
                 //open_set.print();
@@ -205,7 +218,7 @@ bool ProcessBoard::game_won_check(Square player)
 void ProcessBoard::fill_board_randomly(Square player, int node_id_as_next_move, std::vector<int> &empty_squares_vector)
 {
     int row, col;
-    for (int i = 0; i < empty_squares_vector.size(); i++)
+    for (unsigned int i = 0; i < empty_squares_vector.size(); i++)
     {
         row = empty_squares_vector[i] / board_size;
         col = empty_squares_vector[i] % board_size;
