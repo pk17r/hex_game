@@ -6,6 +6,12 @@ Date: June 16th 2022
 
 Program to Play Human vs Human or vs Computer or Computer vs Computer
 
+Compile using:
+
+g++ -Wall -g main.cpp *.cc -o main.exe
+
+Run main.exe
+
 -------
 
 ## Representation:

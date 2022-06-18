@@ -368,11 +368,11 @@ int GameClass::best_next_move(Square player)
     unsigned int time_fillUpBoardRandomly = static_cast<unsigned int>(duration_fillUpBoardRandomly.count() / 1000);
     //unsigned int time_pathAlgo_aStar = static_cast<unsigned int>(duration_pathAlgo_aStar.count() / 1000);
     unsigned int time_pathAlgo_dfs = static_cast<unsigned int>(duration_pathAlgo_dfs.count() / 1000);
-    printf("Total Time taken            : %7lu ms\n", time_total);
-    printf("time_fillUpBoardRandomly    : %7lu ms  %3.2f%%\n", time_fillUpBoardRandomly, 1.0 * time_fillUpBoardRandomly / time_total * 100);
-    //printf("time_pathAlgo_aStar         : %7lu ms  %3.2f%%\n", time_pathAlgo_aStar, 1.0 * time_pathAlgo_aStar / time_total * 100);
-    printf("time_pathAlgo_dfs           : %7lu ms  %3.2f%%\n", time_pathAlgo_dfs, 1.0 * time_pathAlgo_dfs / time_total * 100);
-    printf("time_tot - rand - pathalgos : %7lu ms  %3.2f%%\n", time_total - time_fillUpBoardRandomly - time_pathAlgo_dfs, 1.0 * (time_total - time_fillUpBoardRandomly - time_pathAlgo_dfs) / time_total * 100);
+    printf("Total Time taken            : %7u ms\n", time_total);
+    printf("time_fillUpBoardRandomly    : %7u ms  %3.2f%%\n", time_fillUpBoardRandomly, 1.0 * time_fillUpBoardRandomly / time_total * 100);
+    //printf("time_pathAlgo_aStar         : %7u ms  %3.2f%%\n", time_pathAlgo_aStar, 1.0 * time_pathAlgo_aStar / time_total * 100);
+    printf("time_pathAlgo_dfs           : %7u ms  %3.2f%%\n", time_pathAlgo_dfs, 1.0 * time_pathAlgo_dfs / time_total * 100);
+    printf("time_tot - rand - pathalgos : %7u ms  %3.2f%%\n", time_total - time_fillUpBoardRandomly - time_pathAlgo_dfs, 1.0 * (time_total - time_fillUpBoardRandomly - time_pathAlgo_dfs) / time_total * 100);
 
     return best_win_loss_ratio_node_id;
 }
