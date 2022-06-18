@@ -26,7 +26,7 @@ public:
 
     MyPriorityQueue current_neighbor_nodes;
 
-    bool game_won_check(Square player);    // (using Dijkstra’s for now, A star later), return -1 for none, 0 for PlayerA, 1 for PlayerB
+    bool game_won_check_aStar(Square player);    // (using Dijkstra’s for now, A star later), return -1 for none, 0 for PlayerA, 1 for PlayerB
 
     bool* node_in_closed_set = nullptr;
 

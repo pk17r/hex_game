@@ -10,7 +10,7 @@ ProcessBoard::ProcessBoard(Square** hex_board_data, int board_size_data)
     this->board_size = board_size_data;
 
     //copy hex board
-    hex_board = new Square * [board_size];
+    hex_board = new Square* [board_size];
     for (int i = 0; i < board_size; i++)
     {
         hex_board[i] = new Square[board_size];
@@ -31,6 +31,17 @@ ProcessBoard::ProcessBoard(Square** hex_board_data, int board_size_data)
 
     //setting seed for random number generator
     srand(static_cast<unsigned int>(time(0)));
+}
+
+ProcessBoard::~ProcessBoard()
+{
+    for (int i = 0; i < board_size; i++)
+    {
+        delete[] hex_board[i];
+    }
+    delete[] hex_board;
+
+    delete node_in_closed_set;
 }
 
 void ProcessBoard::get_connected_nodes(int node_id, Square player)
@@ -117,7 +128,7 @@ void ProcessBoard::get_connected_nodes(int node_id, Square player)
     //return current_neighbor_nodes;
 }
 
-bool ProcessBoard::game_won_check(Square player)
+bool ProcessBoard::game_won_check_aStar(Square player)
 {
     //AStarAlgorithmImplementation
 
@@ -128,13 +139,15 @@ bool ProcessBoard::game_won_check(Square player)
 
     //define closed set
     //MyPriorityQueue closed_set;
+
+    //reset open_set, closed_set and node_in_closed_set
+    open_set.clear();
+    closed_set.clear();
     for (int i = 0; i < board_size * board_size; i++)
     {
         node_in_closed_set[i] = false;
     }
-    open_set.clear();
-    closed_set.clear();
-
+    
     //Step 1: add imaginary start node to closed set
     closed_set.push(Node(Node::graph_start_id));
 
@@ -227,15 +240,4 @@ void ProcessBoard::fill_board_randomly(Square player, int node_id_as_next_move, 
         else
             hex_board[row][col] = player;
     }
-}
-
-ProcessBoard::~ProcessBoard()
-{
-    for (int i = 0; i < board_size; i++)
-    {
-        delete[] hex_board[i];
-    }
-    delete[] hex_board;
-
-    delete node_in_closed_set;
 }

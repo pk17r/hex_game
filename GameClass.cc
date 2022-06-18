@@ -10,8 +10,21 @@ using namespace std;
 
 GameClass::GameClass(int board_size, bool test_printout_run)
 {
-    cout << '\n' << '\n';
-    cout << "\t\t\t  Hex Game\n\n";
+    cout << "\n\n\n\t\t\t\tHex Game\n\n\n";
+    cout << "                       1    2    3    4    5\n";
+    cout << "                       --   --   --   --   --\n";
+    cout << "                  a  \\   .    .    .    X    O   \\  a\n";
+    cout << "\n";         
+    cout << "                    b  \\   .    .    O    X    .   \\  b\n";
+    cout << "\n";         
+    cout << "                      c  \\   .    .    X    O    .   \\  c\n";
+    cout << "\n";         
+    cout << "                        d  \\   .    X    .    .    .   \\  d\n";
+    cout << "\n";         
+    cout << "                          e  \\   O    X    .    .    .   \\  e\n";
+    cout << "                                 --   --   --   --   --\n";
+    cout << "                                  1    2    3    4    5\n";
+    cout << "\n\n";
     cout << "Program to Play Human vs Human or vs Computer or Computer vs Computer\n\n";
     cout << "X goes first and takes vertical direction, O goes second and takes horizontal direction." << '\n' << endl;
     cout << "To play computer vs computer, make both players computer" << endl;
@@ -97,6 +110,15 @@ GameClass::GameClass(int board_size, bool test_printout_run)
     }
 }
 
+GameClass::~GameClass()
+{
+    for (int i = 0; i < board_size; i++)
+    {
+        delete hex_board[i];
+    }
+    delete hex_board;
+}
+
 void GameClass::RunGame()
 {
     print_hex_board();
@@ -144,7 +166,7 @@ void GameClass::RunGame()
 
         //check game won by current player
         ProcessBoard processBoard(hex_board, board_size);
-        player_won = processBoard.game_won_check(current_player);
+        player_won = processBoard.game_won_check_aStar(current_player);
 
         if (!player_won)
         {//change player
@@ -267,8 +289,10 @@ int GameClass::best_next_move(Square player)
 
     cout << "Running " << num_of_simulations << " x " << empty_squares_vector.size() << " simulated trials" << endl;
     auto start = chrono::high_resolution_clock::now();
-    static std::chrono::time_point<std::chrono::high_resolution_clock> t0, t1, t2;
-    std::chrono::microseconds duration_fillUpBoardRandomly =  static_cast<std::chrono::microseconds>(0), duration_pathAlgo = static_cast<std::chrono::microseconds>(0);
+    static std::chrono::time_point<std::chrono::high_resolution_clock> t0, t1, t2, t3;
+    std::chrono::microseconds duration_fillUpBoardRandomly =  static_cast<std::chrono::microseconds>(0), 
+        duration_pathAlgo_aStar = static_cast<std::chrono::microseconds>(0), 
+        duration_pathAlgo_dfs = static_cast<std::chrono::microseconds>(0);
 
     int counter = 1;
 
@@ -292,9 +316,13 @@ int GameClass::best_next_move(Square player)
 
             t1 = chrono::high_resolution_clock::now();
 
-            bool playerWon = processBoard.game_won_check(player);
+            bool playerWon = processBoard.game_won_check_aStar(player);
 
             t2 = chrono::high_resolution_clock::now();
+
+            //playerWon = processBoard.game_won_check_aStar(player, true);
+
+            t3 = chrono::high_resolution_clock::now();
 
             if (playerWon)
                 wins++;
@@ -302,7 +330,8 @@ int GameClass::best_next_move(Square player)
                 losses++;
 
             duration_fillUpBoardRandomly += chrono::duration_cast<chrono::microseconds>(t1 - t0);
-            duration_pathAlgo += chrono::duration_cast<chrono::microseconds>(t2 - t1);
+            duration_pathAlgo_aStar += chrono::duration_cast<chrono::microseconds>(t2 - t1);
+            duration_pathAlgo_dfs += chrono::duration_cast<chrono::microseconds>(t3 - t2);
         }
 
         double win_loss_ratio = 1.0 * wins / losses;
@@ -330,11 +359,13 @@ int GameClass::best_next_move(Square player)
     auto duration_total = chrono::duration_cast<chrono::milliseconds>(stop - start);
     unsigned int time_total = static_cast<unsigned int>(duration_total.count());
     unsigned int time_fillUpBoardRandomly = static_cast<unsigned int>(duration_fillUpBoardRandomly.count() / 1000);
-    unsigned int time_pathAlgo = static_cast<unsigned int>(duration_pathAlgo.count() / 1000);
-    printf("Time taken                         : %7lu ms\n", time_total);
-    printf("Time taken time_fillUpBoardRandomly: %7lu ms  %3.2f%%\n", time_fillUpBoardRandomly, 1.0 * time_fillUpBoardRandomly / time_total * 100);
-    printf("Time taken time_pathAlgo           : %7lu ms  %3.2f%%\n", time_pathAlgo, 1.0 * time_pathAlgo / time_total * 100);
-    printf("Time taken time_tot - rand - path  : %7lu ms  %3.2f%%\n", time_total - time_fillUpBoardRandomly - time_pathAlgo, 1.0 * (time_total - time_fillUpBoardRandomly - time_pathAlgo) / time_total * 100);
+    unsigned int time_pathAlgo_aStar = static_cast<unsigned int>(duration_pathAlgo_aStar.count() / 1000);
+    unsigned int time_pathAlgo_dfs = static_cast<unsigned int>(duration_pathAlgo_dfs.count() / 1000);
+    printf("Total Time taken            : %7lu ms\n", time_total);
+    printf("time_fillUpBoardRandomly    : %7lu ms  %3.2f%%\n", time_fillUpBoardRandomly, 1.0 * time_fillUpBoardRandomly / time_total * 100);
+    printf("time_pathAlgo_aStar         : %7lu ms  %3.2f%%\n", time_pathAlgo_aStar, 1.0 * time_pathAlgo_aStar / time_total * 100);
+    printf("time_pathAlgo_dfs           : %7lu ms  %3.2f%%\n", time_pathAlgo_dfs, 1.0 * time_pathAlgo_dfs / time_total * 100);
+    printf("time_tot - rand - pathalgos : %7lu ms  %3.2f%%\n", time_total - time_fillUpBoardRandomly - time_pathAlgo_aStar - time_pathAlgo_dfs, 1.0 * (time_total - time_fillUpBoardRandomly - time_pathAlgo_aStar - time_pathAlgo_dfs) / time_total * 100);
 
     return best_win_loss_ratio_node_id;
 }
@@ -361,7 +392,7 @@ void GameClass::print_hex_board()
     char letter = 'a';
 
     //board body
-    for (int i = 0; i < 2 * board_size; i++)
+    for (int i = 0; i < 2 * board_size - 1; i++)
     {
         if (i % 2 == 0)
         {
@@ -389,26 +420,17 @@ void GameClass::print_hex_board()
     }
 
     cout << '\t' << '\t';
-    for (int print_blank = 0; print_blank < 2 * board_size - 2 + board_size; print_blank++)
+    for (int print_blank = 0; print_blank < 2 * board_size - 4 + board_size; print_blank++)
         cout << " ";
     for (int i = 1; i <= board_size; i++)
         printf("--   ");
 
     //footer row
     cout << '\n' << '\t' << '\t' << " ";
-    for (int print_blank = 0; print_blank < 2 * board_size - 3 + board_size; print_blank++)
+    for (int print_blank = 0; print_blank < 2 * board_size - 5 + board_size; print_blank++)
         cout << " ";
     for (int i = 1; i <= board_size; i++)
         printf("%3d  ", i);
 
     cout << '\n' << '\n' << endl;
-}
-
-GameClass::~GameClass()
-{
-    for (int i = 0; i < board_size; i++)
-    {
-        delete hex_board[i];
-    }
-    delete hex_board;
 }
