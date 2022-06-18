@@ -16,8 +16,13 @@ public:
 
     ~ProcessBoard();
 
-    void get_connected_nodes(int node_id, Square player);
+    bool game_won_check_aStar(Square player);    // (using Dijkstra’s for now, A star later), return -1 for none, 0 for PlayerA, 1 for PlayerB
 
+    bool game_won_check_dfs(Square player);
+
+    void fill_board_randomly(Square player, int node_id_as_next_move, std::vector<int>& empty_squares_vector);    // return randomly filled up board
+
+private:
     //define open set. Defining my own priority queue list to learn how to use it
     MyPriorityQueue open_set;
 
@@ -26,11 +31,16 @@ public:
 
     MyPriorityQueue current_neighbor_nodes;
 
-    bool game_won_check_aStar(Square player);    // (using Dijkstra’s for now, A star later), return -1 for none, 0 for PlayerA, 1 for PlayerB
+    void check_and_add_nodes_to_current_neighbor_nodes(int& row_index, int& col_index, Square& player, bool& unvisited_only);
+
+    void get_connected_nodes(int node_id, Square player, bool unvisited_only);
 
     bool* node_in_closed_set = nullptr;
 
-    void fill_board_randomly(Square player, int node_id_as_next_move, std::vector<int> &empty_squares_vector);    // return randomly filled up board
+    bool** hex_board_visited = nullptr;
+
+    bool dfs_search(int node_id);
+
 
 };
 
