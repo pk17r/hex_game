@@ -291,8 +291,8 @@ int GameClass::best_next_move(Square player)
     auto start = chrono::high_resolution_clock::now();
     static std::chrono::time_point<std::chrono::high_resolution_clock> t0, t1, t2, t3;
     std::chrono::microseconds duration_fillUpBoardRandomly =  static_cast<std::chrono::microseconds>(0), 
-        duration_pathAlgo_aStar = static_cast<std::chrono::microseconds>(0), 
         duration_pathAlgo_dfs = static_cast<std::chrono::microseconds>(0);
+    std::chrono::microseconds duration_pathAlgo_aStar = static_cast<std::chrono::microseconds>(0);
 
     int counter = 1;
 
@@ -316,13 +316,19 @@ int GameClass::best_next_move(Square player)
 
             t1 = chrono::high_resolution_clock::now();
 
-            bool playerWon = processBoard.game_won_check_aStar(player);
+            bool playerWon2 = processBoard.game_won_check_aStar(player);
 
             t2 = chrono::high_resolution_clock::now();
 
-            //playerWon = processBoard.game_won_check_aStar(player, true);
+            bool playerWon = processBoard.game_won_check_dfs(player);
 
             t3 = chrono::high_resolution_clock::now();
+
+            if (playerWon != playerWon2)
+            {
+                cout << "\n\n\n\n\nERROR ERROR ERROR ERROR ERROR ERROR ERROR\n\n\n" << endl;
+                exit(0);
+            }
 
             if (playerWon)
                 wins++;

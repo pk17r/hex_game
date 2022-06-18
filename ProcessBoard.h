@@ -29,17 +29,17 @@ private:
     //define closed set
     MyPriorityQueue closed_set;
 
-    MyPriorityQueue current_neighbor_nodes;
+    //MyPriorityQueue current_neighbor_nodes;
 
-    void check_and_add_nodes_to_current_neighbor_nodes(int& row_index, int& col_index, Square& player, bool& unvisited_only);
+    void check_and_add_nodes_to_current_neighbor_nodes(int& row_index, int& col_index, Square& player, bool& unvisited_only, MyPriorityQueue& current_neighbor_nodes);
 
-    void get_connected_nodes(int node_id, Square player, bool unvisited_only);
+    MyPriorityQueue get_connected_nodes(int node_id, Square player, bool unvisited_only);
 
     bool* node_in_closed_set = nullptr;
 
     bool** hex_board_visited = nullptr;
 
-    bool dfs_search(int node_id);
+    bool dfs_search(int node_id, Square& player);
 
 
 };
