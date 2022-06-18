@@ -33,7 +33,7 @@ Every Square acts as a node for path algorithms. Nodes have sequential ids from 
 
 2. Functions
 
-   - Check game won by a player (using Dijkstra’s for now, A star later)
+   - Check game won by a player (using Depth First Search)
 
    - Randomly Fill up Whole Board
 
@@ -128,7 +128,7 @@ Every Square acts as a node for path algorithms. Nodes have sequential ids from 
    
      - ProcessBoard(Square** hex_board_data, int board_size_data), constructor to create a copy of hex board and run simulation trials on it
 
-     - bool game_won_check(Square player), (using Dijkstra’s for now, A star later), return 0 for game not won, 1 for game won
+     - bool game_won_check(Square player), (using Depth First Search), return 0 for game not won, 1 for game won
 
      - void fill_board_randomly(Square player, int node_id_as_next_move, std::list<int> empty_squares_list)
 
@@ -166,7 +166,24 @@ Every Square acts as a node for path algorithms. Nodes have sequential ids from 
 ## Game Runtime Output
     
     
-                              Hex Game
+    
+                                    Hex Game
+    
+    
+                           1    2    3    4    5
+                           --   --   --   --   --
+                      a  \   .    .    .    X    O   \  a
+    
+                        b  \   .    .    O    X    .   \  b
+    
+                          c  \   .    .    X    O    .   \  c
+    
+                            d  \   .    X    .    .    .   \  d
+    
+                              e  \   O    X    .    .    .   \  e
+                                     --   --   --   --   --
+                                      1    2    3    4    5
+    
     
     Program to Play Human vs Human or vs Computer or Computer vs Computer
     
@@ -177,11 +194,11 @@ Every Square acts as a node for path algorithms. Nodes have sequential ids from 
     
     Play to win!
     
-    Enter board size (default 11): 7
-    board size = 7
+    Enter board size (default 11): 5
+    board size = 5
     
-    Enter Player A (X) name if human or press enter to make it computer: Prashant
-    Player A (X) is Prashant
+    Enter Player A (X) name if human or press enter to make it computer:
+    Player A (X) is Computer
     
     Enter Player B (O) name if human or press enter to make it computer:
     Player B (O) is Computer
@@ -189,498 +206,333 @@ Every Square acts as a node for path algorithms. Nodes have sequential ids from 
     
                               Hex Game
     
-                    X  |  top-to-bottom  | Prashant
+                    X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7
-                  --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5
+                  --   --   --   --   --
+            a  \   .    .    .    .    .   \  a
     
-               b  \   .    .    .    .    .    .    .   \  b
+               b  \   .    .    .    .    .   \  b
     
-                  c  \   .    .    .    .    .    .    .   \  c
+                  c  \   .    .    .    .    .   \  c
     
-                     d  \   .    .    .    .    .    .    .   \  d
+                     d  \   .    .    .    .    .   \  d
     
-                        e  \   .    .    .    .    .    .    .   \  e
-    
-                           f  \   .    .    .    .    .    .    .   \  f
-    
-                              g  \   .    .    .    .    .    .    .   \  g
-    
-                                       --   --   --   --   --   --   --
-                                         1    2    3    4    5    6    7
+                        e  \   .    .    .    .    .   \  e
+                               --   --   --   --   --
+                                 1    2    3    4    5
     
     
-    Prashant (X) win by making a connected path from Top-to-Bottom
-    Prashant (X) enter next move (e.g. x1): d4
+    Running 1000 x 25 simulated trials
+    Simulation trial  25 of  25
+    
+    Computer (X) picks c3
+    Total Time taken            :     778 ms
+    time_fillUpBoardRandomly    :      52 ms  6.68%
+    time_pathAlgo_dfs           :     699 ms  89.85%
+    time_tot - rand - pathalgos :      27 ms  3.47%
     
     Hex Board after 1 moves:
     
     
                               Hex Game
     
-                    X  |  top-to-bottom  | Prashant
+                    X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7
-                  --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5
+                  --   --   --   --   --
+            a  \   .    .    .    .    .   \  a
     
-               b  \   .    .    .    .    .    .    .   \  b
+               b  \   .    .    .    .    .   \  b
     
-                  c  \   .    .    .    .    .    .    .   \  c
+                  c  \   .    .    X    .    .   \  c
     
-                     d  \   .    .    .    X    .    .    .   \  d
+                     d  \   .    .    .    .    .   \  d
     
-                        e  \   .    .    .    .    .    .    .   \  e
-    
-                           f  \   .    .    .    .    .    .    .   \  f
-    
-                              g  \   .    .    .    .    .    .    .   \  g
-    
-                                       --   --   --   --   --   --   --
-                                         1    2    3    4    5    6    7
+                        e  \   .    .    .    .    .   \  e
+                               --   --   --   --   --
+                                 1    2    3    4    5
     
     
-    Prashant (X) entered last move as: d4
-    Running 1000 x 48 simulated trials
-    Simulation trial  48 of  48
+    Computer (X) entered last move as: c3
+    Running 1000 x 24 simulated trials
+    Simulation trial  24 of  24
     
-    Computer (O) picks b6
-    Time taken                         :    2810 ms
-    Time taken time_fillUpBoardRandomly:     198 ms  7.05%
-    Time taken time_pathAlgo           :    2563 ms  91.21%
-    Time taken time_tot - rand - path  :      49 ms  1.74%
+    Computer (O) picks b3
+    Total Time taken            :     598 ms
+    time_fillUpBoardRandomly    :      50 ms  8.36%
+    time_pathAlgo_dfs           :     515 ms  86.12%
+    time_tot - rand - pathalgos :      33 ms  5.52%
     
     Hex Board after 2 moves:
     
     
                               Hex Game
     
-                    X  |  top-to-bottom  | Prashant
+                    X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7
-                  --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5
+                  --   --   --   --   --
+            a  \   .    .    .    .    .   \  a
     
-               b  \   .    .    .    .    .    O    .   \  b
+               b  \   .    .    O    .    .   \  b
     
-                  c  \   .    .    .    .    .    .    .   \  c
+                  c  \   .    .    X    .    .   \  c
     
-                     d  \   .    .    .    X    .    .    .   \  d
+                     d  \   .    .    .    .    .   \  d
     
-                        e  \   .    .    .    .    .    .    .   \  e
-    
-                           f  \   .    .    .    .    .    .    .   \  f
-    
-                              g  \   .    .    .    .    .    .    .   \  g
-    
-                                       --   --   --   --   --   --   --
-                                         1    2    3    4    5    6    7
+                        e  \   .    .    .    .    .   \  e
+                               --   --   --   --   --
+                                 1    2    3    4    5
     
     
-    Computer (O) entered last move as : b6
-    Prashant (X) win by making a connected path from Top-to-Bottom
-    Prashant (X) enter next move (e.g. x1): c4
+    Computer (O) entered last move as : b3
+    Running 1000 x 23 simulated trials
+    Simulation trial  23 of  23
+    
+    Computer (X) picks b4
+    Total Time taken            :     694 ms
+    time_fillUpBoardRandomly    :      46 ms  6.63%
+    time_pathAlgo_dfs           :     609 ms  87.75%
+    time_tot - rand - pathalgos :      39 ms  5.62%
     
     Hex Board after 3 moves:
     
     
                               Hex Game
     
-                    X  |  top-to-bottom  | Prashant
+                    X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7
-                  --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5
+                  --   --   --   --   --
+            a  \   .    .    .    .    .   \  a
     
-               b  \   .    .    .    .    .    O    .   \  b
+               b  \   .    .    O    X    .   \  b
     
-                  c  \   .    .    .    X    .    .    .   \  c
+                  c  \   .    .    X    .    .   \  c
     
-                     d  \   .    .    .    X    .    .    .   \  d
+                     d  \   .    .    .    .    .   \  d
     
-                        e  \   .    .    .    .    .    .    .   \  e
-    
-                           f  \   .    .    .    .    .    .    .   \  f
-    
-                              g  \   .    .    .    .    .    .    .   \  g
-    
-                                       --   --   --   --   --   --   --
-                                         1    2    3    4    5    6    7
+                        e  \   .    .    .    .    .   \  e
+                               --   --   --   --   --
+                                 1    2    3    4    5
     
     
-    Prashant (X) entered last move as: c4
-    Running 1000 x 46 simulated trials
-    Simulation trial  46 of  46
+    Computer (X) entered last move as: b4
+    Running 1000 x 22 simulated trials
+    Simulation trial  22 of  22
     
-    Computer (O) picks e4
-    Time taken                         :    2576 ms
-    Time taken time_fillUpBoardRandomly:     180 ms  6.99%
-    Time taken time_pathAlgo           :    2342 ms  90.92%
-    Time taken time_tot - rand - path  :      54 ms  2.10%
+    Computer (O) picks a4
+    Total Time taken            :     579 ms
+    time_fillUpBoardRandomly    :      35 ms  6.04%
+    time_pathAlgo_dfs           :     498 ms  86.01%
+    time_tot - rand - pathalgos :      46 ms  7.94%
     
     Hex Board after 4 moves:
     
     
                               Hex Game
     
-                    X  |  top-to-bottom  | Prashant
+                    X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7
-                  --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5
+                  --   --   --   --   --
+            a  \   .    .    .    O    .   \  a
     
-               b  \   .    .    .    .    .    O    .   \  b
+               b  \   .    .    O    X    .   \  b
     
-                  c  \   .    .    .    X    .    .    .   \  c
+                  c  \   .    .    X    .    .   \  c
     
-                     d  \   .    .    .    X    .    .    .   \  d
+                     d  \   .    .    .    .    .   \  d
     
-                        e  \   .    .    .    O    .    .    .   \  e
-    
-                           f  \   .    .    .    .    .    .    .   \  f
-    
-                              g  \   .    .    .    .    .    .    .   \  g
-    
-                                       --   --   --   --   --   --   --
-                                         1    2    3    4    5    6    7
+                        e  \   .    .    .    .    .   \  e
+                               --   --   --   --   --
+                                 1    2    3    4    5
     
     
-    Computer (O) entered last move as : e4
-    Prashant (X) win by making a connected path from Top-to-Bottom
-    Prashant (X) enter next move (e.g. x1): e3
+    Computer (O) entered last move as : a4
+    Running 1000 x 21 simulated trials
+    Simulation trial  21 of  21
+    
+    Computer (X) picks a5
+    Total Time taken            :     638 ms
+    time_fillUpBoardRandomly    :      25 ms  3.92%
+    time_pathAlgo_dfs           :     544 ms  85.27%
+    time_tot - rand - pathalgos :      69 ms  10.82%
     
     Hex Board after 5 moves:
     
     
                               Hex Game
     
-                    X  |  top-to-bottom  | Prashant
+                    X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7
-                  --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5
+                  --   --   --   --   --
+            a  \   .    .    .    O    X   \  a
     
-               b  \   .    .    .    .    .    O    .   \  b
+               b  \   .    .    O    X    .   \  b
     
-                  c  \   .    .    .    X    .    .    .   \  c
+                  c  \   .    .    X    .    .   \  c
     
-                     d  \   .    .    .    X    .    .    .   \  d
+                     d  \   .    .    .    .    .   \  d
     
-                        e  \   .    .    X    O    .    .    .   \  e
-    
-                           f  \   .    .    .    .    .    .    .   \  f
-    
-                              g  \   .    .    .    .    .    .    .   \  g
-    
-                                       --   --   --   --   --   --   --
-                                         1    2    3    4    5    6    7
+                        e  \   .    .    .    .    .   \  e
+                               --   --   --   --   --
+                                 1    2    3    4    5
     
     
-    Prashant (X) entered last move as: e3
-    Running 1000 x 44 simulated trials
-    Simulation trial  44 of  44
+    Computer (X) entered last move as: a5
+    Running 1000 x 20 simulated trials
+    Simulation trial  20 of  20
     
-    Computer (O) picks b5
-    Time taken                         :    2328 ms
-    Time taken time_fillUpBoardRandomly:     141 ms  6.06%
-    Time taken time_pathAlgo           :    2106 ms  90.46%
-    Time taken time_tot - rand - path  :      81 ms  3.48%
+    Computer (O) picks d3
+    Total Time taken            :     560 ms
+    time_fillUpBoardRandomly    :      22 ms  3.93%
+    time_pathAlgo_dfs           :     505 ms  90.18%
+    time_tot - rand - pathalgos :      33 ms  5.89%
     
     Hex Board after 6 moves:
     
     
                               Hex Game
     
-                    X  |  top-to-bottom  | Prashant
+                    X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7
-                  --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5
+                  --   --   --   --   --
+            a  \   .    .    .    O    X   \  a
     
-               b  \   .    .    .    .    O    O    .   \  b
+               b  \   .    .    O    X    .   \  b
     
-                  c  \   .    .    .    X    .    .    .   \  c
+                  c  \   .    .    X    .    .   \  c
     
-                     d  \   .    .    .    X    .    .    .   \  d
+                     d  \   .    .    O    .    .   \  d
     
-                        e  \   .    .    X    O    .    .    .   \  e
-    
-                           f  \   .    .    .    .    .    .    .   \  f
-    
-                              g  \   .    .    .    .    .    .    .   \  g
-    
-                                       --   --   --   --   --   --   --
-                                         1    2    3    4    5    6    7
+                        e  \   .    .    .    .    .   \  e
+                               --   --   --   --   --
+                                 1    2    3    4    5
     
     
-    Computer (O) entered last move as : b5
-    Prashant (X) win by making a connected path from Top-to-Bottom
-    Prashant (X) enter next move (e.g. x1): b4
+    Computer (O) entered last move as : d3
+    Running 1000 x 19 simulated trials
+    Simulation trial  19 of  19
+    
+    Computer (X) picks d2
+    Total Time taken            :     658 ms
+    time_fillUpBoardRandomly    :      21 ms  3.19%
+    time_pathAlgo_dfs           :     604 ms  91.79%
+    time_tot - rand - pathalgos :      33 ms  5.02%
     
     Hex Board after 7 moves:
     
     
                               Hex Game
     
-                    X  |  top-to-bottom  | Prashant
+                    X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7
-                  --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5
+                  --   --   --   --   --
+            a  \   .    .    .    O    X   \  a
     
-               b  \   .    .    .    X    O    O    .   \  b
+               b  \   .    .    O    X    .   \  b
     
-                  c  \   .    .    .    X    .    .    .   \  c
+                  c  \   .    .    X    .    .   \  c
     
-                     d  \   .    .    .    X    .    .    .   \  d
+                     d  \   .    X    O    .    .   \  d
     
-                        e  \   .    .    X    O    .    .    .   \  e
-    
-                           f  \   .    .    .    .    .    .    .   \  f
-    
-                              g  \   .    .    .    .    .    .    .   \  g
-    
-                                       --   --   --   --   --   --   --
-                                         1    2    3    4    5    6    7
+                        e  \   .    .    .    .    .   \  e
+                               --   --   --   --   --
+                                 1    2    3    4    5
     
     
-    Prashant (X) entered last move as: b4
-    Running 1000 x 42 simulated trials
-    Simulation trial  42 of  42
+    Computer (X) entered last move as: d2
+    Running 1000 x 18 simulated trials
+    Simulation trial  18 of  18
     
-    Computer (O) picks f3
-    Time taken                         :    2164 ms
-    Time taken time_fillUpBoardRandomly:     133 ms  6.15%
-    Time taken time_pathAlgo           :    1969 ms  90.99%
-    Time taken time_tot - rand - path  :      62 ms  2.87%
+    Computer (O) picks e2
+    Total Time taken            :     461 ms
+    time_fillUpBoardRandomly    :      19 ms  4.12%
+    time_pathAlgo_dfs           :     401 ms  86.98%
+    time_tot - rand - pathalgos :      41 ms  8.89%
     
     Hex Board after 8 moves:
     
     
                               Hex Game
     
-                    X  |  top-to-bottom  | Prashant
+                    X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7
-                  --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5
+                  --   --   --   --   --
+            a  \   .    .    .    O    X   \  a
     
-               b  \   .    .    .    X    O    O    .   \  b
+               b  \   .    .    O    X    .   \  b
     
-                  c  \   .    .    .    X    .    .    .   \  c
+                  c  \   .    .    X    .    .   \  c
     
-                     d  \   .    .    .    X    .    .    .   \  d
+                     d  \   .    X    O    .    .   \  d
     
-                        e  \   .    .    X    O    .    .    .   \  e
-    
-                           f  \   .    .    O    .    .    .    .   \  f
-    
-                              g  \   .    .    .    .    .    .    .   \  g
-    
-                                       --   --   --   --   --   --   --
-                                         1    2    3    4    5    6    7
+                        e  \   .    O    .    .    .   \  e
+                               --   --   --   --   --
+                                 1    2    3    4    5
     
     
-    Computer (O) entered last move as : f3
-    Prashant (X) win by making a connected path from Top-to-Bottom
-    Prashant (X) enter next move (e.g. x1): f2
+    Computer (O) entered last move as : e2
+    Running 1000 x 17 simulated trials
+    Simulation trial  17 of  17
+    
+    Computer (X) picks e1
+    Total Time taken            :     640 ms
+    time_fillUpBoardRandomly    :      18 ms  2.81%
+    time_pathAlgo_dfs           :     564 ms  88.12%
+    time_tot - rand - pathalgos :      58 ms  9.06%
     
     Hex Board after 9 moves:
     
     
                               Hex Game
     
-                    X  |  top-to-bottom  | Prashant
+                    X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7
-                  --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5
+                  --   --   --   --   --
+            a  \   .    .    .    O    X   \  a
     
-               b  \   .    .    .    X    O    O    .   \  b
+               b  \   .    .    O    X    .   \  b
     
-                  c  \   .    .    .    X    .    .    .   \  c
+                  c  \   .    .    X    .    .   \  c
     
-                     d  \   .    .    .    X    .    .    .   \  d
+                     d  \   .    X    O    .    .   \  d
     
-                        e  \   .    .    X    O    .    .    .   \  e
+                        e  \   X    O    .    .    .   \  e
+                               --   --   --   --   --
+                                 1    2    3    4    5
     
-                           f  \   .    X    O    .    .    .    .   \  f
     
-                              g  \   .    .    .    .    .    .    .   \  g
     
-                                       --   --   --   --   --   --   --
-                                         1    2    3    4    5    6    7
+    Computer (X) Won!!!
     
+    Game won in 9 moves!
     
-    Prashant (X) entered last move as: f2
-    Running 1000 x 40 simulated trials
-    Simulation trial  40 of  40
     
-    Computer (O) picks g2
-    Time taken                         :    1870 ms
-    Time taken time_fillUpBoardRandomly:     124 ms  6.63%
-    Time taken time_pathAlgo           :    1683 ms  90.00%
-    Time taken time_tot - rand - path  :      63 ms  3.37%
-    
-    Hex Board after 10 moves:
-    
-    
-                              Hex Game
-    
-                    X  |  top-to-bottom  | Prashant
-                    O  |  left-to-right  | Computer
-    
-    
-                  1    2    3    4    5    6    7
-                  --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .   \  a
-    
-               b  \   .    .    .    X    O    O    .   \  b
-    
-                  c  \   .    .    .    X    .    .    .   \  c
-    
-                     d  \   .    .    .    X    .    .    .   \  d
-    
-                        e  \   .    .    X    O    .    .    .   \  e
-    
-                           f  \   .    X    O    .    .    .    .   \  f
-    
-                              g  \   .    O    .    .    .    .    .   \  g
-    
-                                       --   --   --   --   --   --   --
-                                         1    2    3    4    5    6    7
-    
-    
-    Computer (O) entered last move as : g2
-    Prashant (X) win by making a connected path from Top-to-Bottom
-    Prashant (X) enter next move (e.g. x1): g1
-    
-    Hex Board after 11 moves:
-    
-    
-                              Hex Game
-    
-                    X  |  top-to-bottom  | Prashant
-                    O  |  left-to-right  | Computer
-    
-    
-                  1    2    3    4    5    6    7
-                  --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .   \  a
-    
-               b  \   .    .    .    X    O    O    .   \  b
-    
-                  c  \   .    .    .    X    .    .    .   \  c
-    
-                     d  \   .    .    .    X    .    .    .   \  d
-    
-                        e  \   .    .    X    O    .    .    .   \  e
-    
-                           f  \   .    X    O    .    .    .    .   \  f
-    
-                              g  \   X    O    .    .    .    .    .   \  g
-    
-                                       --   --   --   --   --   --   --
-                                         1    2    3    4    5    6    7
-    
-    
-    Prashant (X) entered last move as: g1
-    Running 1000 x 38 simulated trials
-    Simulation trial  38 of  38
-    
-    Computer (O) picks a4
-    Time taken                         :    1347 ms
-    Time taken time_fillUpBoardRandomly:     118 ms  8.76%
-    Time taken time_pathAlgo           :    1179 ms  87.53%
-    Time taken time_tot - rand - path  :      50 ms  3.71%
-    
-    Hex Board after 12 moves:
-    
-    
-                              Hex Game
-    
-                    X  |  top-to-bottom  | Prashant
-                    O  |  left-to-right  | Computer
-    
-    
-                  1    2    3    4    5    6    7
-                  --   --   --   --   --   --   --
-            a  \   .    .    .    O    .    .    .   \  a
-    
-               b  \   .    .    .    X    O    O    .   \  b
-    
-                  c  \   .    .    .    X    .    .    .   \  c
-    
-                     d  \   .    .    .    X    .    .    .   \  d
-    
-                        e  \   .    .    X    O    .    .    .   \  e
-    
-                           f  \   .    X    O    .    .    .    .   \  f
-    
-                              g  \   X    O    .    .    .    .    .   \  g
-    
-                                       --   --   --   --   --   --   --
-                                         1    2    3    4    5    6    7
-    
-    
-    Computer (O) entered last move as : a4
-    Prashant (X) win by making a connected path from Top-to-Bottom
-    Prashant (X) enter next move (e.g. x1): a5
-    
-    Hex Board after 13 moves:
-    
-    
-                              Hex Game
-    
-                    X  |  top-to-bottom  | Prashant
-                    O  |  left-to-right  | Computer
-    
-    
-                  1    2    3    4    5    6    7
-                  --   --   --   --   --   --   --
-            a  \   .    .    .    O    X    .    .   \  a
-    
-               b  \   .    .    .    X    O    O    .   \  b
-    
-                  c  \   .    .    .    X    .    .    .   \  c
-    
-                     d  \   .    .    .    X    .    .    .   \  d
-    
-                        e  \   .    .    X    O    .    .    .   \  e
-    
-                           f  \   .    X    O    .    .    .    .   \  f
-    
-                              g  \   X    O    .    .    .    .    .   \  g
-    
-                                       --   --   --   --   --   --   --
-                                         1    2    3    4    5    6    7
-    
-    
-    
-    Prashant (X) Won!!!
-    
-    Game won in 13 moves!
-    
-    C:\Programming\3.C++forCProgrammers\Hex_Game\x64\Debug\Hex_Game.exe (process 26268) exited with code 0.
-    Press any key to close this window . . .

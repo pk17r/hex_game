@@ -289,10 +289,11 @@ int GameClass::best_next_move(Square player)
 
     cout << "Running " << num_of_simulations << " x " << empty_squares_vector.size() << " simulated trials" << endl;
     auto start = chrono::high_resolution_clock::now();
-    static std::chrono::time_point<std::chrono::high_resolution_clock> t0, t1, t2, t3;
+    static std::chrono::time_point<std::chrono::high_resolution_clock> t0, t2, t3;
     std::chrono::microseconds duration_fillUpBoardRandomly =  static_cast<std::chrono::microseconds>(0), 
         duration_pathAlgo_dfs = static_cast<std::chrono::microseconds>(0);
-    std::chrono::microseconds duration_pathAlgo_aStar = static_cast<std::chrono::microseconds>(0);
+    //static std::chrono::time_point<std::chrono::high_resolution_clock> t1;
+    //std::chrono::microseconds duration_pathAlgo_aStar = static_cast<std::chrono::microseconds>(0);
 
     int counter = 1;
 
@@ -314,9 +315,9 @@ int GameClass::best_next_move(Square player)
 
             processBoard.fill_board_randomly(player, node_id_as_next_move, empty_squares_vector);
 
-            t1 = chrono::high_resolution_clock::now();
+            //t1 = chrono::high_resolution_clock::now();
 
-            bool playerWon2 = processBoard.game_won_check_aStar(player);
+            //bool playerWon2 = processBoard.game_won_check_aStar(player);
 
             t2 = chrono::high_resolution_clock::now();
 
@@ -324,19 +325,19 @@ int GameClass::best_next_move(Square player)
 
             t3 = chrono::high_resolution_clock::now();
 
-            if (playerWon != playerWon2)
-            {
-                cout << "\n\n\n\n\nERROR ERROR ERROR ERROR ERROR ERROR ERROR\n\n\n" << endl;
-                exit(0);
-            }
+            //if (playerWon != playerWon2)
+            //{
+            //    cout << "\n\n\n\n\nERROR ERROR ERROR ERROR ERROR ERROR ERROR\n\n\n" << endl;
+            //    exit(0);
+            //}
 
             if (playerWon)
                 wins++;
             else
                 losses++;
 
-            duration_fillUpBoardRandomly += chrono::duration_cast<chrono::microseconds>(t1 - t0);
-            duration_pathAlgo_aStar += chrono::duration_cast<chrono::microseconds>(t2 - t1);
+            duration_fillUpBoardRandomly += chrono::duration_cast<chrono::microseconds>(t2 - t0);
+            //duration_pathAlgo_aStar += chrono::duration_cast<chrono::microseconds>(t2 - t1);
             duration_pathAlgo_dfs += chrono::duration_cast<chrono::microseconds>(t3 - t2);
         }
 
@@ -365,13 +366,13 @@ int GameClass::best_next_move(Square player)
     auto duration_total = chrono::duration_cast<chrono::milliseconds>(stop - start);
     unsigned int time_total = static_cast<unsigned int>(duration_total.count());
     unsigned int time_fillUpBoardRandomly = static_cast<unsigned int>(duration_fillUpBoardRandomly.count() / 1000);
-    unsigned int time_pathAlgo_aStar = static_cast<unsigned int>(duration_pathAlgo_aStar.count() / 1000);
+    //unsigned int time_pathAlgo_aStar = static_cast<unsigned int>(duration_pathAlgo_aStar.count() / 1000);
     unsigned int time_pathAlgo_dfs = static_cast<unsigned int>(duration_pathAlgo_dfs.count() / 1000);
     printf("Total Time taken            : %7lu ms\n", time_total);
     printf("time_fillUpBoardRandomly    : %7lu ms  %3.2f%%\n", time_fillUpBoardRandomly, 1.0 * time_fillUpBoardRandomly / time_total * 100);
-    printf("time_pathAlgo_aStar         : %7lu ms  %3.2f%%\n", time_pathAlgo_aStar, 1.0 * time_pathAlgo_aStar / time_total * 100);
+    //printf("time_pathAlgo_aStar         : %7lu ms  %3.2f%%\n", time_pathAlgo_aStar, 1.0 * time_pathAlgo_aStar / time_total * 100);
     printf("time_pathAlgo_dfs           : %7lu ms  %3.2f%%\n", time_pathAlgo_dfs, 1.0 * time_pathAlgo_dfs / time_total * 100);
-    printf("time_tot - rand - pathalgos : %7lu ms  %3.2f%%\n", time_total - time_fillUpBoardRandomly - time_pathAlgo_aStar - time_pathAlgo_dfs, 1.0 * (time_total - time_fillUpBoardRandomly - time_pathAlgo_aStar - time_pathAlgo_dfs) / time_total * 100);
+    printf("time_tot - rand - pathalgos : %7lu ms  %3.2f%%\n", time_total - time_fillUpBoardRandomly - time_pathAlgo_dfs, 1.0 * (time_total - time_fillUpBoardRandomly - time_pathAlgo_dfs) / time_total * 100);
 
     return best_win_loss_ratio_node_id;
 }
