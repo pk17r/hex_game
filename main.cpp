@@ -7,30 +7,30 @@
 // To play human vs computer or computer vs human, select accordingly on cmd
 // Play to win!
 // 
+// GamePlayClass.h - where hex game is played
+// ProcessHexBoardClass.h - where game won check or simulations to find next best move happen
+// 
 // Author: Prashant Kumar
 // 
 // Date June 16th 2022
 //
 
-#include "PlayHexGameClass.h"
+#include "GamePlayClass.h"
 #include "ProcessHexBoardClass.h"
 
-//main hex game program parameters
-bool PlayHexGameClass::play_game_ = true;              //make this true to only test print hex board function
-int ProcessHexBoardClass::board_size_ = 11;                 // 5 for testing, 11 for production
+//hex game program parameters
+int ProcessHexBoardClass::board_size_ = 11;
+bool ProcessHexBoardClass::debug_mode_ = false;            //when true, simulation win-loss-ratio will be printed, it can also be enabled at runtime by inputting board size with a suffix 'd'
 unsigned int ProcessHexBoardClass::num_of_simulations_ = 1000;
-bool PlayHexGameClass::debug_mode_ = false;            //when true, simulation win-loss-ratio will be printed, can be enabled at runtime by inputting board size with a suffix 'd'
+bool GamePlayClass::test_print_hex_board_ = false;          //make this true to test Print Hex Board function
 
 int main()
 {
     //initialize hex game
-    PlayHexGameClass hex_game_object;
+    GamePlayClass hex_game_object;
 
-    //play hex game or test print hex board
-    if (PlayHexGameClass::play_game_)
-        hex_game_object.RunGame();
-    else
-        hex_game_object.PrintHexBoard();
+    //play hex game
+    hex_game_object.RunGame();
 
     return 0;
 }
