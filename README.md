@@ -1,5 +1,24 @@
 # Hex Game
-
+    
+    
+                                    Hex Game
+    
+    
+                           1    2    3    4    5
+                           --   --   --   --   --
+                      a  \   .    .    .    X    O   \  a
+    
+                        b  \   .    .    O    X    .   \  b
+    
+                          c  \   .    .    X    O    .   \  c
+    
+                            d  \   .    X    .    .    .   \  d
+    
+                              e  \   O    X    .    .    .   \  e
+                                     --   --   --   --   --
+                                      1    2    3    4    5
+    
+    
 Author: Prashant Kumar
 
 Date: June 16th 2022
