@@ -22,12 +22,9 @@ GamePlayClass::GamePlayClass()
     {
         hex_board_[i] = new Square[get_board_size_()];
     }
-    for (int i = 0; i < get_board_size_(); i++)
+    for (int node_id = 0; node_id < get_board_size_() * get_board_size_(); node_id++)
     {
-        for (int j = 0; j < get_board_size_(); j++)
-        {
-            hex_board_[i][j] = Square::Empty;
-        }
+        hex_board_set_ownership_(node_id, Square::Empty);
     }
 
     //initialize hex board of ProcessHexBoardClass
@@ -48,6 +45,11 @@ GamePlayClass::~GamePlayClass()
         delete hex_board_[i];
     }
     delete hex_board_;
+}
+
+void GamePlayClass::hex_board_set_ownership_(const int node_id, const Square player)
+{
+    hex_board_[get_row_index_(node_id)][get_col_index_(node_id)] = player;
 }
 
 void GamePlayClass::RunGame()
@@ -72,12 +74,11 @@ void GamePlayClass::RunGame()
         
         if (next_move_node_id >= 0)
         {
-            char row_char = 'a' + get_row_index_(next_move_node_id);
-            int col_num = get_col_index_(next_move_node_id) + 1;
-            if(current_player == Square::PlayerA)
-                cout << playerB_name_ << " (" << static_cast<char>(Square::PlayerB) << ") entered last move as : " << row_char << col_num << endl;
+            if (current_player == Square::PlayerA)
+                cout << playerB_name_ << " (" << static_cast<char>(Square::PlayerB);
             else
-                cout << playerA_name_ << " (" << static_cast<char>(Square::PlayerA) << ") entered last move as: " << row_char << col_num << endl;
+                cout << playerA_name_ << " (" << static_cast<char>(Square::PlayerA);
+            cout << ") entered last move as: " << get_row_char_(next_move_node_id) << get_col_number_(next_move_node_id) << endl;
         }
 
         //get or find next move
@@ -87,7 +88,7 @@ void GamePlayClass::RunGame()
             next_move_node_id = FindBestNextMove(current_player);
         
         //fill hex board with next move
-        hex_board_[get_row_index_(next_move_node_id)][get_col_index_(next_move_node_id)] = current_player;
+        hex_board_set_ownership_(next_move_node_id, current_player);
 
         //remove next_move_node_id from empty_squares_vector_
         for (auto iterator = empty_squares_vector_.begin(); iterator != empty_squares_vector_.end(); iterator++)

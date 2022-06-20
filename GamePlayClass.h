@@ -21,6 +21,7 @@ public:
 private:
     //game play hex board - pointer to pointer of Square - '.', 'X' or 'O'
     Square** hex_board_ = nullptr;
+    void hex_board_set_ownership_(const int node_id, const Square player);
 
     //to test out Print Hex Board function
     static bool test_print_hex_board_;

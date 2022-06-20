@@ -1,14 +1,21 @@
 #include <algorithm>
 #include <chrono>
 #include <iostream>
+#include <type_traits>
 #include "Node.h"
 #include "ProcessHexBoardClass.h"
 
 using namespace std;
 
+std::ostream& operator << (std::ostream& os, const Square& obj)
+{
+    os << static_cast<std::underlying_type<Square>::type>(obj);
+    return os;
+}
+
 void ProcessHexBoardClass::ProcessHexBoardClassInitialize()
 {
-    //create hex board data copy memory space
+    //create ProcessHexBoardClass hex board memory space
     //create memory space for visited flag for dfs algo
     hex_board_ = new Square * [get_board_size_()];
     hex_board_visited_ = new bool* [get_board_size_()];
@@ -70,6 +77,26 @@ const int ProcessHexBoardClass::get_col_index_(const int node_id)
 const int ProcessHexBoardClass::get_node_id_(const int row_index, const int col_index)
 {
     return row_index * board_size_ + col_index;
+}
+
+const char ProcessHexBoardClass::get_row_char_(const int node_id)
+{
+    return 'a' + get_row_index_(node_id);
+}
+
+const int ProcessHexBoardClass::get_col_number_(const int node_id)
+{
+    return get_col_index_(node_id) + 1;
+}
+
+bool ProcessHexBoardClass::is_node_visited_(const int node_id)
+{
+    return hex_board_visited_[get_row_index_(node_id)][get_col_index_(node_id)];
+}
+
+void ProcessHexBoardClass::set_node_as_visited_(const int node_id)
+{
+    hex_board_visited_[get_row_index_(node_id)][get_col_index_(node_id)] = true;
 }
 
 void ProcessHexBoardClass::AddNeighborNodes(const int row_index, const int col_index, const Square& player, const bool& unvisited_only, MyPriorityQueue& current_neighbor_nodes)
@@ -157,15 +184,15 @@ MyPriorityQueue ProcessHexBoardClass::GetNeighborNodes(const int node_id, const 
 
 void ProcessHexBoardClass::FillBoardRandomly(Square player, const int& node_id_as_next_move, std::vector<int> &empty_squares_vector_filled_randomly)
 {
-    int turns_by_player_A = 0, turns_by_player_B = 0;
+    //int turns_by_player_A = 0, turns_by_player_B = 0;
 
-    //current move
+    //make current move on hex board
     hex_board_[get_row_index_(node_id_as_next_move)][get_col_index_(node_id_as_next_move)] = player;
 
-    if (player == Square::PlayerA)
-        turns_by_player_A++;
-    else
-        turns_by_player_B++;
+    //if (player == Square::PlayerA)
+    //    turns_by_player_A++;
+    //else
+    //    turns_by_player_B++;
 
     for (unsigned int i = 0; i < empty_squares_vector_filled_randomly.size(); i++)
     {
@@ -180,10 +207,10 @@ void ProcessHexBoardClass::FillBoardRandomly(Square player, const int& node_id_a
 
         hex_board_[get_row_index_(empty_squares_vector_filled_randomly[i])][get_col_index_(empty_squares_vector_filled_randomly[i])] = player;
 
-        if (player == Square::PlayerA)
-            turns_by_player_A++;
-        else
-            turns_by_player_B++;
+        //if (player == Square::PlayerA)
+        //    turns_by_player_A++;
+        //else
+        //    turns_by_player_B++;
     }
 
     //printf("\rturns_by_player_A %d, turns_by_player_B %d", turns_by_player_A, turns_by_player_B);
@@ -192,8 +219,8 @@ void ProcessHexBoardClass::FillBoardRandomly(Square player, const int& node_id_a
 bool ProcessHexBoardClass::DfsSearch(int node_id, Square& player)
 {
     //mark node as visited
-    if(node_id >= 0)
-        hex_board_visited_[get_row_index_(node_id)][get_col_index_(node_id)] = true;
+    if (node_id >= 0)
+        set_node_as_visited_(node_id);
 
     //get connected nodes
     MyPriorityQueue current_neighbor_nodes = move(GetNeighborNodes(node_id, player, true));
@@ -206,7 +233,7 @@ bool ProcessHexBoardClass::DfsSearch(int node_id, Square& player)
         if (visiting_node_id == Node::graph_end_id)  //connection found to end node
             return true;
 
-        if (!hex_board_visited_[get_row_index_(visiting_node_id)][get_col_index_(visiting_node_id)])
+        if (!is_node_visited_(visiting_node_id))
             if(DfsSearch(visiting_node_id, player))    //if recursive DfsSearch returned true, end now and return true upwards
                 return true;
     }
@@ -312,12 +339,8 @@ int ProcessHexBoardClass::MonteCarloSimulationsToFindBestNextMove(const Square p
 
         double win_loss_ratio = 1.0 * wins / losses;
         if (debug_mode_)
-        {
-            char row_char = 'a' + get_row_index_(node_id_as_next_move);
-            int col_num = get_col_index_(node_id_as_next_move) + 1;
-            cout << " win_loss_ratio for square " << row_char << col_num << " is " << win_loss_ratio << endl;
-        }
-
+            cout << " win_loss_ratio for square " << get_row_char_(node_id_as_next_move) << get_col_number_(node_id_as_next_move) << " is " << win_loss_ratio << endl;
+        
         if (win_loss_ratio > best_win_loss_ratio)
         {
             best_win_loss_ratio = win_loss_ratio;
@@ -326,14 +349,8 @@ int ProcessHexBoardClass::MonteCarloSimulationsToFindBestNextMove(const Square p
     }
 
     //print best found next move
-    cout << '\n' << '\n';
-    char row_char = 'a' + get_row_index_(best_win_loss_ratio_node_id);
-    int col_num = get_col_index_(best_win_loss_ratio_node_id) + 1;
-    if (player == Square::PlayerA)
-        cout << "(" << static_cast<char>(Square::PlayerA) << ") picks " << row_char << col_num << endl;
-    else
-        cout << "(" << static_cast<char>(Square::PlayerB) << ") picks " << row_char << col_num << endl;
-
+    cout << "\n\n(" << player << ") picks " << get_row_char_(best_win_loss_ratio_node_id) << get_col_number_(best_win_loss_ratio_node_id) << endl;
+    
     //TIME NOTING STOP
     auto stop = chrono::high_resolution_clock::now();
     auto duration_total = chrono::duration_cast<chrono::milliseconds>(stop - start);
