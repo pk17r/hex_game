@@ -1,12 +1,14 @@
+#include <algorithm>
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <chrono>
 #include "Node.h"
 #include "ProcessBoard.h"
 
 using namespace std;
 
-ProcessBoard::ProcessBoard(Square** hex_board_data, int board_size_data)
+ProcessBoard::ProcessBoard(Square** hex_board_data, int board_size_data, int empty_squares_vector_size_for_simulations)
 {
     this->board_size = board_size_data;
 
@@ -33,8 +35,14 @@ ProcessBoard::ProcessBoard(Square** hex_board_data, int board_size_data)
     closed_set.capacity(board_size * board_size);
     //current_neighbor_nodes.capacity(max(board_size, 6));
 
-    //setting seed for random number generator
-    srand(static_cast<unsigned int>(time(0)));
+    //if (empty_squares_vector_size_for_simulations > 0)
+    //{
+    //    //setting seed for random number generator engine
+    //    unsigned int seed = static_cast<unsigned int>(std::chrono::steady_clock::now().time_since_epoch().count());
+    //    myRandomEngine = default_random_engine(seed);
+    //
+    //    empty_squares_to_fill_randomly.reserve(empty_squares_vector_size_for_simulations - 1);
+    //}
 }
 
 ProcessBoard::~ProcessBoard()
@@ -251,18 +259,39 @@ bool ProcessBoard::game_won_check_aStar(Square player)
 }
 
 // return randomly filled up board
-void ProcessBoard::fill_board_randomly(Square player, int node_id_as_next_move, std::vector<int> &empty_squares_vector)
+void ProcessBoard::fill_board_randomly(Square player, int node_id_as_next_move, std::vector<int> &empty_squares_vector_filled_randomly)
 {
-    int row, col;
-    for (unsigned int i = 0; i < empty_squares_vector.size(); i++)
+    int turns_by_player_A = 0, turns_by_player_B = 0;
+
+    //current move
+    hex_board[node_id_as_next_move / board_size][node_id_as_next_move % board_size] = player;
+
+    if (player == Square::PlayerA)
+        turns_by_player_A++;
+    else
+        turns_by_player_B++;
+
+    for (unsigned int i = 0; i < empty_squares_vector_filled_randomly.size(); i++)
     {
-        row = empty_squares_vector[i] / board_size;
-        col = empty_squares_vector[i] % board_size;
-        if (empty_squares_vector[i] != node_id_as_next_move)
-            hex_board[row][col] = (rand() % 2 == 0 ? Square::PlayerA : Square::PlayerB);
+        if (empty_squares_vector_filled_randomly[i] == node_id_as_next_move)
+        {
+            cout << "\n\n\nERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR \n\n" << endl;
+            cout << "empty_squares_to_fill_randomly[i] == node_id_as_next_move" << endl;
+            exit(0);
+        }
+
+        player = (player == Square::PlayerA ? Square::PlayerB : Square::PlayerA);
+
+        hex_board[empty_squares_vector_filled_randomly[i] / board_size][empty_squares_vector_filled_randomly[i] % board_size] = player;
+
+        if (player == Square::PlayerA)
+            turns_by_player_A++;
         else
-            hex_board[row][col] = player;
+            turns_by_player_B++;
     }
+
+    //printf("\rturns_by_player_A %d, turns_by_player_B %d", turns_by_player_A, turns_by_player_B);
+
 }
 
 bool ProcessBoard::dfs_search(int node_id, Square& player)

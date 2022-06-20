@@ -18,12 +18,12 @@
 int main()
 {
     int board_size = 11;
-    bool test_printout_run = false;
+    bool test_print_hex_board = false;
 
     //initialize hex game
-    GameClass hex_game_object(board_size, test_printout_run);
+    GameClass hex_game_object(board_size, test_print_hex_board);
 
-    if (!test_printout_run)
+    if (!test_print_hex_board)
     {
         //run hex game
         hex_game_object.RunGame();

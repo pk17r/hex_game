@@ -1,14 +1,13 @@
 #include <chrono>
 #include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string>
+//#include <stdio.h>
+//#include <stdlib.h>
 #include "GameClass.h"
 #include "ProcessBoard.h"
 
 using namespace std;
 
-GameClass::GameClass(int board_size, bool test_printout_run)
+GameClass::GameClass(int board_size, bool test_print_hex_board)
 {
     cout << "\n\n\n\t\t\t\tHex Game\n\n\n";
     cout << "                       1    2    3    4    5\n";
@@ -31,13 +30,19 @@ GameClass::GameClass(int board_size, bool test_printout_run)
     cout << "To play human vs computer or computer vs human, select accordingly on cmd" << endl;
     cout << "\nPlay to win!" << '\n' << endl;
 
-    if (!test_printout_run)
+    if (!test_print_hex_board)
     {
         string user_choice;
-        cout << "Enter board size (default 11): ";
+        cout << "Enter board size (default 11) (suffix with 'd' for debug mode): ";
         getline(cin, user_choice);
         if (user_choice != "")
         {
+            if (user_choice.at(user_choice.size() - 1) == 'd')
+            {
+                debug_mode_ = true;
+                user_choice = user_choice.substr(0, user_choice.size() - 1);
+                cout << "Debug Mode ON" << endl;
+            }
             board_size = stoi(user_choice);
         }
         cout << "board size = " << board_size << '\n' << endl;
@@ -108,6 +113,10 @@ GameClass::GameClass(int board_size, bool test_printout_run)
     {
         empty_squares_vector[i] = i;
     }
+
+    //setting seed for random number generator engine
+    unsigned int seed = static_cast<unsigned int>(std::chrono::steady_clock::now().time_since_epoch().count());
+    myRandomEngine = default_random_engine(seed);
 }
 
 GameClass::~GameClass()
@@ -165,8 +174,8 @@ void GameClass::RunGame()
         }
 
         //check game won by current player
-        ProcessBoard processBoard(hex_board, board_size);
-        player_won = processBoard.game_won_check_aStar(current_player);
+        ProcessBoard processBoard(hex_board, board_size, -1);
+        player_won = processBoard.game_won_check_dfs(current_player);
 
         if (!player_won)
         {//change player
@@ -287,7 +296,7 @@ int GameClass::best_next_move(Square player)
     double best_win_loss_ratio = 0;
     int best_win_loss_ratio_node_id = -1;
 
-    cout << "Running " << num_of_simulations << " x " << empty_squares_vector.size() << " simulated trials" << endl;
+    cout << "Running " << empty_squares_vector.size() << "x" << num_of_simulations << " simulated trials" << endl;
     auto start = chrono::high_resolution_clock::now();
     static std::chrono::time_point<std::chrono::high_resolution_clock> t0, t2, t3;
     std::chrono::microseconds duration_fillUpBoardRandomly =  static_cast<std::chrono::microseconds>(0), 
@@ -298,22 +307,32 @@ int GameClass::best_next_move(Square player)
     int counter = 1;
 
     //initialize process board class object with copied hex board
-    ProcessBoard processBoard(hex_board, board_size);
+    ProcessBoard processBoard(hex_board, board_size, static_cast<int>(empty_squares_vector.size()));
+    
+    std::vector<int> empty_squares_vector_to_fill_randomly;
+    empty_squares_vector_to_fill_randomly.reserve(empty_squares_vector.size() - 1);
 
     for (unsigned int i = 0; i < empty_squares_vector.size(); i++)
     {
         int node_id_as_next_move = empty_squares_vector[i];
         int wins = 0, losses = 0;
 
-        //cout << "." << flush;
-        printf("\rSimulation trial %3d of %3d", counter,static_cast<int>(empty_squares_vector.size()));
-        fflush(stdout);
+        for (unsigned int j = 0; j < empty_squares_vector.size(); j++)
+            if (empty_squares_vector[j] != node_id_as_next_move)
+                empty_squares_vector_to_fill_randomly.emplace_back(empty_squares_vector[j]);
+
+        if (debug_mode_)
+            printf("Simulation trial %6d of %6d, (%c)'s node_id_as_next_move %d ", counter * num_of_simulations, static_cast<int>(empty_squares_vector.size()) * num_of_simulations, player, node_id_as_next_move);
+        else
+            printf("\rSimulation trial %6d of %6d", counter * num_of_simulations, static_cast<int>(empty_squares_vector.size()) * num_of_simulations);
 
         for (int simulation_number = 0; simulation_number < num_of_simulations; simulation_number++)
         {
             t0 = chrono::high_resolution_clock::now();
 
-            processBoard.fill_board_randomly(player, node_id_as_next_move, empty_squares_vector);
+            shuffle(empty_squares_vector_to_fill_randomly.begin(), empty_squares_vector_to_fill_randomly.end(), myRandomEngine);
+
+            processBoard.fill_board_randomly(player, node_id_as_next_move, empty_squares_vector_to_fill_randomly);
 
             //t1 = chrono::high_resolution_clock::now();
 
@@ -341,10 +360,15 @@ int GameClass::best_next_move(Square player)
             duration_pathAlgo_dfs += chrono::duration_cast<chrono::microseconds>(t3 - t2);
         }
 
+        empty_squares_vector_to_fill_randomly.clear();
+
         double win_loss_ratio = 1.0 * wins / losses;
-        //char row_char = 'a' + node_id_as_next_move / board_size;
-        //int col_num = node_id_as_next_move % board_size + 1;
-        //cout << "win_loss_ratio for square " << row_char << col_num << " is " << win_loss_ratio << endl;
+        if (debug_mode_)
+        {
+            char row_char = 'a' + node_id_as_next_move / board_size;
+            int col_num = node_id_as_next_move % board_size + 1;
+            cout << " win_loss_ratio for square " << row_char << col_num << " is " << win_loss_ratio << endl;
+        }
         counter++;
 
         if (win_loss_ratio > best_win_loss_ratio)
@@ -367,12 +391,12 @@ int GameClass::best_next_move(Square player)
     unsigned int time_total = static_cast<unsigned int>(duration_total.count());
     unsigned int time_fillUpBoardRandomly = static_cast<unsigned int>(duration_fillUpBoardRandomly.count() / 1000);
     //unsigned int time_pathAlgo_aStar = static_cast<unsigned int>(duration_pathAlgo_aStar.count() / 1000);
-    unsigned int time_pathAlgo_dfs = static_cast<unsigned int>(duration_pathAlgo_dfs.count() / 1000);
+    unsigned int time_dfs_Algo = static_cast<unsigned int>(duration_pathAlgo_dfs.count() / 1000);
     printf("Total Time taken            : %7u ms\n", time_total);
     printf("time_fillUpBoardRandomly    : %7u ms  %3.2f%%\n", time_fillUpBoardRandomly, 1.0 * time_fillUpBoardRandomly / time_total * 100);
     //printf("time_pathAlgo_aStar         : %7u ms  %3.2f%%\n", time_pathAlgo_aStar, 1.0 * time_pathAlgo_aStar / time_total * 100);
-    printf("time_pathAlgo_dfs           : %7u ms  %3.2f%%\n", time_pathAlgo_dfs, 1.0 * time_pathAlgo_dfs / time_total * 100);
-    printf("time_tot - rand - pathalgos : %7u ms  %3.2f%%\n", time_total - time_fillUpBoardRandomly - time_pathAlgo_dfs, 1.0 * (time_total - time_fillUpBoardRandomly - time_pathAlgo_dfs) / time_total * 100);
+    printf("time_dfs_Algo               : %7u ms  %3.2f%%\n", time_dfs_Algo, 1.0 * time_dfs_Algo / time_total * 100);
+    printf("time_tot - rand - pathalgos : %7u ms  %3.2f%%\n", time_total - time_fillUpBoardRandomly - time_dfs_Algo, 1.0 * (time_total - time_fillUpBoardRandomly - time_dfs_Algo) / time_total * 100);
 
     return best_win_loss_ratio_node_id;
 }

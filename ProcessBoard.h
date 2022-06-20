@@ -12,7 +12,7 @@ public:
 
     int board_size = 0;
 
-    ProcessBoard(Square** hex_board_data, int board_size_data);
+    ProcessBoard(Square** hex_board_data, int board_size_data, int empty_squares_vector_size_for_simulations);
 
     ~ProcessBoard();
 
@@ -20,9 +20,10 @@ public:
 
     bool game_won_check_dfs(Square player);
 
-    void fill_board_randomly(Square player, int node_id_as_next_move, std::vector<int>& empty_squares_vector);    // return randomly filled up board
+    void fill_board_randomly(Square player, int node_id_as_next_move, std::vector<int>& empty_squares_vector_filled_randomly);    // return randomly filled up board
 
-private:
+    //std::vector<int> empty_squares_to_fill_randomly;
+
     //define open set. Defining my own priority queue list to learn how to use it
     MyPriorityQueue open_set;
 
