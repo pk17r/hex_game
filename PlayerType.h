@@ -7,5 +7,4 @@ enum class PlayerType
     Computer = 1,
 };
 
-#endif // !PLAYER_TYPE_H_#pragma once
-#pragma once
+#endif // !PLAYER_TYPE_H_

@@ -14,11 +14,6 @@ struct Node
 
     int id = kNullId;
     
-    int nearest_node_id = kNullId;
-    
-    //distance to every node is 1 for hex game
-    int distance = 1;
-
     Node(int id);
     
     Node(int row_index, int col_index, int board_size);

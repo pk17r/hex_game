@@ -2,47 +2,33 @@
 #define PROCESS_BOARD_H_
 
 #include <vector>
-#include "GameClass.h"
 #include "My_Priority_Queue.h"
+#include "Square.h"
 
 class ProcessBoard
 {
 public:
-    Square** hex_board = nullptr;
-
-    int board_size = 0;
-
-    ProcessBoard(Square** hex_board_data, int board_size_data, int empty_squares_vector_size_for_simulations);
+    ProcessBoard(Square** hex_board_data);
 
     ~ProcessBoard();
 
-    bool game_won_check_aStar(Square player);    // (using Dijkstra’s for now, A star later), return -1 for none, 0 for PlayerA, 1 for PlayerB
+    bool GameWonCheckDfs(Square player);
 
-    bool game_won_check_dfs(Square player);
+    void FillBoardRandomly(Square player, int node_id_as_next_move, std::vector<int>& empty_squares_vector_filled_randomly);    // return randomly filled up board
 
-    void fill_board_randomly(Square player, int node_id_as_next_move, std::vector<int>& empty_squares_vector_filled_randomly);    // return randomly filled up board
+private:
+    Square** hex_board_ = nullptr;
 
-    //std::vector<int> empty_squares_to_fill_randomly;
+    bool** hex_board_visited_ = nullptr;     //hex board to note which nodes have been visited by dfs algorithm
 
-    //define open set. Defining my own priority queue list to learn how to use it
-    MyPriorityQueue open_set;
+    int board_size_ = 0;
 
-    //define closed set
-    MyPriorityQueue closed_set;
+    void AddNeighborNodes(int& row_index, int& col_index, Square& player, bool& unvisited_only, MyPriorityQueue& current_neighbor_nodes);
 
-    //MyPriorityQueue current_neighbor_nodes;
+    MyPriorityQueue GetNeighborNodes(int node_id, Square player, bool unvisited_only);
 
-    void check_and_add_nodes_to_current_neighbor_nodes(int& row_index, int& col_index, Square& player, bool& unvisited_only, MyPriorityQueue& current_neighbor_nodes);
-
-    MyPriorityQueue get_connected_nodes(int node_id, Square player, bool unvisited_only);
-
-    bool* node_in_closed_set = nullptr;
-
-    bool** hex_board_visited = nullptr;
-
-    bool dfs_search(int node_id, Square& player);
-
+    bool DfsSearch(int node_id, Square& player);
 
 };
 
-#endif  //!PROCESS_BOARD_H_#pragma once
+#endif  //!PROCESS_BOARD_H_

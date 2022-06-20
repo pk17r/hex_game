@@ -5,47 +5,47 @@
 #include <random>
 #include <string>
 #include <vector>
-#include "Square.h"
 #include "PlayerType.h"
+#include "Square.h"
 
 class GameClass
 {
 public:
-    PlayerType playerA_type = PlayerType::Human;    // 0 – human / 1 - computer
+    PlayerType playerA_type_ = PlayerType::Human;    // 0 – human / 1 - computer
 
-    PlayerType playerB_type = PlayerType::Computer;    // 0 – human / 1 – computer
+    PlayerType playerB_type_ = PlayerType::Computer;    // 0 – human / 1 – computer
 
-    std::string playerA_name;
+    std::string playerA_name_;
 
-    std::string playerB_name;
+    std::string playerB_name_;
 
-    int board_size = 5;    // 5 for testing, 11 for production
-
-    void print_hex_board();
+    void PrintHexBoard();
     
-    GameClass(int board_size, bool test_print_hex_board);    // constructor to initialize game and take inputs
+    GameClass();    // constructor to initialize game and take inputs
 
     ~GameClass();
 
     void RunGame();    // run game here
 
-    bool debug_mode_ = false;
-    
+    //static variables
+    static bool play_game_;
+
+    static int board_size_;
+
+    static bool debug_mode_;
+
+    static int num_of_simulations_;
+
 private:
-    int member_value = 1;
-    
-    Square** hex_board = nullptr;    // pointer to pointer of Square
+    Square** hex_board_ = nullptr;    // pointer to pointer of Square
 
-    std::vector<int> empty_squares_vector;    // all squares have an id, we maintain an empty ids vector to pick from
+    std::vector<int> empty_squares_vector_;    // all squares have an id, we maintain an empty ids vector to pick from
 
-    const int num_of_simulations = 1000;
-    
-    std::default_random_engine myRandomEngine;
+    std::default_random_engine my_random_engine_;
 
-    int take_user_input(Square player);    // return node_id
+    int GetUserNextMove(Square player);    // return node_id
 
-    int best_next_move(Square player);    // return node_id
-
+    int FindBestNextMove(Square player);    // return node_id
 
 };
 
