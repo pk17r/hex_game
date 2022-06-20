@@ -170,6 +170,8 @@ Every Square acts as a node for path algorithms. Nodes have sequential ids from 
 -------
 
 ## Game Runtime Output
+    C:\Programming\3.C++forCProgrammers\Hex_Game>g++ -Wall -g main.cpp *.cc -o main.exe
+    
     C:\Programming\3.C++forCProgrammers\Hex_Game>main.exe
     
     
