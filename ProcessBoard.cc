@@ -4,7 +4,7 @@
 
 using namespace std;
 
-ProcessBoard::ProcessBoard(Square** hex_board_data)
+ProcessBoard::ProcessBoard()
 {
     board_size_ = GameClass::board_size_;
 
@@ -15,14 +15,6 @@ ProcessBoard::ProcessBoard(Square** hex_board_data)
     {
         hex_board_[i] = new Square[board_size_];
         hex_board_visited_[i] = new bool[board_size_];
-    }
-    for (int i = 0; i < board_size_; i++)
-    {
-        for (int j = 0; j < board_size_; j++)
-        {
-            hex_board_[i][j] = hex_board_data[i][j];
-            hex_board_visited_[i][j] = false;
-        }
     }
 }
 
@@ -36,6 +28,17 @@ ProcessBoard::~ProcessBoard()
     delete[] hex_board_;
     delete[] hex_board_visited_;
 
+}
+
+void ProcessBoard::CopyHexBoard(Square** hex_board_data)
+{
+    for (int i = 0; i < board_size_; i++)
+    {
+        for (int j = 0; j < board_size_; j++)
+        {
+            hex_board_[i][j] = hex_board_data[i][j];
+        }
+    }
 }
 
 void ProcessBoard::AddNeighborNodes(int& row_index, int& col_index, Square& player, bool& unvisited_only, MyPriorityQueue& current_neighbor_nodes)
@@ -209,5 +212,6 @@ bool ProcessBoard::GameWonCheckDfs(Square player)
         }
     }
 
+    //recursively search for connection to end node on hex board
     return DfsSearch(Node::graph_start_id, player);
 }

@@ -2,7 +2,6 @@
 #include <chrono>
 #include <iostream>
 #include "GameClass.h"
-#include "ProcessBoard.h"
 
 using namespace std;
 
@@ -138,6 +137,9 @@ void GameClass::RunGame()
     PlayerType current_player_type = playerA_type_;
     int chosen_node_id = -1;
 
+    //create object of ProcessBoard where game won check algo is implemented
+    ProcessBoard processBoard;
+
     while (!player_won)
     {
         moves++;
@@ -156,7 +158,7 @@ void GameClass::RunGame()
         if (current_player_type == PlayerType::Human)
             chosen_node_id = GetUserNextMove(current_player);
         else
-            chosen_node_id = FindBestNextMove(current_player);
+            chosen_node_id = FindBestNextMove(current_player, processBoard);
         
         //fill hex board
         hex_board_[chosen_node_id / board_size_][chosen_node_id % board_size_] = current_player;
@@ -172,11 +174,12 @@ void GameClass::RunGame()
         }
 
         //check game won by current player
-        ProcessBoard processBoard(hex_board_);
+        processBoard.CopyHexBoard(hex_board_);
         player_won = processBoard.GameWonCheckDfs(current_player);
 
+        //if no one won, change player and continue to run game
         if (!player_won)
-        {//change player
+        {
             if (current_player == Square::PlayerA)
             {
                 current_player = Square::PlayerB;
@@ -189,8 +192,8 @@ void GameClass::RunGame()
             }
         }
 
+        //print hex board
         cout << '\n' << "Hex Board after " << moves << " moves:" << '\n';
-
         PrintHexBoard();
     }
     
@@ -275,7 +278,7 @@ int GameClass::GetUserNextMove(Square player)
 }
 
 // return node_id
-int GameClass::FindBestNextMove(Square player)
+int GameClass::FindBestNextMove(Square player, ProcessBoard& processBoard)
 {
     /*
     -For each entry of list of empty squares run a simulation 1000 times
@@ -290,50 +293,61 @@ int GameClass::FindBestNextMove(Square player)
 
         - Return the entry with best win / loss ratio
     */
-    
+
+    //TIME NOTING START
+    auto start = chrono::high_resolution_clock::now();
+    //Simulation loop time clocks
+    static std::chrono::time_point<std::chrono::high_resolution_clock> t0, t1, t2;
+    //time duration counters
+    std::chrono::microseconds duration_shuffle_and_fill_up_board = static_cast<std::chrono::microseconds>(0),
+        duration_who_won_using_dfs_algo = static_cast<std::chrono::microseconds>(0);
+
+    //variables to track best win loss ratio move
     double best_win_loss_ratio = 0;
     int best_win_loss_ratio_node_id = -1;
 
     cout << "Running " << empty_squares_vector_.size() << "x" << num_of_simulations_ << " simulated trials" << endl;
-    auto start = chrono::high_resolution_clock::now();
-    static std::chrono::time_point<std::chrono::high_resolution_clock> t0, t1, t2;
-    std::chrono::microseconds duration_fillUpBoardRandomly =  static_cast<std::chrono::microseconds>(0), 
-        duration_dfs_algo = static_cast<std::chrono::microseconds>(0);
     
-    int counter = 1;
-
-    //initialize process board class object with copied hex board
-    ProcessBoard processBoard(hex_board_);
+    //copy hex board to ProcessBoard's hex board
+    processBoard.CopyHexBoard(hex_board_);
     
-    std::vector<int> empty_squares_vector_to_fill_randomly;
-    empty_squares_vector_to_fill_randomly.reserve(empty_squares_vector_.size() - 1);
+    //initialize vector to shuffle empty squares
+    std::vector<int> empty_squares_shuffle_vector;
+    empty_squares_shuffle_vector.reserve(empty_squares_vector_.size() - 1);
 
     for (unsigned int i = 0; i < empty_squares_vector_.size(); i++)
     {
         int node_id_as_next_move = empty_squares_vector_[i];
-        int wins = 0, losses = 0;
+        unsigned int wins = 0, losses = 0;
 
         for (unsigned int j = 0; j < empty_squares_vector_.size(); j++)
             if (empty_squares_vector_[j] != node_id_as_next_move)
-                empty_squares_vector_to_fill_randomly.emplace_back(empty_squares_vector_[j]);
+                empty_squares_shuffle_vector.emplace_back(empty_squares_vector_[j]);
 
-        if (debug_mode_)
-            printf("Simulation trial %6d of %6d, (%c)'s node_id_as_next_move %d ", counter * num_of_simulations_, static_cast<int>(empty_squares_vector_.size()) * num_of_simulations_, static_cast<char>(player), node_id_as_next_move);
+        if (!debug_mode_)
+            printf("\rSimulation trial %6u of %6u", ((i + 1) * num_of_simulations_), (empty_squares_vector_.size() * num_of_simulations_));
         else
-            printf("\rSimulation trial %6d of %6d", counter * num_of_simulations_, static_cast<int>(empty_squares_vector_.size()) * num_of_simulations_);
+            printf("Simulation trial %6u of %6u, (%c)'s node_id_as_next_move %2d ", ((i + 1) * num_of_simulations_), (empty_squares_vector_.size() * num_of_simulations_), static_cast<char>(player), node_id_as_next_move);
 
-        for (int simulation_number = 0; simulation_number < num_of_simulations_; simulation_number++)
+        //run simulated trial runs, record win loss
+        for (unsigned int simulation_number = 0; simulation_number < num_of_simulations_; simulation_number++)
         {
+            //SHUFFLE AND FILL BOARD TIME START
             t0 = chrono::high_resolution_clock::now();
 
-            std::shuffle(empty_squares_vector_to_fill_randomly.begin(), empty_squares_vector_to_fill_randomly.end(), my_random_engine_);
+            //shuffle empty_squares_shuffle_vector vector
+            shuffle(empty_squares_shuffle_vector.begin(), empty_squares_shuffle_vector.end(), my_random_engine_);
 
-            processBoard.FillBoardRandomly(player, node_id_as_next_move, empty_squares_vector_to_fill_randomly);
+            //fill up board
+            processBoard.FillBoardRandomly(player, node_id_as_next_move, empty_squares_shuffle_vector);
 
+            //SHUFFLE AND FILL BOARD TIME END
             t1 = chrono::high_resolution_clock::now();
+            //WHO WON DFS ALGO TIME START
 
             bool playerWon = processBoard.GameWonCheckDfs(player);
 
+            //WHO WON DFS ALGO TIME END
             t2 = chrono::high_resolution_clock::now();
 
             if (playerWon)
@@ -341,11 +355,12 @@ int GameClass::FindBestNextMove(Square player)
             else
                 losses++;
 
-            duration_fillUpBoardRandomly += chrono::duration_cast<chrono::microseconds>(t1 - t0);
-            duration_dfs_algo += chrono::duration_cast<chrono::microseconds>(t2 - t1);
+            duration_shuffle_and_fill_up_board += chrono::duration_cast<chrono::microseconds>(t1 - t0);
+            duration_who_won_using_dfs_algo += chrono::duration_cast<chrono::microseconds>(t2 - t1);
         }
 
-        empty_squares_vector_to_fill_randomly.clear();
+        //clear shuffle vector
+        empty_squares_shuffle_vector.clear();
 
         double win_loss_ratio = 1.0 * wins / losses;
         if (debug_mode_)
@@ -354,8 +369,7 @@ int GameClass::FindBestNextMove(Square player)
             int col_num = node_id_as_next_move % board_size_ + 1;
             cout << " win_loss_ratio for square " << row_char << col_num << " is " << win_loss_ratio << endl;
         }
-        counter++;
-
+        
         if (win_loss_ratio > best_win_loss_ratio)
         {
             best_win_loss_ratio = win_loss_ratio;
@@ -363,33 +377,34 @@ int GameClass::FindBestNextMove(Square player)
         }
     }
 
+    //print best found next move
+    cout << '\n' << '\n';
     char row_char = 'a' + best_win_loss_ratio_node_id / board_size_;
     int col_num = best_win_loss_ratio_node_id % board_size_ + 1;
-
-    cout << '\n' << '\n';
     if (player == Square::PlayerA)
         cout << playerA_name_ << " (" << static_cast<char>(Square::PlayerA) << ") picks " << row_char << col_num << endl;
     else
         cout << playerB_name_ << " (" << static_cast<char>(Square::PlayerB) << ") picks " << row_char << col_num << endl;
 
+    //TIME NOTING STOP
     auto stop = chrono::high_resolution_clock::now();
     auto duration_total = chrono::duration_cast<chrono::milliseconds>(stop - start);
 
     unsigned int time_total = static_cast<unsigned int>(duration_total.count());
-    unsigned int time_fillUpBoardRandomly = static_cast<unsigned int>(duration_fillUpBoardRandomly.count() / 1000);
-    unsigned int time_dfs_Algo = static_cast<unsigned int>(duration_dfs_algo.count() / 1000);
+    unsigned int time_shuffle_and_fill_up_board = static_cast<unsigned int>(duration_shuffle_and_fill_up_board.count() / 1000);
+    unsigned int time_who_won_using_dfs_algo = static_cast<unsigned int>(duration_who_won_using_dfs_algo.count() / 1000);
 
-    printf("Total Time taken            : %7u ms\n", time_total);
-    printf("time_fillUpBoardRandomly    : %7u ms  %3.2f%%\n", time_fillUpBoardRandomly, 1.0 * time_fillUpBoardRandomly / time_total * 100);
-    printf("time_dfs_Algo               : %7u ms  %3.2f%%\n", time_dfs_Algo, 1.0 * time_dfs_Algo / time_total * 100);
-    printf("time_tot - rand - pathalgos : %7u ms  %3.2f%%\n", time_total - time_fillUpBoardRandomly - time_dfs_Algo, 1.0 * (time_total - time_fillUpBoardRandomly - time_dfs_Algo) / time_total * 100);
+    printf("Total Time taken               : %7u ms\n", time_total);
+    printf("time_shuffle_and_fill_up_board : %7u ms  %3.2f%%\n", time_shuffle_and_fill_up_board, 1.0 * time_shuffle_and_fill_up_board / time_total * 100);
+    printf("time_who_won_using_dfs_algo    : %7u ms  %3.2f%%\n", time_who_won_using_dfs_algo, 1.0 * time_who_won_using_dfs_algo / time_total * 100);
+    printf("time_tot - shuffle - pathalgos : %7u ms  %3.2f%%\n", time_total - time_shuffle_and_fill_up_board - time_who_won_using_dfs_algo, 1.0 * (time_total - time_shuffle_and_fill_up_board - time_who_won_using_dfs_algo) / time_total * 100);
 
     return best_win_loss_ratio_node_id;
 }
 
 void GameClass::PrintHexBoard()
 {
-    cout << '\n' << '\n';
+    cout << '\n';
     cout << "\t\t\t  Hex Game" << '\n' << '\n';
     cout << "\t\t" << static_cast<char>(Square::PlayerA) << "  |  top-to-bottom  | " << playerA_name_  << '\n';
     cout << "\t\t" << static_cast<char>(Square::PlayerB) << "  |  left-to-right  | " << playerB_name_ << '\n';

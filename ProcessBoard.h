@@ -8,9 +8,11 @@
 class ProcessBoard
 {
 public:
-    ProcessBoard(Square** hex_board_data);
+    ProcessBoard();
 
     ~ProcessBoard();
+
+    void CopyHexBoard(Square** hex_board_data);
 
     bool GameWonCheckDfs(Square player);
 

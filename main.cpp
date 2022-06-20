@@ -17,7 +17,7 @@
 //main hex game program parameters
 bool GameClass::play_game_ = true;              //make this true to only test print hex board function
 int GameClass::board_size_ = 11;                 // 5 for testing, 11 for production
-int GameClass::num_of_simulations_ = 1000;
+unsigned int GameClass::num_of_simulations_ = 1000;
 bool GameClass::debug_mode_ = false;            //when true, simulation win-loss-ratio will be printed, can be enabled at runtime by inputting board size with a suffix 'd'
 
 int main()

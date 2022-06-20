@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include "PlayerType.h"
+#include "ProcessBoard.h"
 #include "Square.h"
 
 class GameClass
@@ -34,7 +35,7 @@ public:
 
     static bool debug_mode_;
 
-    static int num_of_simulations_;
+    static unsigned int num_of_simulations_;
 
 private:
     Square** hex_board_ = nullptr;    // pointer to pointer of Square
@@ -45,7 +46,7 @@ private:
 
     int GetUserNextMove(Square player);    // return node_id
 
-    int FindBestNextMove(Square player);    // return node_id
+    int FindBestNextMove(Square player, ProcessBoard& processBoard);    // return node_id
 
 };
 

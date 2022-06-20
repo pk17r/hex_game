@@ -3,9 +3,9 @@
 
 enum class Square : char
 {
+    Empty = '.',
     PlayerA = 'X',
     PlayerB = 'O',
-    Empty = '.',
 };
 
 #endif // !SQUARE_H_#pragma once
