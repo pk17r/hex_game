@@ -223,7 +223,7 @@ bool ProcessHexBoardClass::DfsSearch(int node_id, Square& player)
         set_node_as_visited_(node_id);
 
     //get connected nodes
-    MyPriorityQueue current_neighbor_nodes = move(GetNeighborNodes(node_id, player, true));
+    MyPriorityQueue current_neighbor_nodes = GetNeighborNodes(node_id, player, true);
 
     // recursively process all the adjacent vertices of the node 
     for (int i = 0; i < current_neighbor_nodes.size(); i++)

@@ -8,4 +8,4 @@ enum class Square : char
     PlayerB = 'O',
 };
 
-#endif // !SQUARE_H_#pragma once
+#endif // !SQUARE_H_
