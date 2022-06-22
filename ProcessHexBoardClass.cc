@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cassert>
 #include <chrono>
 #include <iostream>
 #include <type_traits>
@@ -184,36 +185,31 @@ MyPriorityQueue ProcessHexBoardClass::GetNeighborNodes(const int node_id, const 
 
 void ProcessHexBoardClass::FillBoardRandomly(Square player, const int& node_id_as_next_move, std::vector<int> &empty_squares_vector_filled_randomly)
 {
-    //int turns_by_player_A = 0, turns_by_player_B = 0;
+    int turns_by_player_A = 0, turns_by_player_B = 0;
 
     //make current move on hex board
     hex_board_[get_row_index_(node_id_as_next_move)][get_col_index_(node_id_as_next_move)] = player;
 
-    //if (player == Square::PlayerA)
-    //    turns_by_player_A++;
-    //else
-    //    turns_by_player_B++;
+    if (player == Square::PlayerA)
+        turns_by_player_A++;
+    else
+        turns_by_player_B++;
 
     for (unsigned int i = 0; i < empty_squares_vector_filled_randomly.size(); i++)
     {
-        if (empty_squares_vector_filled_randomly[i] == node_id_as_next_move)
-        {
-            printf("\n\n\nERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR \n\n");
-            printf("empty_squares_to_fill_randomly[i] == node_id_as_next_move");
-            exit(0);
-        }
+        assert(empty_squares_vector_filled_randomly[i] != node_id_as_next_move);
 
         player = (player == Square::PlayerA ? Square::PlayerB : Square::PlayerA);
 
         hex_board_[get_row_index_(empty_squares_vector_filled_randomly[i])][get_col_index_(empty_squares_vector_filled_randomly[i])] = player;
 
-        //if (player == Square::PlayerA)
-        //    turns_by_player_A++;
-        //else
-        //    turns_by_player_B++;
+        if (player == Square::PlayerA)
+            turns_by_player_A++;
+        else
+            turns_by_player_B++;
     }
 
-    //printf("\rturns_by_player_A %d, turns_by_player_B %d", turns_by_player_A, turns_by_player_B);
+    assert(abs(turns_by_player_A - turns_by_player_B) <= 1);
 }
 
 bool ProcessHexBoardClass::DfsSearch(int node_id, Square& player)

@@ -5,7 +5,6 @@
 #include <vector>
 #include "PlayerType.h"
 #include "ProcessHexBoardClass.h"
-#include "Square.h"
 
 class GamePlayClass : ProcessHexBoardClass
 {

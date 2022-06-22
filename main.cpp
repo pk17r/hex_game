@@ -16,7 +16,6 @@
 //
 
 #include "GamePlayClass.h"
-#include "ProcessHexBoardClass.h"
 
 //hex game program parameters
 int ProcessHexBoardClass::board_size_ = 11;
