@@ -1,0 +1,13 @@
+# VS STUDIO BUILD FILES
+.vs/*
+x64/*
+x32/*
+#*.sln
+#*.vcx*
+
+# EXE FILES
+*.exe
+
+# COURSERA FILES PEER CODES
+peer/*
+*.zip
