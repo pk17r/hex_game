@@ -27,7 +27,10 @@
     <ClCompile Include="GamePlayClass.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ProcessHexBoardClass.cc">
+    <ClCompile Include="HexBoard.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SimulationHexBoard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -48,6 +51,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Square.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HexBoard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SimulationHexBoard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BestWinLossRatio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

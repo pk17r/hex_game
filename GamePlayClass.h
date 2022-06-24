@@ -1,12 +1,14 @@
 #ifndef GAME_PLAY_CLASS_H_
 #define GAME_PLAY_CLASS_H_
 
+#include <memory>
 #include <string>
 #include <vector>
-#include "PlayerType.h"
-#include "ProcessHexBoardClass.h"
+#include "BestWinLossRatio.h"
+#include "HexBoard.h"
+#include "SimulationHexBoard.h"
 
-class GamePlayClass : ProcessHexBoardClass
+class GamePlayClass : public HexBoard
 {
 public:
     GamePlayClass();    // constructor to initialize hex game
@@ -15,19 +17,15 @@ public:
 
     void RunGame();    // run game here
 
-    void PrintHexBoard();
+    void CreateSimulationHexBoards();
+
+    static void RunSim(int sim_index, Square player, unsigned int from_index, unsigned int to_index);
 
 private:
-    //game play hex board - pointer to pointer of Square - '.', 'X' or 'O'
-    Square** hex_board_ = nullptr;
-    void hex_board_set_ownership_(const int node_id, const Square player);
 
     //to test out Print Hex Board function
     static bool test_print_hex_board_;
-
-    //all squares have an id, we maintain an empty square ids vector to shuffle random fill from
-    std::vector<int> empty_squares_vector_;
-
+    
     //Get user next move input
     int GetUserNextMove(Square player);                 //returns node_id
 
@@ -37,11 +35,11 @@ private:
     //get game parameters like player types and hex board size input from user
     void GetGameParametersInput();
 
-    //player details
-    PlayerType playerA_type_ = PlayerType::Human;       // 0 – human / 1 - computer
-    PlayerType playerB_type_ = PlayerType::Computer;    // 0 – human / 1 – computer
-    std::string playerA_name_ = "Test Player";
-    std::string playerB_name_ = "Computer";
+    //all simulated hex boards for multi-threaded computational processing
+    static std::vector<std::shared_ptr<SimulationHexBoard>> simulation_hex_boards_ptr_vector_;
+
+    //variables to track best win loss ratio move
+    static std::vector<BestWinLossRatio> best_win_loss_ratio_vector;
 };
 
 #endif  //!GAME_PLAY_CLASS_H_

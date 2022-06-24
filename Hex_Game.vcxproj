@@ -143,14 +143,18 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="My_Priority_Queue.cc" />
     <ClCompile Include="Node.cc" />
-    <ClCompile Include="ProcessHexBoardClass.cc" />
+    <ClCompile Include="HexBoard.cc" />
+    <ClCompile Include="SimulationHexBoard.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BestWinLossRatio.h" />
+    <ClInclude Include="HexBoard.h" />
     <ClInclude Include="My_Priority_Queue.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="GamePlayClass.h" />
     <ClInclude Include="PlayerType.h" />
     <ClInclude Include="ProcessHexBoardClass.h" />
+    <ClInclude Include="SimulationHexBoard.h" />
     <ClInclude Include="Square.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,24 +1,5 @@
 # Hex Game
-    
-    
-                                    Hex Game
-    
-    
-                           1    2    3    4    5
-                           --   --   --   --   --
-                      a  \   .    .    .    X    O   \  a
-    
-                        b  \   .    .    O    X    .   \  b
-    
-                          c  \   .    .    X    O    .   \  c
-    
-                            d  \   .    X    .    .    .   \  d
-    
-                              e  \   O    X    .    .    .   \  e
-                                     --   --   --   --   --
-                                      1    2    3    4    5
-    
-    
+
 Author: Prashant Kumar
 
 Date: June 16th 2022
@@ -30,6 +11,34 @@ Compile using:
 g++ -Wall -g main.cpp *.cc -o main.exe
 
 Run main.exe
+
+-------
+
+## Program Highlights:
+
+   - Implements inheritance
+   
+   - Runs Monte Carlo Simulations to find next best move for computer
+   
+   - uses shared_ptr
+   
+   - implements multithreading -> tested on Windows laptop with Visual Studio IDE
+   
+   - uses static functions and variables
+   
+   - overall 3 classes are there
+   
+     - HexBoard
+	 
+	 - GamePlayClass : HexBoard
+	 
+	 - SimulationHexBoard : HexBoard
+	 
+   - Implements Depth First Search to find game is won
+   
+   - Program output pasted below.
+   
+   - Time: On a 8 thread computer, runs over a million simulations on a 11x11 size hex board in under 4 seconds
 
 -------
 
@@ -113,54 +122,24 @@ Every Square acts as a node for path algorithms. Nodes have sequential ids from 
 
 4. enum class Square : char
 
+   - Empty = '.',
+
    - PlayerA = 'X',
 
    - PlayerB = 'O',
 
-   - Empty = '.',
+5. HexBoard Class -> maintains hex board
 
-5. GameClass
 
-   - playerA_type 0 – human /1 - computer
+6. GamePlayClass : HexBoard -> inherits HexBoard and runs game over it
+							-> also makes Simulation HexBoards on which simulated runs are run to find best next move for computer
+							-> implements multithreading -> tested on Windows 10, Visual Studio IDE
 
-   - playerB_type 0 – human /1 – computer
-
-   - playerA_name
-
-   - playerB_name
-
-   - board_size – 5 for testing, 11 for production
-
-   - hex_board – pointer to pointer of Square
-
-   - empty_squares_list – all squares have an id, we maintain an empty ids list to pick from
-
-   - Functions:
-   
-     - GameClass(), constructor to initialize class object
-
-     - take_user_input(Square player), return node_id
-	 
-	 - RunGame()
-
-     - best_next_move(Square player), return node_id
-
-     - print_hex_board()
-
-6. ProcessBoard Class
-
-   - Functions:
-   
-     - ProcessBoard(Square** hex_board_data, int board_size_data), constructor to create a copy of hex board and run simulation trials on it
-
-     - bool game_won_check(Square player), (using Depth First Search), return 0 for game not won, 1 for game won
-
-     - void fill_board_randomly(Square player, int node_id_as_next_move, std::list<int> empty_squares_list)
-
+7. SimulationHexBoard: HexBoard -> inherits HexBoard and runs simulated runs over it to find best next move for computer
 
 -------
 
-## Pseudo Code
+## Pseudo Code (not updated with latest)
 
 1. Load Game Constants
 
@@ -189,9 +168,6 @@ Every Square acts as a node for path algorithms. Nodes have sequential ids from 
 -------
 
 ## Game Runtime Output
-    C:\Programming\3.C++forCProgrammers\Hex_Game>g++ -Wall -g main.cpp *.cc -o main.exe
-    
-    C:\Programming\3.C++forCProgrammers\Hex_Game>main.exe
     
     
     
@@ -222,15 +198,15 @@ Every Square acts as a node for path algorithms. Nodes have sequential ids from 
     
     Play to win!
     
-    Enter board size (default 11) (suffix with 'd' for debug mode):
-    board size = 11
+    Enter board size (default 11) (suffix with 'd' for debug mode): 9
+    board size = 9
     
     Enter Player A (X) name if human or press enter to make it computer:
     Player A (X) is Computer
     
     Enter Player B (O) name if human or press enter to make it computer:
     Player B (O) is Computer
-    
+    nthreads = 8
     
                               Hex Game
     
@@ -238,1415 +214,828 @@ Every Square acts as a node for path algorithms. Nodes have sequential ids from 
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5    6    7    8    9
+                  --   --   --   --   --   --   --   --   --
+            a  \   .    .    .    .    .    .    .    .    .   \  a
     
-               b  \   .    .    .    .    .    .    .    .    .    .    .   \  b
+               b  \   .    .    .    .    .    .    .    .    .   \  b
     
-                  c  \   .    .    .    .    .    .    .    .    .    .    .   \  c
+                  c  \   .    .    .    .    .    .    .    .    .   \  c
     
-                     d  \   .    .    .    .    .    .    .    .    .    .    .   \  d
+                     d  \   .    .    .    .    .    .    .    .    .   \  d
     
-                        e  \   .    .    .    .    .    .    .    .    .    .    .   \  e
+                        e  \   .    .    .    .    .    .    .    .    .   \  e
     
-                           f  \   .    .    .    .    .    .    .    .    .    .    .   \  f
+                           f  \   .    .    .    .    .    .    .    .    .   \  f
     
-                              g  \   .    .    .    .    .    .    .    .    .    .    .   \  g
+                              g  \   .    .    .    .    .    .    .    .    .   \  g
     
-                                 h  \   .    .    .    .    .    .    .    .    .    .    .   \  h
+                                 h  \   .    .    .    .    .    .    .    .    .   \  h
     
-                                    i  \   .    .    .    .    .    .    .    .    .    .    .   \  i
+                                    i  \   .    .    .    .    .    .    .    .    .   \  i
+                                           --   --   --   --   --   --   --   --   --
+                                             1    2    3    4    5    6    7    8    9
     
-                                       j  \   .    .    .    .    .    .    .    .    .    .    .   \  j
+    SQUARES OWNERSHIP empty:81, playerA:0, playerB:0, other:0
     
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
+    Running 810000 simulated trials
+    .................................................................................
     
-    
-    Running 121x1000 simulated trials
-    Simulation trial 121000 of 121000
-    
-    Computer (X) picks f8
-    Total Time taken            :    4438 ms
-    time_fillUpBoardRandomly    :     991 ms  22.33%
-    time_dfs_Algo               :    3358 ms  75.66%
-    time_tot - rand - pathalgos :      89 ms  2.01%
+    (X) picks h2
+    Total Time taken                              :    1792 ms
+    time_copy_hex_board_to_simulation             :       2 us  0.11%
+    Multi-threaded time_shuffle_and_fill_up_board :      42 ms  2.34%
+    Multi-threaded time_who_won_using_dfs_algo    :    1729 ms  96.48%
+    Threads used  : 8
     
     Hex Board after 1 moves:
     
-    
                               Hex Game
     
                     X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5    6    7    8    9
+                  --   --   --   --   --   --   --   --   --
+            a  \   .    .    .    .    .    .    .    .    .   \  a
     
-               b  \   .    .    .    .    .    .    .    .    .    .    .   \  b
+               b  \   .    .    .    .    .    .    .    .    .   \  b
     
-                  c  \   .    .    .    .    .    .    .    .    .    .    .   \  c
+                  c  \   .    .    .    .    .    .    .    .    .   \  c
     
-                     d  \   .    .    .    .    .    .    .    .    .    .    .   \  d
+                     d  \   .    .    .    .    .    .    .    .    .   \  d
     
-                        e  \   .    .    .    .    .    .    .    .    .    .    .   \  e
+                        e  \   .    .    .    .    .    .    .    .    .   \  e
     
-                           f  \   .    .    .    .    .    .    .    X    .    .    .   \  f
+                           f  \   .    .    .    .    .    .    .    .    .   \  f
     
-                              g  \   .    .    .    .    .    .    .    .    .    .    .   \  g
+                              g  \   .    .    .    .    .    .    .    .    .   \  g
     
-                                 h  \   .    .    .    .    .    .    .    .    .    .    .   \  h
+                                 h  \   .    X    .    .    .    .    .    .    .   \  h
     
-                                    i  \   .    .    .    .    .    .    .    .    .    .    .   \  i
+                                    i  \   .    .    .    .    .    .    .    .    .   \  i
+                                           --   --   --   --   --   --   --   --   --
+                                             1    2    3    4    5    6    7    8    9
     
-                                       j  \   .    .    .    .    .    .    .    .    .    .    .   \  j
+    SQUARES OWNERSHIP empty:80, playerA:1, playerB:0, other:0
     
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
+    Computer (X) entered last move as: h2
+    Running 800000 simulated trials
+    ................................................................................
     
-    
-    Computer (X) entered last move as: f8
-    Running 120x1000 simulated trials
-    Simulation trial 120000 of 120000
-    
-    Computer (O) picks h6
-    Total Time taken            :    3449 ms
-    time_fillUpBoardRandomly    :     988 ms  28.65%
-    time_dfs_Algo               :    2394 ms  69.41%
-    time_tot - rand - pathalgos :      67 ms  1.94%
+    (O) picks c7
+    Total Time taken                              :    1410 ms
+    time_copy_hex_board_to_simulation             :       2 us  0.14%
+    Multi-threaded time_shuffle_and_fill_up_board :      31 ms  2.20%
+    Multi-threaded time_who_won_using_dfs_algo    :    1361 ms  96.52%
+    Threads used  : 8
     
     Hex Board after 2 moves:
     
-    
                               Hex Game
     
                     X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5    6    7    8    9
+                  --   --   --   --   --   --   --   --   --
+            a  \   .    .    .    .    .    .    .    .    .   \  a
     
-               b  \   .    .    .    .    .    .    .    .    .    .    .   \  b
+               b  \   .    .    .    .    .    .    .    .    .   \  b
     
-                  c  \   .    .    .    .    .    .    .    .    .    .    .   \  c
+                  c  \   .    .    .    .    .    .    O    .    .   \  c
     
-                     d  \   .    .    .    .    .    .    .    .    .    .    .   \  d
+                     d  \   .    .    .    .    .    .    .    .    .   \  d
     
-                        e  \   .    .    .    .    .    .    .    .    .    .    .   \  e
+                        e  \   .    .    .    .    .    .    .    .    .   \  e
     
-                           f  \   .    .    .    .    .    .    .    X    .    .    .   \  f
+                           f  \   .    .    .    .    .    .    .    .    .   \  f
     
-                              g  \   .    .    .    .    .    .    .    .    .    .    .   \  g
+                              g  \   .    .    .    .    .    .    .    .    .   \  g
     
-                                 h  \   .    .    .    .    .    O    .    .    .    .    .   \  h
+                                 h  \   .    X    .    .    .    .    .    .    .   \  h
     
-                                    i  \   .    .    .    .    .    .    .    .    .    .    .   \  i
+                                    i  \   .    .    .    .    .    .    .    .    .   \  i
+                                           --   --   --   --   --   --   --   --   --
+                                             1    2    3    4    5    6    7    8    9
     
-                                       j  \   .    .    .    .    .    .    .    .    .    .    .   \  j
+    SQUARES OWNERSHIP empty:79, playerA:1, playerB:1, other:0
     
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
+    Computer (O) entered last move as: c7
+    Running 790000 simulated trials
+    ...............................................................................
     
-    
-    Computer (O) entered last move as : h6
-    Running 119x1000 simulated trials
-    Simulation trial 119000 of 119000
-    
-    Computer (X) picks c7
-    Total Time taken            :    4185 ms
-    time_fillUpBoardRandomly    :     988 ms  23.61%
-    time_dfs_Algo               :    2976 ms  71.11%
-    time_tot - rand - pathalgos :     221 ms  5.28%
+    (X) picks d4
+    Total Time taken                              :    1658 ms
+    time_copy_hex_board_to_simulation             :       2 us  0.12%
+    Multi-threaded time_shuffle_and_fill_up_board :      29 ms  1.75%
+    Multi-threaded time_who_won_using_dfs_algo    :    1608 ms  96.98%
+    Threads used  : 8
     
     Hex Board after 3 moves:
     
-    
                               Hex Game
     
                     X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5    6    7    8    9
+                  --   --   --   --   --   --   --   --   --
+            a  \   .    .    .    .    .    .    .    .    .   \  a
     
-               b  \   .    .    .    .    .    .    .    .    .    .    .   \  b
+               b  \   .    .    .    .    .    .    .    .    .   \  b
     
-                  c  \   .    .    .    .    .    .    X    .    .    .    .   \  c
+                  c  \   .    .    .    .    .    .    O    .    .   \  c
     
-                     d  \   .    .    .    .    .    .    .    .    .    .    .   \  d
+                     d  \   .    .    .    X    .    .    .    .    .   \  d
     
-                        e  \   .    .    .    .    .    .    .    .    .    .    .   \  e
+                        e  \   .    .    .    .    .    .    .    .    .   \  e
     
-                           f  \   .    .    .    .    .    .    .    X    .    .    .   \  f
+                           f  \   .    .    .    .    .    .    .    .    .   \  f
     
-                              g  \   .    .    .    .    .    .    .    .    .    .    .   \  g
+                              g  \   .    .    .    .    .    .    .    .    .   \  g
     
-                                 h  \   .    .    .    .    .    O    .    .    .    .    .   \  h
+                                 h  \   .    X    .    .    .    .    .    .    .   \  h
     
-                                    i  \   .    .    .    .    .    .    .    .    .    .    .   \  i
+                                    i  \   .    .    .    .    .    .    .    .    .   \  i
+                                           --   --   --   --   --   --   --   --   --
+                                             1    2    3    4    5    6    7    8    9
     
-                                       j  \   .    .    .    .    .    .    .    .    .    .    .   \  j
+    SQUARES OWNERSHIP empty:78, playerA:2, playerB:1, other:0
     
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
+    Computer (X) entered last move as: d4
+    Running 780000 simulated trials
+    ..............................................................................
     
-    
-    Computer (X) entered last move as: c7
-    Running 118x1000 simulated trials
-    Simulation trial 118000 of 118000
-    
-    Computer (O) picks h5
-    Total Time taken            :    3514 ms
-    time_fillUpBoardRandomly    :     966 ms  27.49%
-    time_dfs_Algo               :    2458 ms  69.95%
-    time_tot - rand - pathalgos :      90 ms  2.56%
+    (O) picks e4
+    Total Time taken                              :    1433 ms
+    time_copy_hex_board_to_simulation             :       2 us  0.14%
+    Multi-threaded time_shuffle_and_fill_up_board :      32 ms  2.23%
+    Multi-threaded time_who_won_using_dfs_algo    :    1380 ms  96.30%
+    Threads used  : 8
     
     Hex Board after 4 moves:
     
-    
                               Hex Game
     
                     X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5    6    7    8    9
+                  --   --   --   --   --   --   --   --   --
+            a  \   .    .    .    .    .    .    .    .    .   \  a
     
-               b  \   .    .    .    .    .    .    .    .    .    .    .   \  b
+               b  \   .    .    .    .    .    .    .    .    .   \  b
     
-                  c  \   .    .    .    .    .    .    X    .    .    .    .   \  c
+                  c  \   .    .    .    .    .    .    O    .    .   \  c
     
-                     d  \   .    .    .    .    .    .    .    .    .    .    .   \  d
+                     d  \   .    .    .    X    .    .    .    .    .   \  d
     
-                        e  \   .    .    .    .    .    .    .    .    .    .    .   \  e
+                        e  \   .    .    .    O    .    .    .    .    .   \  e
     
-                           f  \   .    .    .    .    .    .    .    X    .    .    .   \  f
+                           f  \   .    .    .    .    .    .    .    .    .   \  f
     
-                              g  \   .    .    .    .    .    .    .    .    .    .    .   \  g
+                              g  \   .    .    .    .    .    .    .    .    .   \  g
     
-                                 h  \   .    .    .    .    O    O    .    .    .    .    .   \  h
+                                 h  \   .    X    .    .    .    .    .    .    .   \  h
     
-                                    i  \   .    .    .    .    .    .    .    .    .    .    .   \  i
+                                    i  \   .    .    .    .    .    .    .    .    .   \  i
+                                           --   --   --   --   --   --   --   --   --
+                                             1    2    3    4    5    6    7    8    9
     
-                                       j  \   .    .    .    .    .    .    .    .    .    .    .   \  j
+    SQUARES OWNERSHIP empty:77, playerA:2, playerB:2, other:0
     
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
+    Computer (O) entered last move as: e4
+    Running 770000 simulated trials
+    .............................................................................
     
-    
-    Computer (O) entered last move as : h5
-    Running 117x1000 simulated trials
-    Simulation trial 117000 of 117000
-    
-    Computer (X) picks g8
-    Total Time taken            :    4144 ms
-    time_fillUpBoardRandomly    :    1000 ms  24.13%
-    time_dfs_Algo               :    3026 ms  73.02%
-    time_tot - rand - pathalgos :     118 ms  2.85%
+    (X) picks e3
+    Total Time taken                              :    2087 ms
+    time_copy_hex_board_to_simulation             :       3 us  0.14%
+    Multi-threaded time_shuffle_and_fill_up_board :      38 ms  1.82%
+    Multi-threaded time_who_won_using_dfs_algo    :    2030 ms  97.27%
+    Threads used  : 8
     
     Hex Board after 5 moves:
     
-    
                               Hex Game
     
                     X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5    6    7    8    9
+                  --   --   --   --   --   --   --   --   --
+            a  \   .    .    .    .    .    .    .    .    .   \  a
     
-               b  \   .    .    .    .    .    .    .    .    .    .    .   \  b
+               b  \   .    .    .    .    .    .    .    .    .   \  b
     
-                  c  \   .    .    .    .    .    .    X    .    .    .    .   \  c
+                  c  \   .    .    .    .    .    .    O    .    .   \  c
     
-                     d  \   .    .    .    .    .    .    .    .    .    .    .   \  d
+                     d  \   .    .    .    X    .    .    .    .    .   \  d
     
-                        e  \   .    .    .    .    .    .    .    .    .    .    .   \  e
+                        e  \   .    .    X    O    .    .    .    .    .   \  e
     
-                           f  \   .    .    .    .    .    .    .    X    .    .    .   \  f
+                           f  \   .    .    .    .    .    .    .    .    .   \  f
     
-                              g  \   .    .    .    .    .    .    .    X    .    .    .   \  g
+                              g  \   .    .    .    .    .    .    .    .    .   \  g
     
-                                 h  \   .    .    .    .    O    O    .    .    .    .    .   \  h
+                                 h  \   .    X    .    .    .    .    .    .    .   \  h
     
-                                    i  \   .    .    .    .    .    .    .    .    .    .    .   \  i
+                                    i  \   .    .    .    .    .    .    .    .    .   \  i
+                                           --   --   --   --   --   --   --   --   --
+                                             1    2    3    4    5    6    7    8    9
     
-                                       j  \   .    .    .    .    .    .    .    .    .    .    .   \  j
+    SQUARES OWNERSHIP empty:76, playerA:3, playerB:2, other:0
     
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
+    Computer (X) entered last move as: e3
+    Running 760000 simulated trials
+    ............................................................................
     
-    
-    Computer (X) entered last move as: g8
-    Running 116x1000 simulated trials
-    Simulation trial 116000 of 116000
-    
-    Computer (O) picks h7
-    Total Time taken            :    3571 ms
-    time_fillUpBoardRandomly    :     940 ms  26.32%
-    time_dfs_Algo               :    2515 ms  70.43%
-    time_tot - rand - pathalgos :     116 ms  3.25%
+    (O) picks f3
+    Total Time taken                              :    1575 ms
+    time_copy_hex_board_to_simulation             :       3 us  0.19%
+    Multi-threaded time_shuffle_and_fill_up_board :      36 ms  2.29%
+    Multi-threaded time_who_won_using_dfs_algo    :    1517 ms  96.32%
+    Threads used  : 8
     
     Hex Board after 6 moves:
     
-    
                               Hex Game
     
                     X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5    6    7    8    9
+                  --   --   --   --   --   --   --   --   --
+            a  \   .    .    .    .    .    .    .    .    .   \  a
     
-               b  \   .    .    .    .    .    .    .    .    .    .    .   \  b
+               b  \   .    .    .    .    .    .    .    .    .   \  b
     
-                  c  \   .    .    .    .    .    .    X    .    .    .    .   \  c
+                  c  \   .    .    .    .    .    .    O    .    .   \  c
     
-                     d  \   .    .    .    .    .    .    .    .    .    .    .   \  d
+                     d  \   .    .    .    X    .    .    .    .    .   \  d
     
-                        e  \   .    .    .    .    .    .    .    .    .    .    .   \  e
+                        e  \   .    .    X    O    .    .    .    .    .   \  e
     
-                           f  \   .    .    .    .    .    .    .    X    .    .    .   \  f
+                           f  \   .    .    O    .    .    .    .    .    .   \  f
     
-                              g  \   .    .    .    .    .    .    .    X    .    .    .   \  g
+                              g  \   .    .    .    .    .    .    .    .    .   \  g
     
-                                 h  \   .    .    .    .    O    O    O    .    .    .    .   \  h
+                                 h  \   .    X    .    .    .    .    .    .    .   \  h
     
-                                    i  \   .    .    .    .    .    .    .    .    .    .    .   \  i
+                                    i  \   .    .    .    .    .    .    .    .    .   \  i
+                                           --   --   --   --   --   --   --   --   --
+                                             1    2    3    4    5    6    7    8    9
     
-                                       j  \   .    .    .    .    .    .    .    .    .    .    .   \  j
+    SQUARES OWNERSHIP empty:75, playerA:3, playerB:3, other:0
     
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
+    Computer (O) entered last move as: f3
+    Running 750000 simulated trials
+    ...........................................................................
     
-    
-    Computer (O) entered last move as : h7
-    Running 115x1000 simulated trials
-    Simulation trial 115000 of 115000
-    
-    Computer (X) picks h8
-    Total Time taken            :    4105 ms
-    time_fillUpBoardRandomly    :     940 ms  22.90%
-    time_dfs_Algo               :    3077 ms  74.96%
-    time_tot - rand - pathalgos :      88 ms  2.14%
+    (X) picks f2
+    Total Time taken                              :    1974 ms
+    time_copy_hex_board_to_simulation             :       3 us  0.15%
+    Multi-threaded time_shuffle_and_fill_up_board :      33 ms  1.67%
+    Multi-threaded time_who_won_using_dfs_algo    :    1919 ms  97.21%
+    Threads used  : 8
     
     Hex Board after 7 moves:
     
-    
                               Hex Game
     
                     X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5    6    7    8    9
+                  --   --   --   --   --   --   --   --   --
+            a  \   .    .    .    .    .    .    .    .    .   \  a
     
-               b  \   .    .    .    .    .    .    .    .    .    .    .   \  b
+               b  \   .    .    .    .    .    .    .    .    .   \  b
     
-                  c  \   .    .    .    .    .    .    X    .    .    .    .   \  c
+                  c  \   .    .    .    .    .    .    O    .    .   \  c
     
-                     d  \   .    .    .    .    .    .    .    .    .    .    .   \  d
+                     d  \   .    .    .    X    .    .    .    .    .   \  d
     
-                        e  \   .    .    .    .    .    .    .    .    .    .    .   \  e
+                        e  \   .    .    X    O    .    .    .    .    .   \  e
     
-                           f  \   .    .    .    .    .    .    .    X    .    .    .   \  f
+                           f  \   .    X    O    .    .    .    .    .    .   \  f
     
-                              g  \   .    .    .    .    .    .    .    X    .    .    .   \  g
+                              g  \   .    .    .    .    .    .    .    .    .   \  g
     
-                                 h  \   .    .    .    .    O    O    O    X    .    .    .   \  h
+                                 h  \   .    X    .    .    .    .    .    .    .   \  h
     
-                                    i  \   .    .    .    .    .    .    .    .    .    .    .   \  i
+                                    i  \   .    .    .    .    .    .    .    .    .   \  i
+                                           --   --   --   --   --   --   --   --   --
+                                             1    2    3    4    5    6    7    8    9
     
-                                       j  \   .    .    .    .    .    .    .    .    .    .    .   \  j
+    SQUARES OWNERSHIP empty:74, playerA:4, playerB:3, other:0
     
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
+    Computer (X) entered last move as: f2
+    Running 740000 simulated trials
+    ..........................................................................
     
-    
-    Computer (X) entered last move as: h8
-    Running 114x1000 simulated trials
-    Simulation trial 114000 of 114000
-    
-    Computer (O) picks j7
-    Total Time taken            :    3506 ms
-    time_fillUpBoardRandomly    :     877 ms  25.01%
-    time_dfs_Algo               :    2526 ms  72.05%
-    time_tot - rand - pathalgos :     103 ms  2.94%
+    (O) picks g2
+    Total Time taken                              :    1496 ms
+    time_copy_hex_board_to_simulation             :       3 us  0.20%
+    Multi-threaded time_shuffle_and_fill_up_board :      44 ms  2.94%
+    Multi-threaded time_who_won_using_dfs_algo    :    1425 ms  95.25%
+    Threads used  : 8
     
     Hex Board after 8 moves:
     
-    
                               Hex Game
     
                     X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5    6    7    8    9
+                  --   --   --   --   --   --   --   --   --
+            a  \   .    .    .    .    .    .    .    .    .   \  a
     
-               b  \   .    .    .    .    .    .    .    .    .    .    .   \  b
+               b  \   .    .    .    .    .    .    .    .    .   \  b
     
-                  c  \   .    .    .    .    .    .    X    .    .    .    .   \  c
+                  c  \   .    .    .    .    .    .    O    .    .   \  c
     
-                     d  \   .    .    .    .    .    .    .    .    .    .    .   \  d
+                     d  \   .    .    .    X    .    .    .    .    .   \  d
     
-                        e  \   .    .    .    .    .    .    .    .    .    .    .   \  e
+                        e  \   .    .    X    O    .    .    .    .    .   \  e
     
-                           f  \   .    .    .    .    .    .    .    X    .    .    .   \  f
+                           f  \   .    X    O    .    .    .    .    .    .   \  f
     
-                              g  \   .    .    .    .    .    .    .    X    .    .    .   \  g
+                              g  \   .    O    .    .    .    .    .    .    .   \  g
     
-                                 h  \   .    .    .    .    O    O    O    X    .    .    .   \  h
+                                 h  \   .    X    .    .    .    .    .    .    .   \  h
     
-                                    i  \   .    .    .    .    .    .    .    .    .    .    .   \  i
+                                    i  \   .    .    .    .    .    .    .    .    .   \  i
+                                           --   --   --   --   --   --   --   --   --
+                                             1    2    3    4    5    6    7    8    9
     
-                                       j  \   .    .    .    .    .    .    O    .    .    .    .   \  j
+    SQUARES OWNERSHIP empty:73, playerA:4, playerB:4, other:0
     
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
+    Computer (O) entered last move as: g2
+    Running 730000 simulated trials
+    .........................................................................
     
-    
-    Computer (O) entered last move as : j7
-    Running 113x1000 simulated trials
-    Simulation trial 113000 of 113000
-    
-    Computer (X) picks j8
-    Total Time taken            :    4011 ms
-    time_fillUpBoardRandomly    :     915 ms  22.81%
-    time_dfs_Algo               :    2993 ms  74.62%
-    time_tot - rand - pathalgos :     103 ms  2.57%
+    (X) picks g1
+    Total Time taken                              :    1913 ms
+    time_copy_hex_board_to_simulation             :       3 us  0.16%
+    Multi-threaded time_shuffle_and_fill_up_board :      29 ms  1.52%
+    Multi-threaded time_who_won_using_dfs_algo    :    1859 ms  97.18%
+    Threads used  : 8
     
     Hex Board after 9 moves:
     
-    
                               Hex Game
     
                     X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5    6    7    8    9
+                  --   --   --   --   --   --   --   --   --
+            a  \   .    .    .    .    .    .    .    .    .   \  a
     
-               b  \   .    .    .    .    .    .    .    .    .    .    .   \  b
+               b  \   .    .    .    .    .    .    .    .    .   \  b
     
-                  c  \   .    .    .    .    .    .    X    .    .    .    .   \  c
+                  c  \   .    .    .    .    .    .    O    .    .   \  c
     
-                     d  \   .    .    .    .    .    .    .    .    .    .    .   \  d
+                     d  \   .    .    .    X    .    .    .    .    .   \  d
     
-                        e  \   .    .    .    .    .    .    .    .    .    .    .   \  e
+                        e  \   .    .    X    O    .    .    .    .    .   \  e
     
-                           f  \   .    .    .    .    .    .    .    X    .    .    .   \  f
+                           f  \   .    X    O    .    .    .    .    .    .   \  f
     
-                              g  \   .    .    .    .    .    .    .    X    .    .    .   \  g
+                              g  \   X    O    .    .    .    .    .    .    .   \  g
     
-                                 h  \   .    .    .    .    O    O    O    X    .    .    .   \  h
+                                 h  \   .    X    .    .    .    .    .    .    .   \  h
     
-                                    i  \   .    .    .    .    .    .    .    .    .    .    .   \  i
+                                    i  \   .    .    .    .    .    .    .    .    .   \  i
+                                           --   --   --   --   --   --   --   --   --
+                                             1    2    3    4    5    6    7    8    9
     
-                                       j  \   .    .    .    .    .    .    O    X    .    .    .   \  j
+    SQUARES OWNERSHIP empty:72, playerA:5, playerB:4, other:0
     
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
+    Computer (X) entered last move as: g1
+    Running 720000 simulated trials
+    ........................................................................
     
-    
-    Computer (X) entered last move as: j8
-    Running 112x1000 simulated trials
-    Simulation trial 112000 of 112000
-    
-    Computer (O) picks d8
-    Total Time taken            :    3427 ms
-    time_fillUpBoardRandomly    :     879 ms  25.65%
-    time_dfs_Algo               :    2460 ms  71.78%
-    time_tot - rand - pathalgos :      88 ms  2.57%
+    (O) picks h1
+    Total Time taken                              :    1401 ms
+    time_copy_hex_board_to_simulation             :       4 us  0.29%
+    Multi-threaded time_shuffle_and_fill_up_board :      24 ms  1.71%
+    Multi-threaded time_who_won_using_dfs_algo    :    1349 ms  96.29%
+    Threads used  : 8
     
     Hex Board after 10 moves:
     
-    
                               Hex Game
     
                     X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5    6    7    8    9
+                  --   --   --   --   --   --   --   --   --
+            a  \   .    .    .    .    .    .    .    .    .   \  a
     
-               b  \   .    .    .    .    .    .    .    .    .    .    .   \  b
+               b  \   .    .    .    .    .    .    .    .    .   \  b
     
-                  c  \   .    .    .    .    .    .    X    .    .    .    .   \  c
+                  c  \   .    .    .    .    .    .    O    .    .   \  c
     
-                     d  \   .    .    .    .    .    .    .    O    .    .    .   \  d
+                     d  \   .    .    .    X    .    .    .    .    .   \  d
     
-                        e  \   .    .    .    .    .    .    .    .    .    .    .   \  e
+                        e  \   .    .    X    O    .    .    .    .    .   \  e
     
-                           f  \   .    .    .    .    .    .    .    X    .    .    .   \  f
+                           f  \   .    X    O    .    .    .    .    .    .   \  f
     
-                              g  \   .    .    .    .    .    .    .    X    .    .    .   \  g
+                              g  \   X    O    .    .    .    .    .    .    .   \  g
     
-                                 h  \   .    .    .    .    O    O    O    X    .    .    .   \  h
+                                 h  \   O    X    .    .    .    .    .    .    .   \  h
     
-                                    i  \   .    .    .    .    .    .    .    .    .    .    .   \  i
+                                    i  \   .    .    .    .    .    .    .    .    .   \  i
+                                           --   --   --   --   --   --   --   --   --
+                                             1    2    3    4    5    6    7    8    9
     
-                                       j  \   .    .    .    .    .    .    O    X    .    .    .   \  j
+    SQUARES OWNERSHIP empty:71, playerA:5, playerB:5, other:0
     
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
+    Computer (O) entered last move as: h1
+    Running 710000 simulated trials
+    .......................................................................
     
-    
-    Computer (O) entered last move as : d8
-    Running 111x1000 simulated trials
-    Simulation trial 111000 of 111000
-    
-    Computer (X) picks i8
-    Total Time taken            :    3776 ms
-    time_fillUpBoardRandomly    :     874 ms  23.15%
-    time_dfs_Algo               :    2824 ms  74.79%
-    time_tot - rand - pathalgos :      78 ms  2.07%
+    (X) picks e5
+    Total Time taken                              :    1801 ms
+    time_copy_hex_board_to_simulation             :       3 us  0.17%
+    Multi-threaded time_shuffle_and_fill_up_board :      10 ms  0.56%
+    Multi-threaded time_who_won_using_dfs_algo    :    1767 ms  98.11%
+    Threads used  : 8
     
     Hex Board after 11 moves:
     
-    
                               Hex Game
     
                     X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5    6    7    8    9
+                  --   --   --   --   --   --   --   --   --
+            a  \   .    .    .    .    .    .    .    .    .   \  a
     
-               b  \   .    .    .    .    .    .    .    .    .    .    .   \  b
+               b  \   .    .    .    .    .    .    .    .    .   \  b
     
-                  c  \   .    .    .    .    .    .    X    .    .    .    .   \  c
+                  c  \   .    .    .    .    .    .    O    .    .   \  c
     
-                     d  \   .    .    .    .    .    .    .    O    .    .    .   \  d
+                     d  \   .    .    .    X    .    .    .    .    .   \  d
     
-                        e  \   .    .    .    .    .    .    .    .    .    .    .   \  e
+                        e  \   .    .    X    O    X    .    .    .    .   \  e
     
-                           f  \   .    .    .    .    .    .    .    X    .    .    .   \  f
+                           f  \   .    X    O    .    .    .    .    .    .   \  f
     
-                              g  \   .    .    .    .    .    .    .    X    .    .    .   \  g
+                              g  \   X    O    .    .    .    .    .    .    .   \  g
     
-                                 h  \   .    .    .    .    O    O    O    X    .    .    .   \  h
+                                 h  \   O    X    .    .    .    .    .    .    .   \  h
     
-                                    i  \   .    .    .    .    .    .    .    X    .    .    .   \  i
+                                    i  \   .    .    .    .    .    .    .    .    .   \  i
+                                           --   --   --   --   --   --   --   --   --
+                                             1    2    3    4    5    6    7    8    9
     
-                                       j  \   .    .    .    .    .    .    O    X    .    .    .   \  j
+    SQUARES OWNERSHIP empty:70, playerA:6, playerB:5, other:0
     
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
+    Computer (X) entered last move as: e5
+    Running 700000 simulated trials
+    ......................................................................
     
-    
-    Computer (X) entered last move as: i8
-    Running 110x1000 simulated trials
-    Simulation trial 110000 of 110000
-    
-    Computer (O) picks d9
-    Total Time taken            :    3325 ms
-    time_fillUpBoardRandomly    :     886 ms  26.65%
-    time_dfs_Algo               :    2333 ms  70.17%
-    time_tot - rand - pathalgos :     106 ms  3.19%
+    (O) picks d5
+    Total Time taken                              :    1618 ms
+    time_copy_hex_board_to_simulation             :       4 us  0.25%
+    Multi-threaded time_shuffle_and_fill_up_board : 4294967289 ms  265449152.60%
+    Multi-threaded time_who_won_using_dfs_algo    :    1613 ms  99.69%
+    Threads used  : 8
     
     Hex Board after 12 moves:
     
-    
                               Hex Game
     
                     X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5    6    7    8    9
+                  --   --   --   --   --   --   --   --   --
+            a  \   .    .    .    .    .    .    .    .    .   \  a
     
-               b  \   .    .    .    .    .    .    .    .    .    .    .   \  b
+               b  \   .    .    .    .    .    .    .    .    .   \  b
     
-                  c  \   .    .    .    .    .    .    X    .    .    .    .   \  c
+                  c  \   .    .    .    .    .    .    O    .    .   \  c
     
-                     d  \   .    .    .    .    .    .    .    O    O    .    .   \  d
+                     d  \   .    .    .    X    O    .    .    .    .   \  d
     
-                        e  \   .    .    .    .    .    .    .    .    .    .    .   \  e
+                        e  \   .    .    X    O    X    .    .    .    .   \  e
     
-                           f  \   .    .    .    .    .    .    .    X    .    .    .   \  f
+                           f  \   .    X    O    .    .    .    .    .    .   \  f
     
-                              g  \   .    .    .    .    .    .    .    X    .    .    .   \  g
+                              g  \   X    O    .    .    .    .    .    .    .   \  g
     
-                                 h  \   .    .    .    .    O    O    O    X    .    .    .   \  h
+                                 h  \   O    X    .    .    .    .    .    .    .   \  h
     
-                                    i  \   .    .    .    .    .    .    .    X    .    .    .   \  i
+                                    i  \   .    .    .    .    .    .    .    .    .   \  i
+                                           --   --   --   --   --   --   --   --   --
+                                             1    2    3    4    5    6    7    8    9
     
-                                       j  \   .    .    .    .    .    .    O    X    .    .    .   \  j
+    SQUARES OWNERSHIP empty:69, playerA:6, playerB:6, other:0
     
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
+    Computer (O) entered last move as: d5
+    Running 690000 simulated trials
+    .....................................................................
     
-    
-    Computer (O) entered last move as : d9
-    Running 109x1000 simulated trials
-    Simulation trial 109000 of 109000
-    
-    Computer (X) picks e7
-    Total Time taken            :    3622 ms
-    time_fillUpBoardRandomly    :     843 ms  23.27%
-    time_dfs_Algo               :    2689 ms  74.24%
-    time_tot - rand - pathalgos :      90 ms  2.48%
+    (X) picks c6
+    Total Time taken                              :    1598 ms
+    time_copy_hex_board_to_simulation             :       5 us  0.31%
+    Multi-threaded time_shuffle_and_fill_up_board :      14 ms  0.88%
+    Multi-threaded time_who_won_using_dfs_algo    :    1560 ms  97.62%
+    Threads used  : 8
     
     Hex Board after 13 moves:
     
-    
                               Hex Game
     
                     X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5    6    7    8    9
+                  --   --   --   --   --   --   --   --   --
+            a  \   .    .    .    .    .    .    .    .    .   \  a
     
-               b  \   .    .    .    .    .    .    .    .    .    .    .   \  b
+               b  \   .    .    .    .    .    .    .    .    .   \  b
     
-                  c  \   .    .    .    .    .    .    X    .    .    .    .   \  c
+                  c  \   .    .    .    .    .    X    O    .    .   \  c
     
-                     d  \   .    .    .    .    .    .    .    O    O    .    .   \  d
+                     d  \   .    .    .    X    O    .    .    .    .   \  d
     
-                        e  \   .    .    .    .    .    .    X    .    .    .    .   \  e
+                        e  \   .    .    X    O    X    .    .    .    .   \  e
     
-                           f  \   .    .    .    .    .    .    .    X    .    .    .   \  f
+                           f  \   .    X    O    .    .    .    .    .    .   \  f
     
-                              g  \   .    .    .    .    .    .    .    X    .    .    .   \  g
+                              g  \   X    O    .    .    .    .    .    .    .   \  g
     
-                                 h  \   .    .    .    .    O    O    O    X    .    .    .   \  h
+                                 h  \   O    X    .    .    .    .    .    .    .   \  h
     
-                                    i  \   .    .    .    .    .    .    .    X    .    .    .   \  i
+                                    i  \   .    .    .    .    .    .    .    .    .   \  i
+                                           --   --   --   --   --   --   --   --   --
+                                             1    2    3    4    5    6    7    8    9
     
-                                       j  \   .    .    .    .    .    .    O    X    .    .    .   \  j
+    SQUARES OWNERSHIP empty:68, playerA:7, playerB:6, other:0
     
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
+    Computer (X) entered last move as: c6
+    Running 680000 simulated trials
+    ....................................................................
     
-    
-    Computer (X) entered last move as: e7
-    Running 108x1000 simulated trials
-    Simulation trial 108000 of 108000
-    
-    Computer (O) picks d7
-    Total Time taken            :    3205 ms
-    time_fillUpBoardRandomly    :     854 ms  26.65%
-    time_dfs_Algo               :    2248 ms  70.14%
-    time_tot - rand - pathalgos :     103 ms  3.21%
+    (O) picks d6
+    Total Time taken                              :    1547 ms
+    time_copy_hex_board_to_simulation             :      12 us  0.78%
+    Multi-threaded time_shuffle_and_fill_up_board : 4294967286 ms  277632015.90%
+    Multi-threaded time_who_won_using_dfs_algo    :    1542 ms  99.68%
+    Threads used  : 8
     
     Hex Board after 14 moves:
     
-    
                               Hex Game
     
                     X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5    6    7    8    9
+                  --   --   --   --   --   --   --   --   --
+            a  \   .    .    .    .    .    .    .    .    .   \  a
     
-               b  \   .    .    .    .    .    .    .    .    .    .    .   \  b
+               b  \   .    .    .    .    .    .    .    .    .   \  b
     
-                  c  \   .    .    .    .    .    .    X    .    .    .    .   \  c
+                  c  \   .    .    .    .    .    X    O    .    .   \  c
     
-                     d  \   .    .    .    .    .    .    O    O    O    .    .   \  d
+                     d  \   .    .    .    X    O    O    .    .    .   \  d
     
-                        e  \   .    .    .    .    .    .    X    .    .    .    .   \  e
+                        e  \   .    .    X    O    X    .    .    .    .   \  e
     
-                           f  \   .    .    .    .    .    .    .    X    .    .    .   \  f
+                           f  \   .    X    O    .    .    .    .    .    .   \  f
     
-                              g  \   .    .    .    .    .    .    .    X    .    .    .   \  g
+                              g  \   X    O    .    .    .    .    .    .    .   \  g
     
-                                 h  \   .    .    .    .    O    O    O    X    .    .    .   \  h
+                                 h  \   O    X    .    .    .    .    .    .    .   \  h
     
-                                    i  \   .    .    .    .    .    .    .    X    .    .    .   \  i
+                                    i  \   .    .    .    .    .    .    .    .    .   \  i
+                                           --   --   --   --   --   --   --   --   --
+                                             1    2    3    4    5    6    7    8    9
     
-                                       j  \   .    .    .    .    .    .    O    X    .    .    .   \  j
+    SQUARES OWNERSHIP empty:67, playerA:7, playerB:7, other:0
     
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
+    Computer (O) entered last move as: d6
+    Running 670000 simulated trials
+    ...................................................................
     
-    
-    Computer (O) entered last move as : d7
-    Running 107x1000 simulated trials
-    Simulation trial 107000 of 107000
-    
-    Computer (X) picks d6
-    Total Time taken            :    3383 ms
-    time_fillUpBoardRandomly    :     820 ms  24.24%
-    time_dfs_Algo               :    2483 ms  73.40%
-    time_tot - rand - pathalgos :      80 ms  2.36%
+    (X) picks c8
+    Total Time taken                              :    1472 ms
+    time_copy_hex_board_to_simulation             :       4 us  0.27%
+    Multi-threaded time_shuffle_and_fill_up_board :      14 ms  0.95%
+    Multi-threaded time_who_won_using_dfs_algo    :    1432 ms  97.28%
+    Threads used  : 8
     
     Hex Board after 15 moves:
     
-    
                               Hex Game
     
                     X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5    6    7    8    9
+                  --   --   --   --   --   --   --   --   --
+            a  \   .    .    .    .    .    .    .    .    .   \  a
     
-               b  \   .    .    .    .    .    .    .    .    .    .    .   \  b
+               b  \   .    .    .    .    .    .    .    .    .   \  b
     
-                  c  \   .    .    .    .    .    .    X    .    .    .    .   \  c
+                  c  \   .    .    .    .    .    X    O    X    .   \  c
     
-                     d  \   .    .    .    .    .    X    O    O    O    .    .   \  d
+                     d  \   .    .    .    X    O    O    .    .    .   \  d
     
-                        e  \   .    .    .    .    .    .    X    .    .    .    .   \  e
+                        e  \   .    .    X    O    X    .    .    .    .   \  e
     
-                           f  \   .    .    .    .    .    .    .    X    .    .    .   \  f
+                           f  \   .    X    O    .    .    .    .    .    .   \  f
     
-                              g  \   .    .    .    .    .    .    .    X    .    .    .   \  g
+                              g  \   X    O    .    .    .    .    .    .    .   \  g
     
-                                 h  \   .    .    .    .    O    O    O    X    .    .    .   \  h
+                                 h  \   O    X    .    .    .    .    .    .    .   \  h
     
-                                    i  \   .    .    .    .    .    .    .    X    .    .    .   \  i
+                                    i  \   .    .    .    .    .    .    .    .    .   \  i
+                                           --   --   --   --   --   --   --   --   --
+                                             1    2    3    4    5    6    7    8    9
     
-                                       j  \   .    .    .    .    .    .    O    X    .    .    .   \  j
+    SQUARES OWNERSHIP empty:66, playerA:8, playerB:7, other:0
     
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
+    Computer (X) entered last move as: c8
+    Running 660000 simulated trials
+    ..................................................................
     
-    
-    Computer (X) entered last move as: d6
-    Running 106x1000 simulated trials
-    Simulation trial 106000 of 106000
-    
-    Computer (O) picks e6
-    Total Time taken            :    3077 ms
-    time_fillUpBoardRandomly    :     785 ms  25.51%
-    time_dfs_Algo               :    2202 ms  71.56%
-    time_tot - rand - pathalgos :      90 ms  2.92%
+    (O) picks b8
+    Total Time taken                              :    1550 ms
+    time_copy_hex_board_to_simulation             :       4 us  0.26%
+    Multi-threaded time_shuffle_and_fill_up_board : 4294967278 ms  277094663.10%
+    Multi-threaded time_who_won_using_dfs_algo    :    1552 ms  100.13%
+    Threads used  : 8
     
     Hex Board after 16 moves:
     
-    
                               Hex Game
     
                     X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5    6    7    8    9
+                  --   --   --   --   --   --   --   --   --
+            a  \   .    .    .    .    .    .    .    .    .   \  a
     
-               b  \   .    .    .    .    .    .    .    .    .    .    .   \  b
+               b  \   .    .    .    .    .    .    .    O    .   \  b
     
-                  c  \   .    .    .    .    .    .    X    .    .    .    .   \  c
+                  c  \   .    .    .    .    .    X    O    X    .   \  c
     
-                     d  \   .    .    .    .    .    X    O    O    O    .    .   \  d
+                     d  \   .    .    .    X    O    O    .    .    .   \  d
     
-                        e  \   .    .    .    .    .    O    X    .    .    .    .   \  e
+                        e  \   .    .    X    O    X    .    .    .    .   \  e
     
-                           f  \   .    .    .    .    .    .    .    X    .    .    .   \  f
+                           f  \   .    X    O    .    .    .    .    .    .   \  f
     
-                              g  \   .    .    .    .    .    .    .    X    .    .    .   \  g
+                              g  \   X    O    .    .    .    .    .    .    .   \  g
     
-                                 h  \   .    .    .    .    O    O    O    X    .    .    .   \  h
+                                 h  \   O    X    .    .    .    .    .    .    .   \  h
     
-                                    i  \   .    .    .    .    .    .    .    X    .    .    .   \  i
+                                    i  \   .    .    .    .    .    .    .    .    .   \  i
+                                           --   --   --   --   --   --   --   --   --
+                                             1    2    3    4    5    6    7    8    9
     
-                                       j  \   .    .    .    .    .    .    O    X    .    .    .   \  j
+    SQUARES OWNERSHIP empty:65, playerA:8, playerB:8, other:0
     
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
+    Computer (O) entered last move as: b8
+    Running 650000 simulated trials
+    .................................................................
     
-    
-    Computer (O) entered last move as : e6
-    Running 105x1000 simulated trials
-    Simulation trial 105000 of 105000
-    
-    Computer (X) picks f5
-    Total Time taken            :    3217 ms
-    time_fillUpBoardRandomly    :     774 ms  24.06%
-    time_dfs_Algo               :    2368 ms  73.61%
-    time_tot - rand - pathalgos :      75 ms  2.33%
+    (X) picks b9
+    Total Time taken                              :    1338 ms
+    time_copy_hex_board_to_simulation             :       3 us  0.22%
+    Multi-threaded time_shuffle_and_fill_up_board :      16 ms  1.20%
+    Multi-threaded time_who_won_using_dfs_algo    :    1305 ms  97.53%
+    Threads used  : 8
     
     Hex Board after 17 moves:
     
-    
                               Hex Game
     
                     X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5    6    7    8    9
+                  --   --   --   --   --   --   --   --   --
+            a  \   .    .    .    .    .    .    .    .    .   \  a
     
-               b  \   .    .    .    .    .    .    .    .    .    .    .   \  b
+               b  \   .    .    .    .    .    .    .    O    X   \  b
     
-                  c  \   .    .    .    .    .    .    X    .    .    .    .   \  c
+                  c  \   .    .    .    .    .    X    O    X    .   \  c
     
-                     d  \   .    .    .    .    .    X    O    O    O    .    .   \  d
+                     d  \   .    .    .    X    O    O    .    .    .   \  d
     
-                        e  \   .    .    .    .    .    O    X    .    .    .    .   \  e
+                        e  \   .    .    X    O    X    .    .    .    .   \  e
     
-                           f  \   .    .    .    .    X    .    .    X    .    .    .   \  f
+                           f  \   .    X    O    .    .    .    .    .    .   \  f
     
-                              g  \   .    .    .    .    .    .    .    X    .    .    .   \  g
+                              g  \   X    O    .    .    .    .    .    .    .   \  g
     
-                                 h  \   .    .    .    .    O    O    O    X    .    .    .   \  h
+                                 h  \   O    X    .    .    .    .    .    .    .   \  h
     
-                                    i  \   .    .    .    .    .    .    .    X    .    .    .   \  i
+                                    i  \   .    .    .    .    .    .    .    .    .   \  i
+                                           --   --   --   --   --   --   --   --   --
+                                             1    2    3    4    5    6    7    8    9
     
-                                       j  \   .    .    .    .    .    .    O    X    .    .    .   \  j
+    SQUARES OWNERSHIP empty:64, playerA:9, playerB:8, other:0
     
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
+    Computer (X) entered last move as: b9
+    Running 640000 simulated trials
+    ................................................................
     
-    
-    Computer (X) entered last move as: f5
-    Running 104x1000 simulated trials
-    Simulation trial 104000 of 104000
-    
-    Computer (O) picks e5
-    Total Time taken            :    2983 ms
-    time_fillUpBoardRandomly    :     757 ms  25.38%
-    time_dfs_Algo               :    2139 ms  71.71%
-    time_tot - rand - pathalgos :      87 ms  2.92%
+    (O) picks a9
+    Total Time taken                              :    1586 ms
+    time_copy_hex_board_to_simulation             :       4 us  0.25%
+    Multi-threaded time_shuffle_and_fill_up_board : 4294967280 ms  270804998.74%
+    Multi-threaded time_who_won_using_dfs_algo    :    1587 ms  100.06%
+    Threads used  : 8
     
     Hex Board after 18 moves:
     
-    
                               Hex Game
     
                     X  |  top-to-bottom  | Computer
                     O  |  left-to-right  | Computer
     
     
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
+                  1    2    3    4    5    6    7    8    9
+                  --   --   --   --   --   --   --   --   --
+            a  \   .    .    .    .    .    .    .    .    O   \  a
     
-               b  \   .    .    .    .    .    .    .    .    .    .    .   \  b
+               b  \   .    .    .    .    .    .    .    O    X   \  b
     
-                  c  \   .    .    .    .    .    .    X    .    .    .    .   \  c
+                  c  \   .    .    .    .    .    X    O    X    .   \  c
     
-                     d  \   .    .    .    .    .    X    O    O    O    .    .   \  d
+                     d  \   .    .    .    X    O    O    .    .    .   \  d
     
-                        e  \   .    .    .    .    O    O    X    .    .    .    .   \  e
+                        e  \   .    .    X    O    X    .    .    .    .   \  e
     
-                           f  \   .    .    .    .    X    .    .    X    .    .    .   \  f
+                           f  \   .    X    O    .    .    .    .    .    .   \  f
     
-                              g  \   .    .    .    .    .    .    .    X    .    .    .   \  g
+                              g  \   X    O    .    .    .    .    .    .    .   \  g
     
-                                 h  \   .    .    .    .    O    O    O    X    .    .    .   \  h
+                                 h  \   O    X    .    .    .    .    .    .    .   \  h
     
-                                    i  \   .    .    .    .    .    .    .    X    .    .    .   \  i
+                                    i  \   .    .    .    .    .    .    .    .    .   \  i
+                                           --   --   --   --   --   --   --   --   --
+                                             1    2    3    4    5    6    7    8    9
     
-                                       j  \   .    .    .    .    .    .    O    X    .    .    .   \  j
-    
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
-    
-    
-    Computer (O) entered last move as : e5
-    Running 103x1000 simulated trials
-    Simulation trial 103000 of 103000
-    
-    Computer (X) picks e4
-    Total Time taken            :    3009 ms
-    time_fillUpBoardRandomly    :     753 ms  25.02%
-    time_dfs_Algo               :    2193 ms  72.88%
-    time_tot - rand - pathalgos :      63 ms  2.09%
-    
-    Hex Board after 19 moves:
-    
-    
-                              Hex Game
-    
-                    X  |  top-to-bottom  | Computer
-                    O  |  left-to-right  | Computer
-    
-    
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
-    
-               b  \   .    .    .    .    .    .    .    .    .    .    .   \  b
-    
-                  c  \   .    .    .    .    .    .    X    .    .    .    .   \  c
-    
-                     d  \   .    .    .    .    .    X    O    O    O    .    .   \  d
-    
-                        e  \   .    .    .    X    O    O    X    .    .    .    .   \  e
-    
-                           f  \   .    .    .    .    X    .    .    X    .    .    .   \  f
-    
-                              g  \   .    .    .    .    .    .    .    X    .    .    .   \  g
-    
-                                 h  \   .    .    .    .    O    O    O    X    .    .    .   \  h
-    
-                                    i  \   .    .    .    .    .    .    .    X    .    .    .   \  i
-    
-                                       j  \   .    .    .    .    .    .    O    X    .    .    .   \  j
-    
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
-    
-    
-    Computer (X) entered last move as: e4
-    Running 102x1000 simulated trials
-    Simulation trial 102000 of 102000
-    
-    Computer (O) picks f4
-    Total Time taken            :    2790 ms
-    time_fillUpBoardRandomly    :     727 ms  26.06%
-    time_dfs_Algo               :    1989 ms  71.29%
-    time_tot - rand - pathalgos :      74 ms  2.65%
-    
-    Hex Board after 20 moves:
-    
-    
-                              Hex Game
-    
-                    X  |  top-to-bottom  | Computer
-                    O  |  left-to-right  | Computer
-    
-    
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
-    
-               b  \   .    .    .    .    .    .    .    .    .    .    .   \  b
-    
-                  c  \   .    .    .    .    .    .    X    .    .    .    .   \  c
-    
-                     d  \   .    .    .    .    .    X    O    O    O    .    .   \  d
-    
-                        e  \   .    .    .    X    O    O    X    .    .    .    .   \  e
-    
-                           f  \   .    .    .    O    X    .    .    X    .    .    .   \  f
-    
-                              g  \   .    .    .    .    .    .    .    X    .    .    .   \  g
-    
-                                 h  \   .    .    .    .    O    O    O    X    .    .    .   \  h
-    
-                                    i  \   .    .    .    .    .    .    .    X    .    .    .   \  i
-    
-                                       j  \   .    .    .    .    .    .    O    X    .    .    .   \  j
-    
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
-    
-    
-    Computer (O) entered last move as : f4
-    Running 101x1000 simulated trials
-    Simulation trial 101000 of 101000
-    
-    Computer (X) picks d10
-    Total Time taken            :    2887 ms
-    time_fillUpBoardRandomly    :     750 ms  25.98%
-    time_dfs_Algo               :    2053 ms  71.11%
-    time_tot - rand - pathalgos :      84 ms  2.91%
-    
-    Hex Board after 21 moves:
-    
-    
-                              Hex Game
-    
-                    X  |  top-to-bottom  | Computer
-                    O  |  left-to-right  | Computer
-    
-    
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
-    
-               b  \   .    .    .    .    .    .    .    .    .    .    .   \  b
-    
-                  c  \   .    .    .    .    .    .    X    .    .    .    .   \  c
-    
-                     d  \   .    .    .    .    .    X    O    O    O    X    .   \  d
-    
-                        e  \   .    .    .    X    O    O    X    .    .    .    .   \  e
-    
-                           f  \   .    .    .    O    X    .    .    X    .    .    .   \  f
-    
-                              g  \   .    .    .    .    .    .    .    X    .    .    .   \  g
-    
-                                 h  \   .    .    .    .    O    O    O    X    .    .    .   \  h
-    
-                                    i  \   .    .    .    .    .    .    .    X    .    .    .   \  i
-    
-                                       j  \   .    .    .    .    .    .    O    X    .    .    .   \  j
-    
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
-    
-    
-    Computer (X) entered last move as: d10
-    Running 100x1000 simulated trials
-    Simulation trial 100000 of 100000
-    
-    Computer (O) picks c10
-    Total Time taken            :    2832 ms
-    time_fillUpBoardRandomly    :     698 ms  24.65%
-    time_dfs_Algo               :    2073 ms  73.20%
-    time_tot - rand - pathalgos :      61 ms  2.15%
-    
-    Hex Board after 22 moves:
-    
-    
-                              Hex Game
-    
-                    X  |  top-to-bottom  | Computer
-                    O  |  left-to-right  | Computer
-    
-    
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
-    
-               b  \   .    .    .    .    .    .    .    .    .    .    .   \  b
-    
-                  c  \   .    .    .    .    .    .    X    .    .    O    .   \  c
-    
-                     d  \   .    .    .    .    .    X    O    O    O    X    .   \  d
-    
-                        e  \   .    .    .    X    O    O    X    .    .    .    .   \  e
-    
-                           f  \   .    .    .    O    X    .    .    X    .    .    .   \  f
-    
-                              g  \   .    .    .    .    .    .    .    X    .    .    .   \  g
-    
-                                 h  \   .    .    .    .    O    O    O    X    .    .    .   \  h
-    
-                                    i  \   .    .    .    .    .    .    .    X    .    .    .   \  i
-    
-                                       j  \   .    .    .    .    .    .    O    X    .    .    .   \  j
-    
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
-    
-    
-    Computer (O) entered last move as : c10
-    Running 99x1000 simulated trials
-    Simulation trial  99000 of  99000
-    
-    Computer (X) picks c11
-    Total Time taken            :    2683 ms
-    time_fillUpBoardRandomly    :     687 ms  25.61%
-    time_dfs_Algo               :    1937 ms  72.20%
-    time_tot - rand - pathalgos :      59 ms  2.20%
-    
-    Hex Board after 23 moves:
-    
-    
-                              Hex Game
-    
-                    X  |  top-to-bottom  | Computer
-                    O  |  left-to-right  | Computer
-    
-    
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
-    
-               b  \   .    .    .    .    .    .    .    .    .    .    .   \  b
-    
-                  c  \   .    .    .    .    .    .    X    .    .    O    X   \  c
-    
-                     d  \   .    .    .    .    .    X    O    O    O    X    .   \  d
-    
-                        e  \   .    .    .    X    O    O    X    .    .    .    .   \  e
-    
-                           f  \   .    .    .    O    X    .    .    X    .    .    .   \  f
-    
-                              g  \   .    .    .    .    .    .    .    X    .    .    .   \  g
-    
-                                 h  \   .    .    .    .    O    O    O    X    .    .    .   \  h
-    
-                                    i  \   .    .    .    .    .    .    .    X    .    .    .   \  i
-    
-                                       j  \   .    .    .    .    .    .    O    X    .    .    .   \  j
-    
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
-    
-    
-    Computer (X) entered last move as: c11
-    Running 98x1000 simulated trials
-    Simulation trial  98000 of  98000
-    
-    Computer (O) picks b11
-    Total Time taken            :    2758 ms
-    time_fillUpBoardRandomly    :     705 ms  25.56%
-    time_dfs_Algo               :    1967 ms  71.32%
-    time_tot - rand - pathalgos :      86 ms  3.12%
-    
-    Hex Board after 24 moves:
-    
-    
-                              Hex Game
-    
-                    X  |  top-to-bottom  | Computer
-                    O  |  left-to-right  | Computer
-    
-    
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
-    
-               b  \   .    .    .    .    .    .    .    .    .    .    O   \  b
-    
-                  c  \   .    .    .    .    .    .    X    .    .    O    X   \  c
-    
-                     d  \   .    .    .    .    .    X    O    O    O    X    .   \  d
-    
-                        e  \   .    .    .    X    O    O    X    .    .    .    .   \  e
-    
-                           f  \   .    .    .    O    X    .    .    X    .    .    .   \  f
-    
-                              g  \   .    .    .    .    .    .    .    X    .    .    .   \  g
-    
-                                 h  \   .    .    .    .    O    O    O    X    .    .    .   \  h
-    
-                                    i  \   .    .    .    .    .    .    .    X    .    .    .   \  i
-    
-                                       j  \   .    .    .    .    .    .    O    X    .    .    .   \  j
-    
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
-    
-    
-    Computer (O) entered last move as : b11
-    Running 97x1000 simulated trials
-    Simulation trial  97000 of  97000
-    
-    Computer (X) picks f3
-    Total Time taken            :    2476 ms
-    time_fillUpBoardRandomly    :     675 ms  27.26%
-    time_dfs_Algo               :    1732 ms  69.95%
-    time_tot - rand - pathalgos :      69 ms  2.79%
-    
-    Hex Board after 25 moves:
-    
-    
-                              Hex Game
-    
-                    X  |  top-to-bottom  | Computer
-                    O  |  left-to-right  | Computer
-    
-    
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
-    
-               b  \   .    .    .    .    .    .    .    .    .    .    O   \  b
-    
-                  c  \   .    .    .    .    .    .    X    .    .    O    X   \  c
-    
-                     d  \   .    .    .    .    .    X    O    O    O    X    .   \  d
-    
-                        e  \   .    .    .    X    O    O    X    .    .    .    .   \  e
-    
-                           f  \   .    .    X    O    X    .    .    X    .    .    .   \  f
-    
-                              g  \   .    .    .    .    .    .    .    X    .    .    .   \  g
-    
-                                 h  \   .    .    .    .    O    O    O    X    .    .    .   \  h
-    
-                                    i  \   .    .    .    .    .    .    .    X    .    .    .   \  i
-    
-                                       j  \   .    .    .    .    .    .    O    X    .    .    .   \  j
-    
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
-    
-    
-    Computer (X) entered last move as: f3
-    Running 96x1000 simulated trials
-    Simulation trial  96000 of  96000
-    
-    Computer (O) picks g3
-    Total Time taken            :    2376 ms
-    time_fillUpBoardRandomly    :     656 ms  27.61%
-    time_dfs_Algo               :    1656 ms  69.70%
-    time_tot - rand - pathalgos :      64 ms  2.69%
-    
-    Hex Board after 26 moves:
-    
-    
-                              Hex Game
-    
-                    X  |  top-to-bottom  | Computer
-                    O  |  left-to-right  | Computer
-    
-    
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
-    
-               b  \   .    .    .    .    .    .    .    .    .    .    O   \  b
-    
-                  c  \   .    .    .    .    .    .    X    .    .    O    X   \  c
-    
-                     d  \   .    .    .    .    .    X    O    O    O    X    .   \  d
-    
-                        e  \   .    .    .    X    O    O    X    .    .    .    .   \  e
-    
-                           f  \   .    .    X    O    X    .    .    X    .    .    .   \  f
-    
-                              g  \   .    .    O    .    .    .    .    X    .    .    .   \  g
-    
-                                 h  \   .    .    .    .    O    O    O    X    .    .    .   \  h
-    
-                                    i  \   .    .    .    .    .    .    .    X    .    .    .   \  i
-    
-                                       j  \   .    .    .    .    .    .    O    X    .    .    .   \  j
-    
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
-    
-    
-    Computer (O) entered last move as : g3
-    Running 95x1000 simulated trials
-    Simulation trial  95000 of  95000
-    
-    Computer (X) picks g2
-    Total Time taken            :    2399 ms
-    time_fillUpBoardRandomly    :     626 ms  26.09%
-    time_dfs_Algo               :    1692 ms  70.53%
-    time_tot - rand - pathalgos :      81 ms  3.38%
-    
-    Hex Board after 27 moves:
-    
-    
-                              Hex Game
-    
-                    X  |  top-to-bottom  | Computer
-                    O  |  left-to-right  | Computer
-    
-    
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
-    
-               b  \   .    .    .    .    .    .    .    .    .    .    O   \  b
-    
-                  c  \   .    .    .    .    .    .    X    .    .    O    X   \  c
-    
-                     d  \   .    .    .    .    .    X    O    O    O    X    .   \  d
-    
-                        e  \   .    .    .    X    O    O    X    .    .    .    .   \  e
-    
-                           f  \   .    .    X    O    X    .    .    X    .    .    .   \  f
-    
-                              g  \   .    X    O    .    .    .    .    X    .    .    .   \  g
-    
-                                 h  \   .    .    .    .    O    O    O    X    .    .    .   \  h
-    
-                                    i  \   .    .    .    .    .    .    .    X    .    .    .   \  i
-    
-                                       j  \   .    .    .    .    .    .    O    X    .    .    .   \  j
-    
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
-    
-    
-    Computer (X) entered last move as: g2
-    Running 94x1000 simulated trials
-    Simulation trial  94000 of  94000
-    
-    Computer (O) picks h2
-    Total Time taken            :    2301 ms
-    time_fillUpBoardRandomly    :     639 ms  27.77%
-    time_dfs_Algo               :    1589 ms  69.06%
-    time_tot - rand - pathalgos :      73 ms  3.17%
-    
-    Hex Board after 28 moves:
-    
-    
-                              Hex Game
-    
-                    X  |  top-to-bottom  | Computer
-                    O  |  left-to-right  | Computer
-    
-    
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
-    
-               b  \   .    .    .    .    .    .    .    .    .    .    O   \  b
-    
-                  c  \   .    .    .    .    .    .    X    .    .    O    X   \  c
-    
-                     d  \   .    .    .    .    .    X    O    O    O    X    .   \  d
-    
-                        e  \   .    .    .    X    O    O    X    .    .    .    .   \  e
-    
-                           f  \   .    .    X    O    X    .    .    X    .    .    .   \  f
-    
-                              g  \   .    X    O    .    .    .    .    X    .    .    .   \  g
-    
-                                 h  \   .    O    .    .    O    O    O    X    .    .    .   \  h
-    
-                                    i  \   .    .    .    .    .    .    .    X    .    .    .   \  i
-    
-                                       j  \   .    .    .    .    .    .    O    X    .    .    .   \  j
-    
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
-    
-    
-    Computer (O) entered last move as : h2
-    Running 93x1000 simulated trials
-    Simulation trial  93000 of  93000
-    
-    Computer (X) picks i1
-    Total Time taken            :    2275 ms
-    time_fillUpBoardRandomly    :     582 ms  25.58%
-    time_dfs_Algo               :    1632 ms  71.74%
-    time_tot - rand - pathalgos :      61 ms  2.68%
-    
-    Hex Board after 29 moves:
-    
-    
-                              Hex Game
-    
-                    X  |  top-to-bottom  | Computer
-                    O  |  left-to-right  | Computer
-    
-    
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
-    
-               b  \   .    .    .    .    .    .    .    .    .    .    O   \  b
-    
-                  c  \   .    .    .    .    .    .    X    .    .    O    X   \  c
-    
-                     d  \   .    .    .    .    .    X    O    O    O    X    .   \  d
-    
-                        e  \   .    .    .    X    O    O    X    .    .    .    .   \  e
-    
-                           f  \   .    .    X    O    X    .    .    X    .    .    .   \  f
-    
-                              g  \   .    X    O    .    .    .    .    X    .    .    .   \  g
-    
-                                 h  \   .    O    .    .    O    O    O    X    .    .    .   \  h
-    
-                                    i  \   X    .    .    .    .    .    .    X    .    .    .   \  i
-    
-                                       j  \   .    .    .    .    .    .    O    X    .    .    .   \  j
-    
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
-    
-    
-    Computer (X) entered last move as: i1
-    Running 92x1000 simulated trials
-    Simulation trial  92000 of  92000
-    
-    Computer (O) picks h1
-    Total Time taken            :    2216 ms
-    time_fillUpBoardRandomly    :     593 ms  26.76%
-    time_dfs_Algo               :    1547 ms  69.81%
-    time_tot - rand - pathalgos :      76 ms  3.43%
-    
-    Hex Board after 30 moves:
-    
-    
-                              Hex Game
-    
-                    X  |  top-to-bottom  | Computer
-                    O  |  left-to-right  | Computer
-    
-    
-                  1    2    3    4    5    6    7    8    9   10   11
-                  --   --   --   --   --   --   --   --   --   --   --
-            a  \   .    .    .    .    .    .    .    .    .    .    .   \  a
-    
-               b  \   .    .    .    .    .    .    .    .    .    .    O   \  b
-    
-                  c  \   .    .    .    .    .    .    X    .    .    O    X   \  c
-    
-                     d  \   .    .    .    .    .    X    O    O    O    X    .   \  d
-    
-                        e  \   .    .    .    X    O    O    X    .    .    .    .   \  e
-    
-                           f  \   .    .    X    O    X    .    .    X    .    .    .   \  f
-    
-                              g  \   .    X    O    .    .    .    .    X    .    .    .   \  g
-    
-                                 h  \   O    O    .    .    O    O    O    X    .    .    .   \  h
-    
-                                    i  \   X    .    .    .    .    .    .    X    .    .    .   \  i
-    
-                                       j  \   .    .    .    .    .    .    O    X    .    .    .   \  j
-    
-                                          k  \   .    .    .    .    .    .    .    .    .    .    .   \  k
-                                                 --   --   --   --   --   --   --   --   --   --   --
-                                                   1    2    3    4    5    6    7    8    9   10   11
-    
+    SQUARES OWNERSHIP empty:63, playerA:9, playerB:9, other:0
     
     
     Computer (O) Won!!!
     
-    Game won in 30 moves!
+    Game won in 18 moves!
     
-    C:\Programming\3.C++forCProgrammers\Hex_Game>
+    
+    Calling destructors...
+    ~SimulationHexBoard()
+    ~HexBoard() owner: SimulationHexBoard()
+    ~SimulationHexBoard()
+    ~HexBoard() owner: SimulationHexBoard()
+    ~SimulationHexBoard()
+    ~HexBoard() owner: SimulationHexBoard()
+    ~SimulationHexBoard()
+    ~HexBoard() owner: SimulationHexBoard()
+    ~SimulationHexBoard()
+    ~HexBoard() owner: SimulationHexBoard()
+    ~SimulationHexBoard()
+    ~HexBoard() owner: SimulationHexBoard()
+    ~SimulationHexBoard()
+    ~HexBoard() owner: SimulationHexBoard()
+    ~SimulationHexBoard()
+    ~HexBoard() owner: SimulationHexBoard()
+    ~GamePlayClass()
+    ~HexBoard() owner: GamePlayClass()
+    
+    C:\Programming\3.C++forCProgrammers\Hex_Game\x64\Release\Hex_Game.exe (process 18004) exited with code 0.
+    Press any key to close this window . . .

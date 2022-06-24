@@ -1,10 +1,15 @@
+#include <cassert>
+#include <cstring>
+#include <future>
 #include <iostream>
 #include "GamePlayClass.h"
+#include <thread>
 
 using namespace std;
 
 GamePlayClass::GamePlayClass()
 {
+    
     if (!test_print_hex_board_)
         GetGameParametersInput();
 
@@ -17,18 +22,8 @@ GamePlayClass::GamePlayClass()
     //we connect a player's side nodes to these imaginary nodes to process whether game has been won
 
     //initialize hex board
-    hex_board_ = new Square * [get_board_size_()];
-    for (int i = 0; i < get_board_size_(); i++)
-    {
-        hex_board_[i] = new Square[get_board_size_()];
-    }
-    for (int node_id = 0; node_id < get_board_size_() * get_board_size_(); node_id++)
-    {
-        hex_board_set_ownership_(node_id, Square::Empty);
-    }
-
-    //initialize hex board of ProcessHexBoardClass
-    ProcessHexBoardClassInitialize();
+    HexBoardInitialize();
+    HexBoardOwnerClass = "GamePlayClass()";
 
     //update empty_squares_vector_ with all nodes
     empty_squares_vector_ = vector<int>(get_board_size_() * get_board_size_(), 0);
@@ -36,20 +31,17 @@ GamePlayClass::GamePlayClass()
     {
         empty_squares_vector_[i] = i;
     }
+
+    //initialize simulation hex boards if either player is a computer
+    if (playerA_type_ == PlayerType::Computer || playerB_type_ == PlayerType::Computer)
+        CreateSimulationHexBoards();
 }
 
 GamePlayClass::~GamePlayClass()
 {
-    for (int i = 0; i < get_board_size_(); i++)
-    {
-        delete hex_board_[i];
-    }
-    delete hex_board_;
-}
-
-void GamePlayClass::hex_board_set_ownership_(const int node_id, const Square player)
-{
-    hex_board_[get_row_index_(node_id)][get_col_index_(node_id)] = player;
+    cout << "\n\nCalling destructors..." << endl;
+    simulation_hex_boards_ptr_vector_.clear();
+    cout << "~GamePlayClass()" << endl;
 }
 
 void GamePlayClass::RunGame()
@@ -88,7 +80,7 @@ void GamePlayClass::RunGame()
             next_move_node_id = FindBestNextMove(current_player);
         
         //fill hex board with next move
-        hex_board_set_ownership_(next_move_node_id, current_player);
+        set_hex_board_ownership_(next_move_node_id, current_player);
 
         //remove next_move_node_id from empty_squares_vector_
         for (auto iterator = empty_squares_vector_.begin(); iterator != empty_squares_vector_.end(); iterator++)
@@ -101,7 +93,6 @@ void GamePlayClass::RunGame()
         }
 
         //check game won by current player
-        CopyHexBoardToProcessHexBoardClass(hex_board_);
         player_won = GameWonCheckDfsAlgo(current_player);
 
         //if no one won, change player and continue to run game
@@ -132,12 +123,114 @@ void GamePlayClass::RunGame()
     cout << "Game won in " << moves << " moves!" << endl;
 }
 
+void GamePlayClass::RunSim(int sim_index, Square player, unsigned int from_index, unsigned int to_index)
+{
+    best_win_loss_ratio_vector.push_back((simulation_hex_boards_ptr_vector_.at(sim_index))->MonteCarloSimulationsToFindBestNextMove(player, from_index, to_index));
+}
+
 int GamePlayClass::FindBestNextMove(Square player)
 {
-    //copy hex board to ProcessHexBoardClass's hex board
-    CopyHexBoardToProcessHexBoardClass(hex_board_);
+    /*
+    -For each entry of empty squares run a simulation 1000 times
 
-    return MonteCarloSimulationsToFindBestNextMove(player, empty_squares_vector_);
+        - Fill all squares randomly
+
+        - Check who won the game
+
+        - Note win or loss for this simulation
+
+        - Assign the entry with win / loss ratio
+
+        - Return the entry with best win / loss ratio
+    */
+
+    //TIME NOTING START
+    auto start = chrono::high_resolution_clock::now();
+    
+    cout << "Running " << empty_squares_vector_.size() * num_of_simulations_ << " simulated trials" << endl;
+
+    //copy hex board to simulation hex boards and run simulations
+    //unsigned int hex_board_memory_space = sizeof(Square) * get_board_size_() * get_board_size_();
+
+    unsigned int indices_to_simulate_by_every_simulator = static_cast<unsigned int>(ceil(1.0 * empty_squares_vector_.size() / simulation_hex_boards_ptr_vector_.size()));
+    unsigned int last_to_index = 0;
+
+    vector<thread> ThreadVector;
+
+    //Simulation loop time clocks
+    static std::chrono::time_point<std::chrono::high_resolution_clock> t0, t1;
+    std::chrono::nanoseconds duration_copy_hex_board_to_simulation = static_cast<std::chrono::nanoseconds>(0);
+
+    unsigned int sim_i = 0;
+    while(sim_i < simulation_hex_boards_ptr_vector_.size())
+    {
+        if (last_to_index >= empty_squares_vector_.size())
+            break;
+
+        //COPY HEX BOARD TIME START
+        t0 = chrono::high_resolution_clock::now();
+
+        //fill simulation hex boards with game play hex board
+        for (int i = 0; i < get_board_size_(); i++)
+        {
+            for (int j = 0; j < get_board_size_(); j++)
+            {
+                simulation_hex_boards_ptr_vector_.at(sim_i)->hex_board_[i][j] = hex_board_[i][j];
+            }
+        }
+        //memcpy(simulation_hex_boards_ptr_vector_.at(sim_i)->hex_board_, this->hex_board_, hex_board_memory_space);
+
+        //COPY HEX BOARD TIME STOP
+        t1 = chrono::high_resolution_clock::now();
+        duration_copy_hex_board_to_simulation += chrono::duration_cast<chrono::nanoseconds>(t1 - t0);
+
+        //create simulation threads
+        ThreadVector.emplace_back(thread (&GamePlayClass::RunSim, sim_i, player, last_to_index, last_to_index + indices_to_simulate_by_every_simulator));
+
+        last_to_index += indices_to_simulate_by_every_simulator;
+        sim_i++;
+    }
+
+    //wait for completion of simulation threads
+    for(auto t_ptr = ThreadVector.begin(); t_ptr != ThreadVector.end(); t_ptr++)
+    {
+        t_ptr->join();
+    }
+
+    //collate simulation data to find out best next move node id
+    double best_win_loss_ratio = 0;
+    int best_win_loss_ratio_node_id = -1;
+    unsigned int time_shuffle_and_fill_up_board = 0;
+    unsigned int time_who_won_using_dfs_algo = 0;
+    for (int i = 0; i < static_cast<int>(best_win_loss_ratio_vector.size()); i++)
+    {
+        time_shuffle_and_fill_up_board += best_win_loss_ratio_vector.at(i).time_shuffle_and_fill_up_board;
+        time_who_won_using_dfs_algo += best_win_loss_ratio_vector.at(i).time_who_won_using_dfs_algo;
+        if (best_win_loss_ratio_vector.at(i).best_win_loss_ratio > best_win_loss_ratio)
+        {
+            //update best next move node id according to best win loss ratio
+            best_win_loss_ratio_node_id = best_win_loss_ratio_vector.at(i).best_win_loss_ratio_node_id;
+            best_win_loss_ratio = best_win_loss_ratio_vector.at(i).best_win_loss_ratio;
+        }
+    }
+    //clear simulation results
+    best_win_loss_ratio_vector.clear();
+
+    //print best found next move
+    cout << "\n\n(" << static_cast<char>(player) << ") picks " << get_row_char_(best_win_loss_ratio_node_id) << get_col_number_(best_win_loss_ratio_node_id) << endl;
+
+    //TIME NOTING STOP
+    auto stop = chrono::high_resolution_clock::now();
+    auto duration_total = chrono::duration_cast<chrono::milliseconds>(stop - start);
+    unsigned int time_total = static_cast<unsigned int>(duration_total.count());
+    unsigned int time_copy_hex_board_to_simulation = static_cast<unsigned int>(duration_copy_hex_board_to_simulation.count() / 1000);
+    printf("Total Time taken                              : %7u ms\n", time_total);
+    printf("time_copy_hex_board_to_simulation             : %7u us  %3.2f%%\n", time_copy_hex_board_to_simulation, 1.0 * time_copy_hex_board_to_simulation / time_total * 100);
+    printf("Multi-threaded time_shuffle_and_fill_up_board : %7u ms  %3.2f%%\n", time_shuffle_and_fill_up_board, 1.0 * time_shuffle_and_fill_up_board / time_total * 100);
+    printf("Multi-threaded time_who_won_using_dfs_algo    : %7u ms  %3.2f%%\n", time_who_won_using_dfs_algo, 1.0 * time_who_won_using_dfs_algo / time_total * 100);
+    printf("Threads used  : %u\n", sim_i);
+
+    return best_win_loss_ratio_node_id;
 }
 
 int GamePlayClass::GetUserNextMove(Square player)
@@ -211,71 +304,6 @@ int GamePlayClass::GetUserNextMove(Square player)
     return get_node_id_(row_index, col_index);
 }
 
-void GamePlayClass::PrintHexBoard()
-{
-    cout << '\n';
-    cout << "\t\t\t  Hex Game" << '\n' << '\n';
-    cout << "\t\t" << static_cast<char>(Square::PlayerA) << "  |  top-to-bottom  | " << playerA_name_  << '\n';
-    cout << "\t\t" << static_cast<char>(Square::PlayerB) << "  |  left-to-right  | " << playerB_name_ << '\n';
-    cout << '\n' << '\n';
-
-    //header row
-    cout << '\t' << "    ";
-    for (int i = 1; i <= get_board_size_(); i++)
-        printf("%3d  ", i);
-    cout << '\n';
-
-    cout << '\t' << "     ";
-    for (int i = 1; i <= get_board_size_(); i++)
-        printf(" --  ");
-    cout << '\n';
-
-    char letter = 'a';
-
-    //board body
-    for (int i = 0; i < 2 * get_board_size_() - 1; i++)
-    {
-        if (i % 2 == 0)
-        {
-            //row initial blank spaces
-            cout << '\t';
-            for (int print_blank = 0; print_blank < i + i / 2; print_blank++)
-                cout << " ";
-
-            //row label left
-            cout << letter << "  \\   ";
-
-            //board
-            for (int j = 0; j < get_board_size_(); j++)
-            {
-                cout << static_cast<char>(hex_board_[i / 2][j]);
-                if (j < get_board_size_() - 1)
-                    cout << "    ";
-            }
-
-            //row label right
-            cout << "   \\  " << letter++;
-        }
-        
-        cout << '\n';
-    }
-
-    cout << '\t' << '\t';
-    for (int print_blank = 0; print_blank < 2 * get_board_size_() - 4 + get_board_size_(); print_blank++)
-        cout << " ";
-    for (int i = 1; i <= get_board_size_(); i++)
-        printf("--   ");
-
-    //footer row
-    cout << '\n' << '\t' << '\t' << " ";
-    for (int print_blank = 0; print_blank < 2 * get_board_size_() - 5 + get_board_size_(); print_blank++)
-        cout << " ";
-    for (int i = 1; i <= get_board_size_(); i++)
-        printf("%3d  ", i);
-
-    cout << '\n' << '\n' << endl;
-}
-
 void GamePlayClass::GetGameParametersInput()
 {
     cout << "\n\n\n\t\t\t\tHex Game\n\n\n";
@@ -341,4 +369,16 @@ void GamePlayClass::GetGameParametersInput()
         playerB_name_ = "Computer";
     }
     cout << "Player B (" << static_cast<char>(Square::PlayerB) << ") is " << playerB_name_ << '\n';
+}
+
+void GamePlayClass::CreateSimulationHexBoards()
+{
+    unsigned int nthreads = std::thread::hardware_concurrency();
+    cout << "nthreads = " << nthreads << endl;
+
+    for (unsigned int i = 0; i < nthreads; i++)
+    {
+        shared_ptr<SimulationHexBoard> p = make_shared<SimulationHexBoard>();
+        simulation_hex_boards_ptr_vector_.emplace_back(p);
+    }
 }
