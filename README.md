@@ -37,7 +37,9 @@ Tested on Windows Machine with Visual Studio 2022. Not tested on Linux Machine.
 	 - SimulationHexBoard : HexBoard
 	 
    - Implements Depth First Search to find game is won
-   
+
+   - Using Assertions and time checks over loops
+
    - Program output pasted below.
    
    - Time: On a 8 thread computer, runs over a million simulations on a 11x11 size hex board in under 4 seconds
