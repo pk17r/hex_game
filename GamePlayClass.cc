@@ -59,6 +59,7 @@ void GamePlayClass::RunGame()
     Square current_player = Square::PlayerA;
     PlayerType current_player_type = playerA_type_;
     int next_move_node_id = -1;
+    BestWinLossRatio bestWinLossRatio;
 
     while (!player_won)
     {
@@ -70,14 +71,23 @@ void GamePlayClass::RunGame()
                 cout << playerB_name_ << " (" << static_cast<char>(Square::PlayerB);
             else
                 cout << playerA_name_ << " (" << static_cast<char>(Square::PlayerA);
-            cout << ") entered last move as: " << get_row_char_(next_move_node_id) << get_col_number_(next_move_node_id) << endl;
+            cout << ") entered last move as (" << get_row_char_(next_move_node_id) << get_col_number_(next_move_node_id) << ")";
+            if (bestWinLossRatio.best_win_loss_ratio_node_id != -1)
+            {
+                cout << " with a win_loss_ratio of " << bestWinLossRatio.best_win_loss_ratio;
+                bestWinLossRatio.best_win_loss_ratio_node_id = -1;
+            }
+            cout << endl;
         }
 
         //get or find next move
         if (current_player_type == PlayerType::Human)
             next_move_node_id = GetUserNextMove(current_player);
         else
-            next_move_node_id = FindBestNextMove(current_player);
+        {
+            bestWinLossRatio = FindBestNextMove(current_player, false);
+            next_move_node_id = bestWinLossRatio.best_win_loss_ratio_node_id;
+        }
         
         //fill hex board with next move
         set_hex_board_ownership_(next_move_node_id, current_player);
@@ -128,7 +138,7 @@ void GamePlayClass::RunSim(int sim_index, Square player, unsigned int from_index
     best_win_loss_ratio_vector.push_back((simulation_hex_boards_ptr_vector_.at(sim_index))->MonteCarloSimulationsToFindBestNextMove(player, from_index, to_index));
 }
 
-int GamePlayClass::FindBestNextMove(Square player)
+BestWinLossRatio GamePlayClass::FindBestNextMove(Square player, bool give_hint_to_user)
 {
     /*
     -For each entry of empty squares run a simulation 1000 times
@@ -147,7 +157,7 @@ int GamePlayClass::FindBestNextMove(Square player)
     //TIME NOTING START
     auto start = chrono::high_resolution_clock::now();
     
-    cout << "Running " << empty_squares_vector_.size() * num_of_simulations_ << " simulated trials" << endl;
+    cout << "Running " << empty_squares_vector_.size() * num_of_simulations_ << " simulated trials" << (give_hint_to_user ? " for hint to user" : "") << endl;
 
     //copy hex board to simulation hex boards and run simulations
     //unsigned int hex_board_memory_space = sizeof(Square) * get_board_size_() * get_board_size_();
@@ -198,43 +208,50 @@ int GamePlayClass::FindBestNextMove(Square player)
     }
 
     //collate simulation data to find out best next move node id
-    double best_win_loss_ratio = 0;
-    int best_win_loss_ratio_node_id = -1;
+    BestWinLossRatio bestWinLossRatio;
     unsigned int time_shuffle_and_fill_up_board = 0;
     unsigned int time_who_won_using_dfs_algo = 0;
     for (int i = 0; i < static_cast<int>(best_win_loss_ratio_vector.size()); i++)
     {
         time_shuffle_and_fill_up_board += best_win_loss_ratio_vector.at(i).time_shuffle_and_fill_up_board;
         time_who_won_using_dfs_algo += best_win_loss_ratio_vector.at(i).time_who_won_using_dfs_algo;
-        if (best_win_loss_ratio_vector.at(i).best_win_loss_ratio > best_win_loss_ratio)
+        if (best_win_loss_ratio_vector.at(i).best_win_loss_ratio > bestWinLossRatio.best_win_loss_ratio)
         {
             //update best next move node id according to best win loss ratio
-            best_win_loss_ratio_node_id = best_win_loss_ratio_vector.at(i).best_win_loss_ratio_node_id;
-            best_win_loss_ratio = best_win_loss_ratio_vector.at(i).best_win_loss_ratio;
+            bestWinLossRatio.best_win_loss_ratio_node_id = best_win_loss_ratio_vector.at(i).best_win_loss_ratio_node_id;
+            bestWinLossRatio.best_win_loss_ratio = best_win_loss_ratio_vector.at(i).best_win_loss_ratio;
         }
     }
     //clear simulation results
     best_win_loss_ratio_vector.clear();
 
     //print best found next move
-    cout << "\n\n(" << static_cast<char>(player) << ") picks " << get_row_char_(best_win_loss_ratio_node_id) << get_col_number_(best_win_loss_ratio_node_id) << endl;
+    if(!give_hint_to_user)
+        cout << "\n\n(" << static_cast<char>(player) << ") picks (" << get_row_char_(bestWinLossRatio.best_win_loss_ratio_node_id) << get_col_number_(bestWinLossRatio.best_win_loss_ratio_node_id) << ") with win_loss_ratio of " << bestWinLossRatio.best_win_loss_ratio << endl;
+    else
+        cout << "\n\nBest suggested move is (" << get_row_char_(bestWinLossRatio.best_win_loss_ratio_node_id) << get_col_number_(bestWinLossRatio.best_win_loss_ratio_node_id) << ") with a win_loss_ratio of " << bestWinLossRatio.best_win_loss_ratio << '\n' << endl;
 
     //TIME NOTING STOP
     auto stop = chrono::high_resolution_clock::now();
     auto duration_total = chrono::duration_cast<chrono::milliseconds>(stop - start);
     unsigned int time_total = static_cast<unsigned int>(duration_total.count());
     unsigned int time_copy_hex_board_to_simulation = static_cast<unsigned int>(duration_copy_hex_board_to_simulation.count() / 1000);
-    printf("Total Time taken                              : %7u ms\n", time_total);
-    printf("time_copy_hex_board_to_simulation             : %7u us  %3.2f%%\n", time_copy_hex_board_to_simulation, 1.0 * time_copy_hex_board_to_simulation / time_total * 100);
-    printf("Multi-threaded time_shuffle_and_fill_up_board : %7u ms  %3.2f%%\n", time_shuffle_and_fill_up_board, 1.0 * time_shuffle_and_fill_up_board / time_total * 100);
-    printf("Multi-threaded time_who_won_using_dfs_algo    : %7u ms  %3.2f%%\n", time_who_won_using_dfs_algo, 1.0 * time_who_won_using_dfs_algo / time_total * 100);
-    printf("Threads used  : %u\n", sim_i);
 
-    return best_win_loss_ratio_node_id;
+    if (!give_hint_to_user)
+    {
+        printf("Total Time taken                              : %7u ms\n", time_total);
+        printf("time_copy_hex_board_to_simulation             : %7u us  %3.2f%%\n", time_copy_hex_board_to_simulation, 1.0 * time_copy_hex_board_to_simulation / time_total * 100);
+        printf("Multi-threaded time_shuffle_and_fill_up_board : %7u ms  %3.2f%%\n", time_shuffle_and_fill_up_board, 1.0 * time_shuffle_and_fill_up_board / time_total * 100);
+        printf("Multi-threaded time_who_won_using_dfs_algo    : %7u ms  %3.2f%%\n", time_who_won_using_dfs_algo, 1.0 * time_who_won_using_dfs_algo / time_total * 100);
+        printf("Threads used  : %u\n", sim_i);
+    }
+    return bestWinLossRatio;
 }
 
 int GamePlayClass::GetUserNextMove(Square player)
 {
+    FindBestNextMove(player, true);
+
     int row_index = -1, col_index = -1;
     if (player == Square::PlayerA)
         cout << playerA_name_ << " (" << static_cast<char>(Square::PlayerA) << ") win by making a connected path from Top-to-Bottom" << '\n';

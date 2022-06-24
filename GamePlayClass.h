@@ -30,7 +30,7 @@ private:
     int GetUserNextMove(Square player);                 //returns node_id
 
     //Run simulations in ProcessHexBoardClass to find out next best move for computer
-    int FindBestNextMove(Square player);                //returns node_id
+    BestWinLossRatio FindBestNextMove(Square player, bool give_hint_to_user);                //returns node_id
 
     //get game parameters like player types and hex board size input from user
     void GetGameParametersInput();
