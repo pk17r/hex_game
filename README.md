@@ -12,6 +12,8 @@ g++ -Wall -g main.cpp *.cc -o main.exe
 
 Run main.exe
 
+Tested on Windows Machine with Visual Studio 2022. Not tested on Linux Machine.
+
 -------
 
 ## Program Highlights:
