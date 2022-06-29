@@ -131,6 +131,9 @@ void GamePlayClass::RunGame()
     else
         cout << playerB_name_ << " (" << static_cast<char>(Square::PlayerB) << ") Won!!!" << '\n' << endl;
     cout << "Game won in " << moves << " moves!" << endl;
+
+    //stop cmd
+    getchar();
 }
 
 void GamePlayClass::RunSim(int sim_index, Square player, unsigned int from_index, unsigned int to_index)
