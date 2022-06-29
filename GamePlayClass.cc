@@ -160,7 +160,7 @@ BestWinLossRatio GamePlayClass::FindBestNextMove(Square player, bool give_hint_t
     //TIME NOTING START
     auto start = chrono::high_resolution_clock::now();
     
-    cout << "Running " << empty_squares_vector_.size() * num_of_simulations_ << " simulated trials" << (give_hint_to_user ? " for hint to user" : "") << endl;
+    cout << "Running " << empty_squares_vector_.size() * num_of_simulations_ << " simulated trials to find (" << static_cast<char>(player) << ")'s next best move" << (give_hint_to_user ? ", for hint to user" : "") << endl;
 
     //copy hex board to simulation hex boards and run simulations
     //unsigned int hex_board_memory_space = sizeof(Square) * get_board_size_() * get_board_size_();
@@ -253,21 +253,18 @@ BestWinLossRatio GamePlayClass::FindBestNextMove(Square player, bool give_hint_t
 
 int GamePlayClass::GetUserNextMove(Square player)
 {
-    FindBestNextMove(player, true);
+    if (debug_mode_)
+        FindBestNextMove(player, true);
 
     int row_index = -1, col_index = -1;
-    if (player == Square::PlayerA)
-        cout << playerA_name_ << " (" << static_cast<char>(Square::PlayerA) << ") win by making a connected path from Top-to-Bottom" << '\n';
-    else
-        cout << playerB_name_ << " (" << static_cast<char>(Square::PlayerB) << ") win by making a connected path from Left-to-Right" << '\n';
     
     while (true)
     {
         if (player == Square::PlayerA)
-            cout << playerA_name_ << " (" << static_cast<char>(Square::PlayerA) << ") enter next move (e.g. x1): ";
+            cout << playerA_name_ << " (" << static_cast<char>(Square::PlayerA) << ") win by making a connected path from Top-to-Bottom. Enter your move (e.g. x1): ";
         else
-            cout << playerB_name_ << " (" << static_cast<char>(Square::PlayerB) << ") enter next move (e.g. x1): ";
-    
+            cout << playerB_name_ << " (" << static_cast<char>(Square::PlayerB) << ") win by making a connected path from Left-to-Right. Enter your move (e.g. x1): ";
+        
         string input;
         getline(cin, input);
 
