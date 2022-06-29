@@ -232,7 +232,7 @@ BestWinLossRatio GamePlayClass::FindBestNextMove(Square player, bool give_hint_t
     if(!give_hint_to_user)
         cout << "\n\n(" << static_cast<char>(player) << ") picks (" << get_row_char_(bestWinLossRatio.best_win_loss_ratio_node_id) << get_col_number_(bestWinLossRatio.best_win_loss_ratio_node_id) << ") with win_loss_ratio of " << bestWinLossRatio.best_win_loss_ratio << endl;
     else
-        cout << "\n\nBest suggested move is (" << get_row_char_(bestWinLossRatio.best_win_loss_ratio_node_id) << get_col_number_(bestWinLossRatio.best_win_loss_ratio_node_id) << ") with a win_loss_ratio of " << bestWinLossRatio.best_win_loss_ratio << '\n' << endl;
+        cout << "\nBest suggested move is (" << get_row_char_(bestWinLossRatio.best_win_loss_ratio_node_id) << get_col_number_(bestWinLossRatio.best_win_loss_ratio_node_id) << ") with a win_loss_ratio of " << bestWinLossRatio.best_win_loss_ratio << '\n' << endl;
 
     //TIME NOTING STOP
     auto stop = chrono::high_resolution_clock::now();
@@ -240,7 +240,7 @@ BestWinLossRatio GamePlayClass::FindBestNextMove(Square player, bool give_hint_t
     unsigned int time_total = static_cast<unsigned int>(duration_total.count());
     unsigned int time_copy_hex_board_to_simulation = static_cast<unsigned int>(duration_copy_hex_board_to_simulation.count() / 1000);
 
-    if (!give_hint_to_user)
+    if (!give_hint_to_user && debug_mode_)
     {
         printf("Total Time taken                              : %7u ms\n", time_total);
         printf("time_copy_hex_board_to_simulation             : %7u us  %3.2f%%\n", time_copy_hex_board_to_simulation, 1.0 * time_copy_hex_board_to_simulation / time_total * 100);
@@ -341,14 +341,14 @@ void GamePlayClass::GetGameParametersInput()
     cout << "                                 --   --   --   --   --\n";
     cout << "                                  1    2    3    4    5\n";
     cout << "\n\n";
-    cout << "Program to Play Human vs Human or vs Computer or Computer vs Computer\n\n";
-    cout << "X goes first and takes vertical direction, O goes second and takes horizontal direction." << '\n' << endl;
-    cout << "To play computer vs computer, make both players computer" << endl;
-    cout << "To play human vs computer or computer vs human, select accordingly on cmd" << endl;
+    cout << "Welcome to AI Hex Game" << endl;
+    cout << "\nHow to Play Hex: https://www.wikihow.com/Play-Hex\n" << endl;
     cout << "\nPlay to win!" << '\n' << endl;
 
+    cout << "\nPress 'Ctrl + C' anytime to kill game.\n" << endl;
+    cout << "\n---Game Parameters Input---\n" << endl;
+    cout << "Hex Board Size (Default " << get_board_size_() << ")(suffix 'd' for debug mode): ";
     string user_choice;
-    cout << "Enter board size (default 11) (suffix with 'd' for debug mode): ";
     getline(cin, user_choice);
     if (user_choice != "")
     {
@@ -358,37 +358,48 @@ void GamePlayClass::GetGameParametersInput()
             user_choice = user_choice.substr(0, user_choice.size() - 1);
             cout << "Debug Mode ON" << endl;
         }
-        set_board_size_(stoi(user_choice));
+        if (user_choice.size() != 0)
+            set_board_size_(stoi(user_choice));
     }
     cout << "board size = " << get_board_size_() << '\n' << endl;
 
-    cout << "Enter Player A (" << static_cast<char>(Square::PlayerA) << ") name if human or press enter to make it computer: ";
-    getline(cin, user_choice);
-    if (user_choice != "")
-    {
-        playerA_type_ = PlayerType::Human;
-        playerA_name_ = user_choice;
-    }
-    else
-    {
-        playerA_type_ = PlayerType::Computer;
-        playerA_name_ = "Computer";
-    }
-    cout << "Player A (" << static_cast<char>(Square::PlayerA) << ") is " << playerA_name_ << '\n';
 
-    cout << "\nEnter Player B (" << static_cast<char>(Square::PlayerB) << ") name if human or press enter to make it computer: ";
-    getline(cin, user_choice);
-    if (user_choice != "")
+    cout << "(X) goes first and takes vertical direction, (O) goes second and takes horizontal direction." << '\n' << endl;
+    while (true)
     {
-        playerB_type_ = PlayerType::Human;
-        playerB_name_ = user_choice;
+        cout << "\nChoose your marker (X) or (O): ";
+        char user_char;
+        cin >> user_char;
+        if (user_char == 'X')
+        {
+            playerA_type_ = PlayerType::Human;
+            playerB_type_ = PlayerType::Computer;
+            break;
+        }
+        else if (user_char == 'O')
+        {
+            playerA_type_ = PlayerType::Computer;
+            playerB_type_ = PlayerType::Human;
+            break;
+        }
+        else
+        {
+            cout << "Invalid input.." << endl;
+        }
     }
-    else
+    
+    cout << "\nEnter Player Name: ";
+    if (playerA_type_ == PlayerType::Human)
     {
-        playerB_type_ = PlayerType::Computer;
+        cin >> playerA_name_;
         playerB_name_ = "Computer";
     }
-    cout << "Player B (" << static_cast<char>(Square::PlayerB) << ") is " << playerB_name_ << '\n';
+    else
+    {
+        playerA_name_ = "Computer";
+        cin >> playerB_name_;
+    }
+    cin.ignore();
 }
 
 void GamePlayClass::CreateSimulationHexBoards()

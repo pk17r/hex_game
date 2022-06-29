@@ -222,8 +222,8 @@ void HexBoard::PrintHexBoard()
 {
     cout << '\n';
     cout << "\t\t\t  Hex Game" << '\n' << '\n';
-    cout << "\t\t" << static_cast<char>(Square::PlayerA) << "  |  top-to-bottom  | " << playerA_name_ << '\n';
-    cout << "\t\t" << static_cast<char>(Square::PlayerB) << "  |  left-to-right  | " << playerB_name_ << '\n';
+    cout << "\t\t(" << static_cast<char>(Square::PlayerA) << ")  |  top-to-bottom  | " << playerA_name_ << '\n';
+    cout << "\t\t(" << static_cast<char>(Square::PlayerB) << ")  |  left-to-right  | " << playerB_name_ << '\n';
     cout << '\n' << '\n';
 
     //header row
@@ -310,7 +310,7 @@ unsigned int HexBoard::PrintOwnershipCountReturnEmptySquares(bool print)
             }
         }
     }
-    if(print)
+    if(print && debug_mode_)
         cout << "SQUARES OWNERSHIP empty:" << empty << ", playerA:" << playerA << ", playerB:" << playerB << ", other:" << other << endl;
     
     assert(other == 0);

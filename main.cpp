@@ -17,6 +17,7 @@
 
 #include <memory>
 #include <vector>
+#include <windows.h>
 #include "BestWinLossRatio.h"
 #include "HexBoard.h"
 #include "GamePlayClass.h"
@@ -38,6 +39,8 @@ std::vector<BestWinLossRatio> GamePlayClass::best_win_loss_ratio_vector;
 
 int main()
 {
+    ::SendMessage(::GetConsoleWindow(), WM_SYSKEYDOWN, VK_RETURN, 0x20000000);
+
     //initialize hex game
     GamePlayClass hex_game_object;
 
