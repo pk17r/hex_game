@@ -1,4 +1,4 @@
-# Hex Game
+# AI Hex Game
 
 Author: Prashant Kumar
 
